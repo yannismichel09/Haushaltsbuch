@@ -27,6 +27,7 @@ public class DBAccess {
 
 	// User-Methoden
 
+	// Methode zum Erstellen eines neuen Benutzers
 	public User createUser(String username, String password, String email) {
 		User user = new User();
 
@@ -42,5 +43,10 @@ public class DBAccess {
 		entityManager.flush();
 
 		return user;
+	}
+
+	// Methode um einen Benutzer zu finden, anhand seiner Id
+	public User getUserById(int userId) {
+		return entityManager.find(User.class, userId);
 	}
 }
