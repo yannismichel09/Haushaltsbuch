@@ -23,7 +23,7 @@ public class User {
     @Column(name = "user_id", nullable = false, unique = true)
     private Integer userId;
 
-    // Benutzername, E-Mail, Passwort-Hash und Profilbild des Benutzers
+    // Benutzername, E-Mail, Passwort-Hash, Passwort-Salt und Profilbild des Benutzers
     @Column(name = "user_name", nullable = false, unique = true)
     private String userName;
 
@@ -31,7 +31,10 @@ public class User {
     private String userEmail;
 
     @Column(name = "user_password_hash", nullable = false)
-    private String userPasswordHash;
+    private byte[] userPasswordHash;
+
+    @Column(name = "user_password_salt", nullable = false)
+    private byte[] userPasswordSalt;
 
     @Column(name = "user_profile_picture")
     private byte[] userProfilePicture;
@@ -44,10 +47,9 @@ public class User {
     public User() {
     }
 
-    public User(String userName, String userEmail, String userPasswordHash) {
+    public User(String userName, String userEmail) {
         this.userName = userName;
         this.userEmail = userEmail;
-        this.userPasswordHash = userPasswordHash;
     }
 
     // Getters und Setters
@@ -75,12 +77,20 @@ public class User {
         this.userEmail = userEmail;
     }
 
-    public String getUserPasswordHash() {
+    public byte[] getUserPasswordHash() {
         return userPasswordHash;
     }
 
-    public void setUserPasswordHash(String userPasswordHash) {
+    public void setUserPasswordHash(byte[] userPasswordHash) {
         this.userPasswordHash = userPasswordHash;
+    }
+
+    public byte[] getUserPasswordSalt() {
+        return userPasswordSalt;
+    }
+
+    public void setUserPasswordSalt(byte[] userPasswordSalt) {
+        this.userPasswordSalt = userPasswordSalt;
     }
 
     public byte[] getUserProfilePicture() {
