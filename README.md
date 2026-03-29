@@ -1,2 +1,2 @@
-Sprints: 1 Woche
+Sprints: 1 Woche  
 Sonntag - Sonntag
