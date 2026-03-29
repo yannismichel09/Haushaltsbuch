@@ -9,38 +9,38 @@ import util.PasswordTools;
 
 public class DBAccess {
 
-    @PersistenceContext
+	@PersistenceContext
 	private final EntityManager entityManager;
-	
+
 	@Autowired
-	public DBAccess(EntityManager entityManager){
-		
-	   this.entityManager=entityManager;
-	   
+	public DBAccess(EntityManager entityManager) {
+
+		this.entityManager = entityManager;
+
 	}
-	
+
 	public EntityManager getEntityManager() {
-		
+
 		return entityManager;
-		
+
 	}
 
-    // User-Methoden
+	// User-Methoden
 
-    public User createUser(String username, String password, String email) {
-        User user = new User();
+	public User createUser(String username, String password, String email) {
+		User user = new User();
 
-        user.setUserEmail(email);
-        user.setUserName(username);
+		user.setUserEmail(email);
+		user.setUserName(username);
 
-        byte[]salt=PasswordTools.generateSalt();
-		byte[]password_Hash=PasswordTools.generatePasswordHash(password, salt);
+		byte[] salt = PasswordTools.generateSalt();
+		byte[] password_Hash = PasswordTools.generatePasswordHash(password, salt);
 		user.setUserPasswordSalt(salt);
 		user.setUserPasswordHash(password_Hash);
 
-        entityManager.persist(user);
+		entityManager.persist(user);
 		entityManager.flush();
 
-        return user;
-    }
+		return user;
+	}
 }
