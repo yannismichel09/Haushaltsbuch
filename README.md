@@ -1,2 +1,3 @@
 Sprints: 1 Woche  
-Sonntag - Sonntag
+Sonntag - Sonntag  
+10 Uhr
