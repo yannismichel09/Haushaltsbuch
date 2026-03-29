@@ -1,9 +1,13 @@
 package dbaccess;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import model.User;
 import util.PasswordTools;
 
@@ -48,5 +52,26 @@ public class DBAccess {
 	// Methode um einen Benutzer zu finden, anhand seiner Id
 	public User getUserById(int userId) {
 		return entityManager.find(User.class, userId);
+	}
+
+	// Methode um einen Benutzer zu finden, anhand seines Nutzernamens und seines Passworts
+	public User getUserByUsernameAndPassword(String username, String password) {
+		TypedQuery<User> query = entityManager.createNamedQuery("getUserByUsername", User.class);
+		query.setParameter("userName", username);
+		List<User> result = query.getResultList();
+
+		if (result.isEmpty()==true) {
+			return null;
+		}
+
+		User user = result.get(0);
+		byte[] salt = user.getUserPasswordSalt();
+		byte[] hash = PasswordTools.generatePasswordHash(password, salt);
+
+		if (Arrays.equals(hash, user.getUserPasswordHash())) {
+			return user;
+		}
+
+		return null;
 	}
 }
