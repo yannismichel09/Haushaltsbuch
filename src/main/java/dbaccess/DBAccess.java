@@ -88,6 +88,22 @@ public class DBAccess {
 
 		return true;
 	}
+	
+	// Methode zum Ändern des Passworts eines Benutzers
+	public boolean updatePassword(int userId, String password) {
+		User user = entityManager.find(User.class, userId);
+		if (user == null) {
+			return false;
+		}
+
+		byte[] salt = PasswordTools.generateSalt();
+		byte[] password_Hash = PasswordTools.generatePasswordHash(password, salt);
+		user.setUserPasswordSalt(salt);
+		user.setUserPasswordHash(password_Hash);
+		entityManager.flush();
+
+		return true;
+	}
 
 	// Methode zum Ändern des Benutzernamens eines Benutzers
 	public boolean updateUsername(int userId, String username) {
