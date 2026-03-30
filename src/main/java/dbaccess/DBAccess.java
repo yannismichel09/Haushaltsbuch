@@ -84,6 +84,7 @@ public class DBAccess {
 		return entityManager.find(Category.class, categoryId);
 	}
 
+	// Methode zum Löschen einer Kategorie
 	public boolean deleteCategory(int categoryId) {
 		Category category = entityManager.find(Category.class, categoryId);
 		if (category == null) {
