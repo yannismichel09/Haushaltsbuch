@@ -100,6 +100,7 @@ public class DBAccess {
 
 		return true;
 	}
+
 	// Category-Methoden
 
 	// Methode um eine Kategorie zu finden, anhand ihrer Id
@@ -114,6 +115,31 @@ public class DBAccess {
 			return false;
 		}
 		entityManager.remove(category);
+		entityManager.flush();
+
+		return true;
+	}
+
+	// Methode zum Ändern des Namens, Beschreibungstextes, Farbe und Limits einer Kategorie
+	public boolean updateCategory(int categoryId, String categoryName, String categoryDescription, String categoryColor, Double categoryLimit) {
+		Category category = entityManager.find(Category.class, categoryId);
+		if (category == null) {
+			return false;
+		}
+
+		if (categoryName != null) {
+			category.setCategoryName(categoryName);
+		}
+		if (categoryDescription != null) {
+			category.setCategoryDescription(categoryDescription);
+		}
+		if (categoryColor != null) {
+			category.setCategoryColor(categoryColor);
+		}
+		if (categoryLimit != null) {
+			category.setCategoryLimit(categoryLimit);
+		}
+		
 		entityManager.flush();
 
 		return true;
