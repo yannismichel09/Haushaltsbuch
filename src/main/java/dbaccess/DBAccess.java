@@ -84,6 +84,17 @@ public class DBAccess {
 		return entityManager.find(Category.class, categoryId);
 	}
 
+	public boolean deleteCategory(int categoryId) {
+		Category category = entityManager.find(Category.class, categoryId);
+		if (category == null) {
+			return false;
+		}
+		entityManager.remove(category);
+		entityManager.flush();
+
+		return true;
+	}
+
 	// Transaction-Methoden
 
 	// Methode um alle Transaktionen aus der Datenbank zu holen
