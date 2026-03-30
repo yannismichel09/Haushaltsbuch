@@ -86,10 +86,23 @@ public class DBAccess {
 
 	// Transaction-Methoden
 
+	// Methode um alle Transaktionen aus der Datenbank zu holen
 	public List<Transaction> getAllTransactions() {
         TypedQuery<Transaction> query = entityManager.createNamedQuery("getAllTransactions", Transaction.class);
         List<Transaction> result = query.getResultList();
 
         return result;
+    }
+
+	// Methode zum Löschen einer Transaktion
+	public boolean deleteTransaction(int transactionId) {
+        Transaction transaction = entityManager.find(Transaction.class, transactionId);
+        if (transaction == null) {
+            return false;
+        }
+        entityManager.remove(transaction);
+        entityManager.flush();
+
+        return true;
     }
 }
