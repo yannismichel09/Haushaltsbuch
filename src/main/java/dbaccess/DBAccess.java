@@ -199,6 +199,11 @@ public class DBAccess {
         return result;
     }
 
+	// Methode um eine Transaktion zu finden, anhand ihrer Id
+	public Transaction getTransactionById(int transactionId) {
+		return entityManager.find(Transaction.class, transactionId);
+	}
+
 	// Methode zum Löschen einer Transaktion
 	public boolean deleteTransaction(int transactionId) {
         Transaction transaction = entityManager.find(Transaction.class, transactionId);
