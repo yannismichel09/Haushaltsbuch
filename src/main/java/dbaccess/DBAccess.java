@@ -77,6 +77,18 @@ public class DBAccess {
 		return null;
 	}
 
+	// Methode zum Ändern der Email-Adresse eines Benutzers
+	public boolean updateEmail(int userId, String email) {
+		User user = entityManager.find(User.class, userId);
+		if (user == null) {
+			return false;
+		}
+		user.setUserEmail(email);
+		entityManager.flush();
+
+		return true;
+	}
+
 	// Category-Methoden
 
 	// Methode um eine Kategorie zu finden, anhand ihrer Id
