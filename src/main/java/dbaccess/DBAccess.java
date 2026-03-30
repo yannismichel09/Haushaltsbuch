@@ -126,10 +126,20 @@ public class DBAccess {
 		if (category == null) {
 			return false;
 		}
-		category.setCategoryName(categoryName);
-		category.setCategoryDescription(categoryDescription);
-		category.setCategoryColor(categoryColor);
-		category.setCategoryLimit(categoryLimit);
+
+		if (categoryName != null) {
+			category.setCategoryName(categoryName);
+		}
+		if (categoryDescription != null) {
+			category.setCategoryDescription(categoryDescription);
+		}
+		if (categoryColor != null) {
+			category.setCategoryColor(categoryColor);
+		}
+		if (categoryLimit != null) {
+			category.setCategoryLimit(categoryLimit);
+		}
+		
 		entityManager.flush();
 
 		return true;
