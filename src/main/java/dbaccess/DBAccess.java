@@ -147,6 +147,26 @@ public class DBAccess {
 
 	// Transaction-Methoden
 
+	// Methode zum Erstellen einer neuen Transaktion
+	public Transaction createTransaction(int userId, int categoryId, Integer transactionAmount, String transactionDate, String transactionType, String transactionDescription, String transactionFrequency) {
+		User user = entityManager.find(User.class, userId);
+		Category category = entityManager.find(Category.class, categoryId);
+
+		Transaction transaction = new Transaction();
+		transaction.setUser(user);
+		transaction.setCategory(category);
+		transaction.setTransactionAmount(transactionAmount);
+		transaction.setTransactionDate(transactionDate);
+		transaction.setTransactionType(transactionType);
+		transaction.setTransactionDescription(transactionDescription);
+		transaction.setTransactionFrequency(transactionFrequency);
+
+		entityManager.persist(transaction);
+		entityManager.flush();
+
+		return transaction;
+	}
+
 	// Methode um alle Transaktionen aus der Datenbank zu holen
 	public List<Transaction> getAllTransactions() {
         TypedQuery<Transaction> query = entityManager.createNamedQuery("getAllTransactions", Transaction.class);
