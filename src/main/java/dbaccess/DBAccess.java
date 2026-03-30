@@ -155,6 +155,42 @@ public class DBAccess {
         return result;
     }
 
+	// Methode zum Ändern einer Transaktion
+	public boolean updateTransaction(int transactionId, Integer userId, Integer categoryId, Integer transactionAmount, String transactionDate, String transactionType, String transactionDescription, String transactionFrequency) {
+		Transaction transaction = entityManager.find(Transaction.class, transactionId);
+		if (transaction == null) {
+			return false;
+		}
+
+		if (userId != null) {
+			User user = entityManager.find(User.class, userId);
+			transaction.setUser(user);
+		}
+		if (categoryId != null) {
+			Category category = entityManager.find(Category.class, categoryId);
+			transaction.setCategory(category);
+		}
+		if (transactionAmount != null) {
+			transaction.setTransactionAmount(transactionAmount);
+		}
+		if (transactionDate != null) {
+			transaction.setTransactionDate(transactionDate);
+		}
+		if (transactionType != null) {
+			transaction.setTransactionType(transactionType);
+		}
+		if (transactionDescription != null) {
+			transaction.setTransactionDescription(transactionDescription);
+		}
+		if (transactionFrequency != null) {
+			transaction.setTransactionFrequency(transactionFrequency);
+		}
+
+		entityManager.flush();
+
+		return true;
+	}
+
 	// Methode zum Löschen einer Transaktion
 	public boolean deleteTransaction(int transactionId) {
         Transaction transaction = entityManager.find(Transaction.class, transactionId);
