@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import model.Category;
 import model.User;
 import util.PasswordTools;
 
@@ -73,5 +74,12 @@ public class DBAccess {
 		}
 
 		return null;
+	}
+
+	// Category-Methoden
+
+	// Methode um eine Kategorie zu finden, anhand ihrer Id
+	public Category getCategoryById(int categoryId) {
+		return entityManager.find(Category.class, categoryId);
 	}
 }
