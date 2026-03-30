@@ -101,6 +101,18 @@ public class DBAccess {
 		return true;
 	}
 
+	// Methode zum Löschen eines Benutzers
+	public boolean deleteUser(int userId) {
+		User user = entityManager.find(User.class, userId);
+		if (user == null) {
+			return false;
+		}
+		entityManager.remove(user);
+		entityManager.flush();
+
+		return true;
+	}
+
 	// Category-Methoden
 
 	// Methode um eine Kategorie zu finden, anhand ihrer Id
