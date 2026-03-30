@@ -9,6 +9,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import model.Category;
+import model.Transaction;
 import model.User;
 import util.PasswordTools;
 
@@ -82,4 +83,13 @@ public class DBAccess {
 	public Category getCategoryById(int categoryId) {
 		return entityManager.find(Category.class, categoryId);
 	}
+
+	// Transaction-Methoden
+
+	public List<Transaction> getAllTransactions() {
+        TypedQuery<Transaction> query = entityManager.createNamedQuery("getAllTransactions", Transaction.class);
+        List<Transaction> result = query.getResultList();
+
+        return result;
+    }
 }

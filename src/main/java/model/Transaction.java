@@ -10,11 +10,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 
 // Transaction-Entität, die der Datenbanktabelle "transactions" entspricht
 @Entity
 @Table(name = "transactions")
+@NamedQuery(name="getAllTransactions", query="SELECT transaction FROM Transaction transaction")
 public class Transaction {
 
     // Primärschlüssel für die Transaction-Entität
@@ -66,10 +68,6 @@ public class Transaction {
     // Getters und Setters
     public Integer getTransactionId() {
         return transactionId;
-    }
-
-    public void setTransactionId(Integer transactionId) {
-        this.transactionId = transactionId;
     }
 
     public User getUser() {
