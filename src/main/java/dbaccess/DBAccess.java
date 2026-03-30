@@ -89,6 +89,18 @@ public class DBAccess {
 		return true;
 	}
 
+	// Methode zum Ändern des Benutzernamens eines Benutzers
+	public boolean updateUsername(int userId, String username) {
+		User user = entityManager.find(User.class, userId);
+		if (user == null) {
+			return false;
+		}
+		user.setUserName(username);
+		entityManager.flush();
+
+		return true;
+	}
+
 	// Methode zum Ändern des Profilbildes eines Benutzers
 	public boolean updateProfilePicture(int userId, byte[] profilePicture) {
 		User user = entityManager.find(User.class, userId);
