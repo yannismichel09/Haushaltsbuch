@@ -89,6 +89,17 @@ public class DBAccess {
 		return true;
 	}
 
+	// Methode zum Ändern des Profilbildes eines Benutzers
+	public boolean updateProfilePicture(int userId, byte[] profilePicture) {
+		User user = entityManager.find(User.class, userId);
+		if (user == null) {
+			return false;
+		}
+		user.setUserProfilePicture(profilePicture);
+		entityManager.flush();
+
+		return true;
+	}
 	// Category-Methoden
 
 	// Methode um eine Kategorie zu finden, anhand ihrer Id
