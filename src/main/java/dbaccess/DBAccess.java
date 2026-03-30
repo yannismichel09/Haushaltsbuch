@@ -89,6 +89,18 @@ public class DBAccess {
 		return true;
 	}
 
+	// Methode zum Ändern des Benutzernamens eines Benutzers
+	public boolean updateUsername(int userId, String username) {
+		User user = entityManager.find(User.class, userId);
+		if (user == null) {
+			return false;
+		}
+		user.setUserName(username);
+		entityManager.flush();
+
+		return true;
+	}
+
 	// Methode zum Ändern des Profilbildes eines Benutzers
 	public boolean updateProfilePicture(int userId, byte[] profilePicture) {
 		User user = entityManager.find(User.class, userId);
@@ -101,7 +113,27 @@ public class DBAccess {
 		return true;
 	}
 
+	// Methode zum Löschen eines Benutzers
+	public boolean deleteUser(int userId) {
+		User user = entityManager.find(User.class, userId);
+		if (user == null) {
+			return false;
+		}
+		entityManager.remove(user);
+		entityManager.flush();
+
+		return true;
+	}
+
 	// Category-Methoden
+
+	// Methode um alle Kategorien aus der Datenbank zu holen
+	public List<Category> getAllCategories() {
+        TypedQuery<Category> query = entityManager.createNamedQuery("getAllCategories", Category.class);
+        List<Category> result = query.getResultList();
+
+        return result;
+    }
 
 	// Methode um eine Kategorie zu finden, anhand ihrer Id
 	public Category getCategoryById(int categoryId) {
@@ -147,6 +179,26 @@ public class DBAccess {
 
 	// Transaction-Methoden
 
+	// Methode zum Erstellen einer neuen Transaktion
+	public Transaction createTransaction(int userId, int categoryId, Integer transactionAmount, String transactionDate, String transactionType, String transactionDescription, String transactionFrequency) {
+		User user = entityManager.find(User.class, userId);
+		Category category = entityManager.find(Category.class, categoryId);
+
+		Transaction transaction = new Transaction();
+		transaction.setUser(user);
+		transaction.setCategory(category);
+		transaction.setTransactionAmount(transactionAmount);
+		transaction.setTransactionDate(transactionDate);
+		transaction.setTransactionType(transactionType);
+		transaction.setTransactionDescription(transactionDescription);
+		transaction.setTransactionFrequency(transactionFrequency);
+
+		entityManager.persist(transaction);
+		entityManager.flush();
+
+		return transaction;
+	}
+
 	// Methode um alle Transaktionen aus der Datenbank zu holen
 	public List<Transaction> getAllTransactions() {
         TypedQuery<Transaction> query = entityManager.createNamedQuery("getAllTransactions", Transaction.class);
@@ -154,6 +206,11 @@ public class DBAccess {
 
         return result;
     }
+
+	// Methode um eine Transaktion zu finden, anhand ihrer Id
+	public Transaction getTransactionById(int transactionId) {
+		return entityManager.find(Transaction.class, transactionId);
+	}
 
 	// Methode zum Löschen einer Transaktion
 	public boolean deleteTransaction(int transactionId) {
