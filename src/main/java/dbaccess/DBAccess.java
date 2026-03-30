@@ -103,6 +103,14 @@ public class DBAccess {
 
 	// Category-Methoden
 
+	// Methode um alle Kategorien aus der Datenbank zu holen
+	public List<Category> getAllCategories() {
+        TypedQuery<Category> query = entityManager.createNamedQuery("getAllCategories", Category.class);
+        List<Category> result = query.getResultList();
+
+        return result;
+    }
+
 	// Methode um eine Kategorie zu finden, anhand ihrer Id
 	public Category getCategoryById(int categoryId) {
 		return entityManager.find(Category.class, categoryId);
