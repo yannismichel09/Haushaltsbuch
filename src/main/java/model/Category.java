@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -14,7 +15,13 @@ import jakarta.persistence.Table;
 // Category-Entität, die der Datenbanktabelle "categories" entspricht
 @Entity
 @Table(name = "categories")
-@NamedQuery(name="getAllCategories", query="SELECT category FROM Category category")
+@NamedQueries({
+@NamedQuery(name="getAllCategories", query="SELECT category FROM Category category"),
+@NamedQuery(name="checkBudgetExceeded", query = "SELECT c FROM Category c WHERE c.categoryLimit < " +
+                                                "(SELECT SUM(t.transactionAmount) FROM Transaction t WHERE " + "t.category.categoryId = c.categoryId AND " +
+                                                                                                               "t.transactionType = 'spending' )"
+)
+})
 public class Category {
 
     // Primärschlüssel für die Category-Entität
