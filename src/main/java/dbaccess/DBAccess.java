@@ -193,6 +193,45 @@ public class DBAccess {
 		return true;
 	}
 
+	// Methode zum Filtern der Kategorien
+	public List<Category> getFilteredCategories(
+        int userId,
+        String type,
+        Integer categoryId,
+        String frequency,
+        String keyword,
+        Double amountMin,
+        Double amountMax,
+        String dateFrom,
+        String dateTo) {
+
+        StringBuilder query = new StringBuilder(
+            "SELECT DISTINCT t.category FROM Transaction t WHERE t.user.userId = :userId");
+
+        if (type != null) query.append(" AND t.transactionType = :type");
+        if (categoryId != null) query.append(" AND t.category.categoryId = :categoryId");
+        if (frequency != null) query.append(" AND t.transactionFrequency = :frequency");
+        if (keyword != null) query.append(" AND t.transactionDescription LIKE :keyword");
+        if (amountMin != null) query.append(" AND t.transactionAmount >= :amountMin");
+        if (amountMax != null) query.append(" AND t.transactionAmount <= :amountMax");
+        if (dateFrom != null) query.append(" AND t.transactionDate >= :dateFrom");
+        if (dateTo != null) query.append(" AND t.transactionDate <= :dateTo");
+
+        TypedQuery<Category> q = entityManager.createQuery(query.toString(), Category.class);
+
+        q.setParameter("userId", userId);
+        if (type != null) q.setParameter("type", type);
+        if (categoryId != null) q.setParameter("categoryId", categoryId);
+        if (frequency != null) q.setParameter("frequency", frequency);
+        if (keyword != null) q.setParameter("keyword", "%" + keyword + "%");
+        if (amountMin != null) q.setParameter("amountMin", amountMin);
+        if (amountMax != null) q.setParameter("amountMax", amountMax);
+        if (dateFrom != null) q.setParameter("dateFrom", dateFrom);
+        if (dateTo != null) q.setParameter("dateTo", dateTo);
+
+        return q.getResultList();
+    }
+
 	// Transaction-Methoden
 
 	// Methode zum Erstellen einer neuen Transaktion
