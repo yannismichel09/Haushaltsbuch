@@ -302,4 +302,13 @@ public class DBAccess {
 
         return true;
     }
+
+	// Warnings-Methoden
+
+	// Methode um die Kategorien zurückzugeben, bei denen das BudgetLimit überschritten wurden
+    public List<Category> checkBudgetExceeded() {
+	    TypedQuery<Category> query = entityManager.createNamedQuery("checkBudgetExceeded", Category.class);
+
+	    return query.getResultList();
+	}
 }
