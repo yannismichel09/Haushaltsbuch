@@ -193,6 +193,33 @@ public class DBAccess {
 		return true;
 	}
 
+	// Methode zum Filtern der Kategorien
+    public List<Category> getFilteredCategories(
+        Integer categoryId,
+        String keyword,
+		String categoryColor,
+        Double amountMin,
+        Double amountMax) {
+
+        StringBuilder query = new StringBuilder("SELECT c FROM Category c");
+
+        if (categoryId != null) query.append(" AND c.categoryId = :categoryId");
+        if (keyword != null) query.append(" AND (c.categoryName LIKE :keyword OR c.categoryDescription LIKE :keyword)");
+		if (categoryColor != null) query.append(" AND c.categoryColor = :categoryColor");
+        if (amountMin != null) query.append(" AND c.categoryLimit >= :amountMin");
+        if (amountMax != null) query.append(" AND c.categoryLimit <= :amountMax");
+
+        TypedQuery<Category> q = entityManager.createQuery(query.toString(), Category.class);
+
+        if (categoryId != null) q.setParameter("categoryId", categoryId);
+        if (keyword != null) q.setParameter("keyword", "%" + keyword + "%");
+		if (categoryColor != null) q.setParameter("categoryColor", categoryColor);
+        if (amountMin != null) q.setParameter("amountMin", amountMin);
+        if (amountMax != null) q.setParameter("amountMax", amountMax);
+
+        return q.getResultList();
+    }
+
 	// Transaction-Methoden
 
 	// Methode zum Erstellen einer neuen Transaktion
