@@ -311,4 +311,26 @@ public class DBAccess {
 
 	    return query.getResultList();
 	}
+
+	// CSV-Methoden
+
+	// Methode zum Exportieren aller Kategorien in eine CSV-Datei
+	public String exportFilteredCategoriesToCsv(int categoryId, String keyword,String categoryColor, double amountMin, double amountMax) {
+
+        List<Category> categories = getFilteredCategories(categoryId, keyword, categoryColor, amountMin, amountMax);
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("ID,Name,Description,Color,Limit\n");
+
+        for (Category c : categories) {
+           sb.append(c.getCategoryId()).append(",");
+           sb.append(c.getCategoryName()).append(",");
+           sb.append(c.getCategoryDescription()).append(",");
+           sb.append(c.getCategoryColor()).append(",");
+           sb.append(c.getCategoryLimit()).append("\n");
+        }
+
+        return sb.toString();
+    }
 }
