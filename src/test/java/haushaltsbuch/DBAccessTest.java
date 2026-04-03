@@ -26,4 +26,13 @@ class DBAccessTest {
         assertEquals("testUser1", user.getUserName());
         assertEquals("test@User1.com", user.getUserEmail());
     }
+
+    @Test
+    void testGetUserById() {
+        User user = dbAccess.createUser("testUser2", "1234", "test@User2.com");
+        User user2 = dbAccess.getUserById(user.getUserId());
+        assertNotNull(user2);
+        assertEquals("testUser2", user2.getUserName());
+        assertEquals("test@User2.com", user2.getUserEmail());
+    }
 }
