@@ -18,6 +18,8 @@ class DBAccessTest {
     @Autowired
     private DBAccess dbAccess;
 
+    // User Tests
+
     @Test
     void testCreateUser() {
         User user = dbAccess.createUser("testUser1", "1234", "test@User1.com");
@@ -34,5 +36,16 @@ class DBAccessTest {
         assertNotNull(user2);
         assertEquals("testUser2", user2.getUserName());
         assertEquals("test@User2.com", user2.getUserEmail());
+    }
+
+    @Test
+    void testGetUserByUsernameAndPassword() {
+        User user1 = dbAccess.createUser("testUser3", "1234", "test@User3.com");
+        User user2 = dbAccess.getUserByUsernameAndPassword("testUser3", "1234");
+        assertNotNull(user2);
+        assertEquals(user1,user2);
+        assertEquals(user1.getUserName(), user2.getUserName());
+        assertEquals(user1.getUserPasswordHash(), user2.getUserPasswordHash());
+        assertEquals(user1.getUserPasswordSalt(), user2.getUserPasswordSalt());
     }
 }
