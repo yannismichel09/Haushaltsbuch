@@ -252,6 +252,48 @@ public class DBAccess {
         return result;
     }
 
+	// Methode zum Filtern der Transaktionen
+	public List<Transaction> getFilteredTransactions(
+		Integer transactionId,
+		Integer userId,
+		Integer categoryId,
+		Integer amountMin,
+		Integer amountMax,
+		String transactionDateFrom,
+		String transactionDateTo,
+		String transactionType,
+		String keyword,
+		String transactionFrequency) {
+
+		StringBuilder query = new StringBuilder("SELECT t FROM Transaction t WHERE 1=1");
+
+		if (transactionId != null) query.append(" AND t.transactionId = :transactionId");
+		if (userId != null) query.append(" AND t.user.userId = :userId");
+		if (categoryId != null) query.append(" AND t.category.categoryId = :categoryId");
+		if (amountMin != null) query.append(" AND t.transactionAmount >= :amountMin");
+		if (amountMax != null) query.append(" AND t.transactionAmount <= :amountMax");
+		if (transactionDateFrom != null) query.append(" AND t.transactionDate >= :transactionDateFrom");
+		if (transactionDateTo != null) query.append(" AND t.transactionDate <= :transactionDateTo");
+		if (transactionType != null) query.append(" AND t.transactionType = :transactionType");
+		if (keyword != null) query.append(" AND (t.transactionDescription LIKE :keyword OR t.transactionType LIKE :keyword)");
+		if (transactionFrequency != null) query.append(" AND t.transactionFrequency = :transactionFrequency");
+
+		TypedQuery<Transaction> q = entityManager.createQuery(query.toString(), Transaction.class);
+
+		if (transactionId != null) q.setParameter("transactionId", transactionId);
+		if (userId != null) q.setParameter("userId", userId);
+		if (categoryId != null) q.setParameter("categoryId", categoryId);
+		if (amountMin != null) q.setParameter("amountMin", amountMin);
+		if (amountMax != null) q.setParameter("amountMax", amountMax);
+		if (transactionDateFrom != null) q.setParameter("transactionDateFrom", transactionDateFrom);
+		if (transactionDateTo != null) q.setParameter("transactionDateTo", transactionDateTo);
+		if (transactionType != null) q.setParameter("transactionType", transactionType);
+		if (keyword != null) q.setParameter("keyword", "%" + keyword + "%");
+		if (transactionFrequency != null) q.setParameter("transactionFrequency", transactionFrequency);
+
+		return q.getResultList();
+	}
+
 	// Methode zum Ändern einer Transaktion
 	public boolean updateTransaction(int transactionId, Integer userId, Integer categoryId, Integer transactionAmount, String transactionDate, String transactionType, String transactionDescription, String transactionFrequency) {
 		Transaction transaction = entityManager.find(Transaction.class, transactionId);
