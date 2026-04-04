@@ -145,6 +145,20 @@ public class DBAccess {
 
 	// Category-Methoden
 
+	// Methode zum Erstellen einer neuen Kategorie
+	public Category createCategory(String categoryName, String categoryDescription, String categoryColor, Double categoryLimit) {
+		Category category = new Category();
+		category.setCategoryName(categoryName);
+		category.setCategoryDescription(categoryDescription);
+		category.setCategoryColor(categoryColor);
+		category.setCategoryLimit(categoryLimit);
+
+		entityManager.persist(category);
+		entityManager.flush();
+
+		return category;
+	}
+
 	// Methode um alle Kategorien aus der Datenbank zu holen
 	public List<Category> getAllCategories() {
         TypedQuery<Category> query = entityManager.createNamedQuery("getAllCategories", Category.class);
