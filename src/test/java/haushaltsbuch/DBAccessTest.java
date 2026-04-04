@@ -2,10 +2,10 @@ package haushaltsbuch;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,28 +24,31 @@ class DBAccessTest {
 
     // User Tests
 
+    // Testet das Erstellen eines neuen Benutzers
     @Test
     void testCreateUser() {
-        User user = dbAccess.createUser("testUser1", "1234", "test@User1.com");
+        User user = dbAccess.createUser("testUserCreate", "1234", "test@UserCreate.com");
         assertNotNull(user);
         assertNotNull(user.getUserId());
-        assertEquals("testUser1", user.getUserName());
-        assertEquals("test@User1.com", user.getUserEmail());
+        assertEquals("testUserCreate", user.getUserName());
+        assertEquals("test@UserCreate.com", user.getUserEmail());
     }
 
+    // Testet das Abrufen eines Benutzers anhand seiner ID
     @Test
     void testGetUserById() {
-        User user = dbAccess.createUser("testUser2", "1234", "test@User2.com");
+        User user = dbAccess.createUser("testUserById", "1234", "test@UserById.com");
         User user2 = dbAccess.getUserById(user.getUserId());
         assertNotNull(user2);
-        assertEquals("testUser2", user2.getUserName());
-        assertEquals("test@User2.com", user2.getUserEmail());
+        assertEquals("testUserById", user2.getUserName());
+        assertEquals("test@UserById.com", user2.getUserEmail());
     }
 
+    // Testet das Abrufen eines Benutzers anhand seines Benutzernamens und Passworts
     @Test
     void testGetUserByUsernameAndPassword() {
-        User user1 = dbAccess.createUser("testUser3", "1234", "test@User3.com");
-        User user2 = dbAccess.getUserByUsernameAndPassword("testUser3", "1234");
+        User user1 = dbAccess.createUser("testUserByUsernameAndPassword", "1234", "test@UserByUsernameAndPassword.com");
+        User user2 = dbAccess.getUserByUsernameAndPassword("testUserByUsernameAndPassword", "1234");
         assertNotNull(user2);
         assertEquals(user1,user2);
         assertEquals(user1.getUserName(), user2.getUserName());
@@ -68,5 +71,14 @@ class DBAccessTest {
     void testDeleteUserNotFound() {
         boolean result = dbAccess.deleteUser(-1);
         assertFalse(result);
+    }
+
+    // Testet das Aktualisieren der E-Mail eines vorhandenen Benutzers
+    @Test
+    void testUpdateEmail() {
+        User user = dbAccess.createUser("testUserUpdateEmail", "1234", "test@update.com");
+        dbAccess.updateEmail(user.getUserId(), "test@updatenew.com");
+        assertNotEquals(user.getUserEmail(), "test@update.com");
+        assertEquals(user.getUserEmail(), "test@updatenew.com");
     }
 }
