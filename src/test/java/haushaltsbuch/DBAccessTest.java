@@ -2,6 +2,9 @@ package haushaltsbuch;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,5 +50,22 @@ class DBAccessTest {
         assertEquals(user1.getUserName(), user2.getUserName());
         assertEquals(user1.getUserPasswordHash(), user2.getUserPasswordHash());
         assertEquals(user1.getUserPasswordSalt(), user2.getUserPasswordSalt());
+    }
+
+    // Testet das Löschen eines vorhandenen Benutzers
+    @Test
+    void testDeleteUser() {
+        User user = dbAccess.createUser("testUserDelete", "1234", "test@delete.com");
+        boolean result = dbAccess.deleteUser(user.getUserId());
+        assertTrue(result);
+        User deletedUser = dbAccess.getUserById(user.getUserId());
+        assertNull(deletedUser);
+    }
+
+    // Testet das Löschen eines nicht vorhandenen Benutzers
+    @Test
+    void testDeleteUserNotFound() {
+        boolean result = dbAccess.deleteUser(-1);
+        assertFalse(result);
     }
 }
