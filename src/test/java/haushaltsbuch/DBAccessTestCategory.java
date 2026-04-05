@@ -1,9 +1,10 @@
 package haushaltsbuch;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -57,5 +58,35 @@ public class DBAccessTestCategory {
     void testGetCategoryByIdNotFound() {
         Category category = dbAccess.getCategoryById(13431);
         assertNull(category);
+    }
+
+    // Testet das Updaten einer vorhandenen Kategorie
+    @Test
+    void testUpdateCategory() {
+        Category category = dbAccess.createCategory("testUpdateCategory", "testUpdateCategoryDescription", "testUpdateCategoryColor", 333.0);
+        boolean result = dbAccess.updateCategory(category.getCategoryId(), "testUpdateCategory2", "testUpdateCategoryDescription2", null, null);
+        assertTrue(result);
+
+        Category updated = dbAccess.getCategoryById(category.getCategoryId());
+        assertEquals("testUpdateCategory2", updated.getCategoryName());
+        assertEquals("testUpdateCategoryDescription2", updated.getCategoryDescription());
+        assertEquals("testUpdateCategoryColor", updated.getCategoryColor()); 
+        assertEquals(333.0, updated.getCategoryLimit());                 
+
+        boolean result2 = dbAccess.updateCategory(category.getCategoryId(), null, null, "testUpdateCategoryColor2", 666.0);
+        assertTrue(result2);
+
+        Category updated2 = dbAccess.getCategoryById(category.getCategoryId());
+        assertEquals("testUpdateCategory2", updated2.getCategoryName());       
+        assertEquals("testUpdateCategoryDescription2", updated2.getCategoryDescription()); 
+        assertEquals("testUpdateCategoryColor2", updated2.getCategoryColor());
+        assertEquals(666.0, updated2.getCategoryLimit());
+    }
+
+    // Testet das Updaten einer nicht vorhandenen Kategorie
+    @Test
+    void testUpdateCategoryNotFound() {
+        boolean result = dbAccess.updateCategory(17477, "testUpdateCategory3", "testUpdateCategoryDescription3", null, 11.6);
+        assertFalse(result);
     }
 }
