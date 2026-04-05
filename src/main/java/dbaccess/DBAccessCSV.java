@@ -3,12 +3,14 @@ package dbaccess;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import model.Category;
 import model.Transaction;
 
+@Repository
 public class DBAccessCSV {
     @PersistenceContext
 	private final EntityManager entityManager;
