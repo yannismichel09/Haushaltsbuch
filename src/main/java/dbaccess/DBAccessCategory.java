@@ -3,12 +3,14 @@ package dbaccess;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import model.Category;
 
+@Repository
 public class DBAccessCategory {
     @PersistenceContext
 	private final EntityManager entityManager;
