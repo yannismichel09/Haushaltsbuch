@@ -236,6 +236,14 @@ public class DBAccess {
         return q.getResultList();
     }
 
+	// Methode um Kategorien zu erhalten, bei denen das Budget über einen bestimmten Prozentsatz liegt
+	public List<Category> checkBudgetLimit(double percent) {
+		TypedQuery<Category> query = entityManager.createNamedQuery("checkBudgetLimit", Category.class);
+		query.setParameter("percent", percent);
+		List<Category> result = query.getResultList();
+		return result;
+	}
+
 	// Transaction-Methoden
 
 	// Methode zum Erstellen einer neuen Transaktion
