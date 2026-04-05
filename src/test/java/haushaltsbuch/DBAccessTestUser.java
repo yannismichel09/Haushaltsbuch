@@ -102,4 +102,20 @@ class DBAccessTestUser {
         boolean result = dbAccess.updateEmail(-1, "test@updatenew.com");
         assertFalse(result);
     }
+
+    // Testet das Aktualisieren des Benutzernamens eines vorhandenen Benutzers
+    @Test
+    void testUpdateUsername() {
+        User user = dbAccess.createUser("testUserUpdateUsername", "1234", "test@updateusername.com");
+        dbAccess.updateUsername(user.getUserId(), "testUserUpdated");
+        assertNotEquals(user.getUserName(), "testUserUpdateUsername");
+        assertEquals(user.getUserName(), "testUserUpdated");
+    }
+
+    // Testet das Aktualisieren des Benutzernamens eines nicht vorhandenen Benutzers
+    @Test
+    void testUpdateUsernameNotFound() {
+        boolean result = dbAccess.updateUsername(-1, "testUserUpdated");
+        assertFalse(result);
+    }
 }
