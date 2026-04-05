@@ -16,8 +16,8 @@ import haushaltsbuch.Studienprojekt.StudienprojektApplication;
 import model.User;
 
 @Transactional
-@SpringBootTest(classes = StudienprojektApplication.class)
-class DBAccessTestUser {
+@SpringBootTest
+public class DBAccessTestUser {
 
     @Autowired
     private DBAccessUser dbAccess;

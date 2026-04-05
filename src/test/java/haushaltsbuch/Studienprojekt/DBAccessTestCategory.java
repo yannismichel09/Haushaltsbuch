@@ -13,7 +13,7 @@ import jakarta.transaction.Transactional;
 import model.Category;
 
 @Transactional
-@SpringBootTest(classes = StudienprojektApplication.class)
+@SpringBootTest
 public class DBAccessTestCategory {
 
     @Autowired

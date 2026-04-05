@@ -14,7 +14,7 @@ import jakarta.transaction.Transactional;
 import model.Transaction;
 
 @Transactional
-@SpringBootTest(classes = StudienprojektApplication.class)
+@SpringBootTest
 public class DBAccessTestTransaction {
 
     @Autowired
