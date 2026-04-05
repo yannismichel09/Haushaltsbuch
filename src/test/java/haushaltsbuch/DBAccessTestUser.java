@@ -17,12 +17,10 @@ import model.User;
 
 @Transactional
 @SpringBootTest(classes = StudienprojektApplication.class)
-class DBAccessTest {
+class DBAccessTestUser {
 
     @Autowired
     private DBAccess dbAccess;
-
-    // User Tests
 
     // Testet das Erstellen eines neuen Benutzers
     @Test
@@ -34,7 +32,7 @@ class DBAccessTest {
         assertEquals("test@UserCreate.com", user.getUserEmail());
     }
 
-    // Testet das Abrufen eines Benutzers anhand seiner ID
+    // Testet das Abrufen eines vorhandenenBenutzers anhand seiner ID
     @Test
     void testGetUserById() {
         User user = dbAccess.createUser("testUserById", "1234", "test@UserById.com");
@@ -44,7 +42,14 @@ class DBAccessTest {
         assertEquals("test@UserById.com", user2.getUserEmail());
     }
 
-    // Testet das Abrufen eines Benutzers anhand seines Benutzernamens und Passworts
+    // Testet das Abrufen eines nicht vorhandenen Benutzers anhand seiner ID
+    @Test
+    void testGetUserByIdNotFound() {
+        User user = dbAccess.getUserById(10499);
+        assertNull(user);
+    }
+
+    // Testet das Abrufen eines vorhandenen Benutzers anhand seines Benutzernamens und Passworts
     @Test
     void testGetUserByUsernameAndPassword() {
         User user1 = dbAccess.createUser("testUserByUsernameAndPassword", "1234", "test@UserByUsernameAndPassword.com");
@@ -54,6 +59,15 @@ class DBAccessTest {
         assertEquals(user1.getUserName(), user2.getUserName());
         assertEquals(user1.getUserPasswordHash(), user2.getUserPasswordHash());
         assertEquals(user1.getUserPasswordSalt(), user2.getUserPasswordSalt());
+    }
+
+    // Testet das Abrufen eines vorhandenen Benutzers anhand eines falschen Benutzernamens und/oder falschen Passworts
+    @Test
+    void testGetUserByUsernameAndPasswordNotFound() {
+        User user = dbAccess.getUserByUsernameAndPassword("testUserByUsernameAndPasswordNotFound", "1234");
+        User user2 = dbAccess.getUserByUsernameAndPassword("testUserByUsernameAndPassword", "4567");
+        assertNull(user);
+        assertNull(user2);
     }
 
     // Testet das Löschen eines vorhandenen Benutzers
@@ -80,5 +94,12 @@ class DBAccessTest {
         dbAccess.updateEmail(user.getUserId(), "test@updatenew.com");
         assertNotEquals(user.getUserEmail(), "test@update.com");
         assertEquals(user.getUserEmail(), "test@updatenew.com");
+    }
+
+    // Testet das Aktualisieren der E-Mail eines nicht vorhandenen Benutzers
+    @Test
+    void testUpdateEmailNotFound() {
+        boolean result = dbAccess.updateEmail(-1, "test@updatenew.com");
+        assertFalse(result);
     }
 }
