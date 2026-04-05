@@ -1,9 +1,10 @@
 package haushaltsbuch;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -57,5 +58,21 @@ public class DBAccessTestCategory {
     void testGetCategoryByIdNotFound() {
         Category category = dbAccess.getCategoryById(13431);
         assertNull(category);
+    }
+
+    // Testet das Löschen einer vorhandenen Kategorie
+    @Test
+    void testDeleteCategory() {
+        Category category = dbAccess.createCategory("testDeleteCategory", "testDeleteCategoryDescription", "testDeleteCategoryColor", 85.4);
+        boolean deleted = dbAccess.deleteCategory(category.getCategoryId());
+        assertTrue(deleted);
+        assertNull(dbAccess.getCategoryById(category.getCategoryId()));
+    }
+
+    // Testet das Löschen einer nicht vorhandenen Kategorie
+    @Test
+    void testDeleteCategoryNotFound() {
+        boolean deleted = dbAccess.deleteCategory(22222);
+        assertFalse(deleted);
     }
 }
