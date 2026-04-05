@@ -391,4 +391,11 @@ public class DBAccess {
 
         return sb.toString();
     }
+
+	// Methode zur Prüfung, ob die Ausgaben höher sind als die Einnahmen
+	public boolean checkNetBalanceNegative() {
+		TypedQuery<Long> query = entityManager.createNamedQuery("checkNetBalance", Long.class);
+		Long result = query.getSingleResult();
+		return result != null && result > 0;
+	}
 }
