@@ -59,8 +59,8 @@ public class DBAccessCSV {
 
         for (Transaction t : transactions) {
            sb.append(escapeCsv(t.getTransactionId())).append(",");
-           sb.append(escapeCsv(t.getUser() != null ? t.getUser().getUserId() : null)).append(",");
-           sb.append(escapeCsv(t.getCategory() != null ? t.getCategory().getCategoryId() : null)).append(",");
+           sb.append(escapeCsv(t.getUser())).append(",");
+           sb.append(escapeCsv(t.getCategory())).append(",");
            sb.append(escapeCsv(t.getTransactionAmount())).append(",");
            sb.append(escapeCsv(t.getTransactionDate())).append(",");
            sb.append(escapeCsv(t.getTransactionType())).append(",");
