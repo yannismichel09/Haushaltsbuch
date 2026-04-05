@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import dbaccess.DBAccess;
+import dbaccess.DBAccessUser;
 import haushaltsbuch.Studienprojekt.StudienprojektApplication;
 import model.User;
 
@@ -20,7 +20,7 @@ import model.User;
 class DBAccessTestUser {
 
     @Autowired
-    private DBAccess dbAccess;
+    private DBAccessUser dbAccess;
 
     // Testet das Erstellen eines neuen Benutzers
     @Test
