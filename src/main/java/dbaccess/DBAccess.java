@@ -236,14 +236,6 @@ public class DBAccess {
         return q.getResultList();
     }
 
-	// Methode um Kategorien zu erhalten, bei denen das Budget über einen bestimmten Prozentsatz liegt
-	public List<Category> checkBudgetLimit(double percent) {
-		TypedQuery<Category> query = entityManager.createNamedQuery("checkBudgetLimit", Category.class);
-		query.setParameter("percent", percent);
-		List<Category> result = query.getResultList();
-		return result;
-	}
-
 	// Transaction-Methoden
 
 	// Methode zum Erstellen einer neuen Transaktion
@@ -371,6 +363,21 @@ public class DBAccess {
 
 	// Warnings-Methoden
 
+	// Methode um Kategorien zu erhalten, bei denen das Budget über einen bestimmten Prozentsatz liegt
+	public List<Category> checkBudgetLimit(double percent) {
+		TypedQuery<Category> query = entityManager.createNamedQuery("checkBudgetLimit", Category.class);
+		query.setParameter("percent", percent);
+		List<Category> result = query.getResultList();
+		return result;
+	}
+
+	// Methode zur Prüfung, ob die Ausgaben höher sind als die Einnahmen
+	public boolean checkNetBalanceNegative() {
+		TypedQuery<Long> query = entityManager.createNamedQuery("checkNetBalance", Long.class);
+		Long result = query.getSingleResult();
+		return result != null && result > 0;
+	}
+
 	// CSV-Methoden
 
 	// Methode zum Exportieren aller Kategorien in eine CSV-Datei
@@ -392,11 +399,4 @@ public class DBAccess {
 
         return sb.toString();
     }
-
-	// Methode zur Prüfung, ob die Ausgaben höher sind als die Einnahmen
-	public boolean checkNetBalanceNegative() {
-		TypedQuery<Long> query = entityManager.createNamedQuery("checkNetBalance", Long.class);
-		Long result = query.getSingleResult();
-		return result != null && result > 0;
-	}
 }
