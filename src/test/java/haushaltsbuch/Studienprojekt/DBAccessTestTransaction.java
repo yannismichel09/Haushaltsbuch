@@ -1,4 +1,4 @@
-package haushaltsbuch;
+package haushaltsbuch.Studienprojekt;
 
 import java.util.List;
 
