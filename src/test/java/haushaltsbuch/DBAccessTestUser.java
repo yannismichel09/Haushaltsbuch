@@ -97,6 +97,26 @@ class DBAccessTestUser {
         assertEquals(user.getUserEmail(), "test@updatenew.com");
     }
 
+    // Testet das Aktualisieren des Passworts eines vorhandenen Benutzers
+    @Test
+    void testUpdatePassword() {
+        User user = dbAccess.createUser("testUserUpdatePassword", "1234", "test@updatepassword.com");
+        byte[] oldPasswordHash = user.getUserPasswordHash();
+        byte[] oldPasswordSalt = user.getUserPasswordSalt();
+
+        boolean result = dbAccess.updatePassword(user.getUserId(), "5678");
+        assertTrue(result);
+
+        User updatedUser = dbAccess.getUserById(user.getUserId());
+        assertNotNull(updatedUser);
+        assertNotEquals(oldPasswordHash, updatedUser.getUserPasswordHash());
+        assertNotEquals(oldPasswordSalt, updatedUser.getUserPasswordSalt());
+
+        User authenticatedUser = dbAccess.getUserByUsernameAndPassword("testUserUpdatePassword", "5678");
+        assertNotNull(authenticatedUser);
+        assertEquals(updatedUser, authenticatedUser);
+    }
+
     // Testet das Aktualisieren der E-Mail eines nicht vorhandenen Benutzers
     @Test
     void testUpdateEmailNotFound() {
