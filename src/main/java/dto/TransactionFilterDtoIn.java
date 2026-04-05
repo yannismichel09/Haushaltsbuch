@@ -1,7 +1,6 @@
 package dto;
 
 public record TransactionFilterDtoIn(
-    Integer transactionId,
     Integer userId,
     Integer categoryId,
     Integer amountMin,
