@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import model.Category;
+import model.Transaction;
 
 public class DBAccessCSV {
     @PersistenceContext
@@ -36,13 +37,49 @@ public class DBAccessCSV {
         sb.append("ID,Name,Description,Color,Limit\n");
 
         for (Category c : categories) {
-           sb.append(c.getCategoryId()).append(",");
-           sb.append(c.getCategoryName()).append(",");
-           sb.append(c.getCategoryDescription()).append(",");
-           sb.append(c.getCategoryColor()).append(",");
-           sb.append(c.getCategoryLimit()).append("\n");
+           sb.append(escapeCsv(c.getCategoryId())).append(",");
+           sb.append(escapeCsv(c.getCategoryName())).append(",");
+           sb.append(escapeCsv(c.getCategoryDescription())).append(",");
+           sb.append(escapeCsv(c.getCategoryColor())).append(",");
+           sb.append(escapeCsv(c.getCategoryLimit())).append("\n");
         }
 
         return sb.toString();
+    }
+
+	// Methode zum Exportieren gefilterter Transaktionen in eine CSV-Datei
+	public String exportFilteredTransactionsToCsv(Integer transactionId, Integer userId, Integer categoryId, Integer amountMin, Integer amountMax, String transactionDateFrom, String transactionDateTo, String transactionType, String keyword, String transactionFrequency) {
+
+        DBAccessTransaction dbAccessTransaction = new DBAccessTransaction(entityManager);
+        List<Transaction> transactions = dbAccessTransaction.getFilteredTransactions(transactionId, userId, categoryId, amountMin, amountMax, transactionDateFrom, transactionDateTo, transactionType, keyword, transactionFrequency);
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("ID,UserID,CategoryID,Amount,Date,Type,Description,Frequency\n");
+
+        for (Transaction t : transactions) {
+           sb.append(escapeCsv(t.getTransactionId())).append(",");
+           sb.append(escapeCsv(t.getUser() != null ? t.getUser().getUserId() : null)).append(",");
+           sb.append(escapeCsv(t.getCategory() != null ? t.getCategory().getCategoryId() : null)).append(",");
+           sb.append(escapeCsv(t.getTransactionAmount())).append(",");
+           sb.append(escapeCsv(t.getTransactionDate())).append(",");
+           sb.append(escapeCsv(t.getTransactionType())).append(",");
+           sb.append(escapeCsv(t.getTransactionDescription())).append(",");
+           sb.append(escapeCsv(t.getTransactionFrequency())).append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    // Hilfsmethode zum Escapen von CSV-Werten
+    private static String escapeCsv(Object value) {
+
+        String strValue = value != null ? value.toString() : "";
+    
+        if (strValue.contains(",") || strValue.contains("\"") || strValue.contains("\n") || strValue.contains("\r")) {
+            strValue = strValue.replace("\"", "\"\"");
+            return "\"" + strValue + "\"";
+        }
+        return strValue;
     }
 }
