@@ -1,9 +1,11 @@
 package haushaltsbuch;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,5 +34,23 @@ public class DBAccessTestTransaction {
         assertNotNull(transaction2);
         assertNotNull(transactions.size());
         assertEquals(2, transactions.size());
+    }
+
+    // Testet das Abrufen einer vorhandenen Transaktion anhand ihrer Id
+    @Test
+    void testGetTransactionById() {
+        Transaction transaction = dbAccess.createTransaction(1, 1, 100, "2026-05-05", 
+                                                             "spending", "Test Transaction", "monthly");
+        Transaction transaction2 = dbAccess.getTransactionById(transaction.getTransactionId());
+        assertNotNull(transaction2);
+        assertEquals(transaction, transaction2);
+        assertEquals(transaction.getTransactionId(), transaction2.getTransactionId());
+    }
+
+    // Testet das Abrufen einer nicht vorhandenen Transaktion anhand ihrer Id
+    @Test
+    void testGetTransactionByIdNotFound() {
+        Transaction transaction = dbAccess.getTransactionById(99999);
+        assertNull(transaction);
     }
 }
