@@ -1,11 +1,12 @@
 package haushaltsbuch;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -52,5 +53,22 @@ public class DBAccessTestTransaction {
     void testGetTransactionByIdNotFound() {
         Transaction transaction = dbAccess.getTransactionById(99999);
         assertNull(transaction);
+    }
+
+    // Testet das Löschen einer vorhandenen Transaktion
+    @Test
+    void testDeleteTransaction() {
+        Transaction transaction = dbAccess.createTransaction(3, 3, 499, "2026-06-08", 
+                                                             "spending", "Test Delete Transaction", "monthly");
+        boolean deleted = dbAccess.deleteTransaction(transaction.getTransactionId());
+        assertTrue(deleted);
+        assertNull(dbAccess.getTransactionById(transaction.getTransactionId()));
+    }
+
+    // Testet das Löschen einer nicht vorhandenen Transaktion
+    @Test
+    void testDeleteTransactionNotFound() {
+        boolean deleted = dbAccess.deleteTransaction(88888);
+        assertFalse(deleted);
     }
 }

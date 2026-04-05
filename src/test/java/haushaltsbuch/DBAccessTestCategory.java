@@ -89,4 +89,20 @@ public class DBAccessTestCategory {
         boolean result = dbAccess.updateCategory(17477, "testUpdateCategory3", "testUpdateCategoryDescription3", null, 11.6);
         assertFalse(result);
     }
+
+    // Testet das Löschen einer vorhandenen Kategorie
+    @Test
+    void testDeleteCategory() {
+        Category category = dbAccess.createCategory("testDeleteCategory", "testDeleteCategoryDescription", "testDeleteCategoryColor", 85.4);
+        boolean deleted = dbAccess.deleteCategory(category.getCategoryId());
+        assertTrue(deleted);
+        assertNull(dbAccess.getCategoryById(category.getCategoryId()));
+    }
+
+    // Testet das Löschen einer nicht vorhandenen Kategorie
+    @Test
+    void testDeleteCategoryNotFound() {
+        boolean deleted = dbAccess.deleteCategory(22222);
+        assertFalse(deleted);
+    }
 }
