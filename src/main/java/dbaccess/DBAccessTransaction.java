@@ -160,4 +160,10 @@ public class DBAccessTransaction {
 
 		return result.get(0);
 	}
+
+	// Methode zum Summieren aller Transaktionen, die eine Einnahme sind
+	public Double sumTransactionsIncome() {
+		TypedQuery<Double> query = entityManager.createNamedQuery("sumTransactionsIncome", Double.class);
+		return query.getSingleResult();
+	}
 }
