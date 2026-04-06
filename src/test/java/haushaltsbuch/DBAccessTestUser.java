@@ -1,12 +1,12 @@
 package haushaltsbuch;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -137,6 +137,25 @@ class DBAccessTestUser {
     @Test
     void testUpdateUsernameNotFound() {
         boolean result = dbAccess.updateUsername(-1, "testUserUpdated");
+        assertFalse(result);
+    }
+
+    // Testet das Aktualisieren des Profilbildes eines vorhandenen Benutzers
+    @Test
+    void testUpdateProfilePicture() {
+        User user = dbAccess.createUser("testUserUpdateProfilePicture", "1234", "test@updateprofilepicture.com");
+        byte[] profilePicture = "testUpdateProfilePicture".getBytes();
+        boolean result = dbAccess.updateProfilePicture(user.getUserId(), profilePicture);
+        assertTrue(result);
+        User updatedUser = dbAccess.getUserById(user.getUserId());
+        assertNotNull(updatedUser);
+        assertArrayEquals(profilePicture, updatedUser.getUserProfilePicture());
+    }
+
+    // Testet das Aktualisieren des Profilbildes eines nicht vorhandenen Benutzers
+    @Test
+    void testUpdateProfilePictureNotFound() {
+        boolean result = dbAccess.updateProfilePicture(-1, "testUpdateProfilePicture".getBytes());
         assertFalse(result);
     }
 }
