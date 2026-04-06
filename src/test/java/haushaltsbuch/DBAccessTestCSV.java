@@ -31,7 +31,7 @@ class DBAccessTestCSV {
     // Testet das Exportieren gefilterter Transaktionen in CSV
     @Test
     void testExportFilteredTransactionsToCsv() {
-        dbAccessTransaction.createTransaction(1, 1, 100, "2026-05-05", "spending", "Test Transaction", "monthly");
+        dbAccessTransaction.createTransaction(1, 1, 100.0, "2026-05-05", "spending", "Test Transaction", "monthly");
 
         String csv = dbAccessCSV.exportFilteredTransactionsToCsv(null, null, null, null, null, null, null, null, null, null);
 

@@ -1,12 +1,13 @@
 package haushaltsbuch;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,9 +27,9 @@ public class DBAccessTestTransaction {
     // Testet das Abrufen aller Transaktionen aus der Datenbank
     @Test
     void testGetAllTransactions() {
-        Transaction transaction1 = dbAccess.createTransaction(1, 1, 100, "2026-05-05", 
+        Transaction transaction1 = dbAccess.createTransaction(1, 1, 100.0, "2026-05-05", 
                                                               "spending", "Test Transaction", "monthly");
-        Transaction transaction2 = dbAccess.createTransaction(2, 1, 300, "2026-05-07", 
+        Transaction transaction2 = dbAccess.createTransaction(2, 1, 300.0, "2026-05-07", 
                                                               "spending", "Test Transaction2", "monthly");
         List<Transaction> transactions = dbAccess.getAllTransactions();
         assertNotNull(transaction1);
@@ -40,7 +41,7 @@ public class DBAccessTestTransaction {
     // Testet das Abrufen einer vorhandenen Transaktion anhand ihrer Id
     @Test
     void testGetTransactionById() {
-        Transaction transaction = dbAccess.createTransaction(1, 1, 100, "2026-05-05", 
+        Transaction transaction = dbAccess.createTransaction(1, 1, 100.0, "2026-05-05", 
                                                              "spending", "Test Transaction", "monthly");
         Transaction transaction2 = dbAccess.getTransactionById(transaction.getTransactionId());
         assertNotNull(transaction2);
@@ -58,7 +59,7 @@ public class DBAccessTestTransaction {
     // Testet das Löschen einer vorhandenen Transaktion
     @Test
     void testDeleteTransaction() {
-        Transaction transaction = dbAccess.createTransaction(3, 3, 499, "2026-06-08", 
+        Transaction transaction = dbAccess.createTransaction(3, 3, 499.0, "2026-06-08", 
                                                              "spending", "Test Delete Transaction", "monthly");
         boolean deleted = dbAccess.deleteTransaction(transaction.getTransactionId());
         assertTrue(deleted);
