@@ -129,4 +129,33 @@ public class DBAccessTestTransaction {
         assertEquals("Test Create Transaction", transaction.getTransactionDescription());
         assertEquals("monthly", transaction.getTransactionFrequency());
     }
+
+    // Testet das erfolgreiche Aktualisieren einer vorhandenen Transaktion
+    @Test
+    void testUpdateTransaction() {
+        User user = dbAccessUser.createUser("testUserForUpdate", "1234", "test@update.com");
+        Category category = dbAccessCategory.createCategory("testCategoryForUpdate", "Test Category for Update", "#00FF00", 300.0);
+
+        Transaction transaction = dbAccess.createTransaction(user.getUserId(), category.getCategoryId(), 200.0, "2026-09-01",
+                "spending", "Original Description", "monthly");
+
+        boolean updated = dbAccess.updateTransaction(transaction.getTransactionId(), null, null, 350.0, "2026-09-15",
+                "income", "Updated Description", "weekly");
+
+        assertTrue(updated);
+        Transaction updatedTransaction = dbAccess.getTransactionById(transaction.getTransactionId());
+        assertNotNull(updatedTransaction);
+        assertEquals(350.0, updatedTransaction.getTransactionAmount());
+        assertEquals("2026-09-15", updatedTransaction.getTransactionDate());
+        assertEquals("income", updatedTransaction.getTransactionType());
+        assertEquals("Updated Description", updatedTransaction.getTransactionDescription());
+        assertEquals("weekly", updatedTransaction.getTransactionFrequency());
+    }
+
+    // Testet das Aktualisieren einer nicht vorhandenen Transaktion
+    @Test
+    void testUpdateTransactionNotFound() {
+        boolean updated = dbAccess.updateTransaction(99999, null, null, 100.0, null, null, null, null);
+        assertFalse(updated);
+    }
 }
