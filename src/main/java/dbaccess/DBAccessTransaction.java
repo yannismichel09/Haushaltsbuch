@@ -180,4 +180,13 @@ public class DBAccessTransaction {
 		query.setParameter("categoryId", categoryId);
 		return query.getSingleResult();
 	}
+
+	// Methode zum Abrufen aller Transaktionen, die eine bestimmte Häufigkeit haben
+	public List<Transaction> getTransactionsByFrequency(String transactionFrequency) {
+		TypedQuery<Transaction> query = entityManager.createNamedQuery("getTransactionsByFrequency", Transaction.class);
+		query.setParameter("transactionFrequency", transactionFrequency);
+		List<Transaction> result = query.getResultList();
+
+		return result;
+	}
 }

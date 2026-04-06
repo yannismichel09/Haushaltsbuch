@@ -1,8 +1,5 @@
 package scheduled;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import dbbackground.DBBackgroundTasks;
-import model.Category;
+
 
 @Component
 public class ScheduledTasks {
@@ -18,23 +15,23 @@ public class ScheduledTasks {
     @Autowired
     private DBBackgroundTasks dbBackgroundTasks;
 
-    private static final Logger log=LoggerFactory.getLogger(ScheduledTasks.class);
+    private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
 
-    private List<Category> budgetWarnings = new ArrayList<>();
-    private boolean isNegativeBalance = false;
-
-    @Scheduled(fixedRate = 60_000)
-    public void checkBudgetLimit() {
-        log.info("checkBudgetLimit");
-        budgetWarnings = dbBackgroundTasks.backgroundCheckBudgetLimit();
+    @Scheduled(cron = "0 0 0 * * MON") 
+    public void processWeeklyTransactions() {
+        log.info("Verarbeite wöchentliche Transaktionen");
+        dbBackgroundTasks.processRecurringTransactions("weekly");
     }
 
-    @Scheduled(fixedRate = 60_000)
-    public void checkNetBalance() {
-        log.info("checkNetBalance");
-        isNegativeBalance = dbBackgroundTasks.backgroundCheckNetBalance();
+    @Scheduled(cron = "0 0 0 1 * *") 
+    public void processMonthlyTransactions() {
+        log.info("Verarbeite monatliche Transaktionen");
+        dbBackgroundTasks.processRecurringTransactions("monthly");
     }
 
-    public List<Category> getBudgetWarnings() { return budgetWarnings; }
-    public boolean getIsNegativeBalance() { return isNegativeBalance; }
+    @Scheduled(cron = "0 0 0 1 1 *") 
+    public void processYearlyTransactions() {
+        log.info("Verarbeite jährliche Transaktionen");
+        dbBackgroundTasks.processRecurringTransactions("yearly");
+    }
 }
