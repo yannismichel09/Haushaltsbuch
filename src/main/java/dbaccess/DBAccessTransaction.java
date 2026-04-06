@@ -153,6 +153,7 @@ public class DBAccessTransaction {
         return true;
     }
 
+	// Methode zum Summieren aller Transaktionen, die eine Ausgabe sind
 	public Double sumTransactionsSpendings() {
 		TypedQuery<Double> query = entityManager.createNamedQuery("sumTransactionsSpendings", Double.class);
 		List<Double> result = query.getResultList();
