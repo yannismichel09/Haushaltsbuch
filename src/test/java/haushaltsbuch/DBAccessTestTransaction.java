@@ -12,9 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import dbaccess.DBAccessTransaction;
+import dbaccess.DBAccessCategory;
+import dbaccess.DBAccessUser;
 import haushaltsbuch.Studienprojekt.StudienprojektApplication;
 import jakarta.transaction.Transactional;
 import model.Transaction;
+import model.User;
+import model.Category;
 
 @Transactional
 @SpringBootTest(classes = StudienprojektApplication.class)
@@ -22,6 +26,12 @@ public class DBAccessTestTransaction {
 
     @Autowired
     private DBAccessTransaction dbAccess;
+    
+    @Autowired
+    private DBAccessUser dbAccessUser;
+    
+    @Autowired
+    private DBAccessCategory dbAccessCategory;
 
     // Testet das Abrufen aller Transaktionen aus der Datenbank
     @Test
@@ -104,12 +114,15 @@ public class DBAccessTestTransaction {
     // Testet das Erstellen einer neuen Transaktion
     @Test
     void testCreateTransaction() {
-        Transaction transaction = dbAccess.createTransaction(1, 1, 150.0, "2026-07-10", 
+        User user = dbAccessUser.createUser("testUserForTransaction", "1234", "test@transaction.com");
+        Category category = dbAccessCategory.createCategory("testCategoryForTransaction", "Test Category for Transaction", "#FF0000", 500.0);
+        
+        Transaction transaction = dbAccess.createTransaction(user.getUserId(), category.getCategoryId(), 150.0, "2026-07-10", 
                                                              "spending", "Test Create Transaction", "monthly");
         assertNotNull(transaction);
         assertNotNull(transaction.getTransactionId());
-        assertEquals(1, transaction.getUser().getUserId());
-        assertEquals(1, transaction.getCategory().getCategoryId());
+        assertEquals(user.getUserId(), transaction.getUser().getUserId());
+        assertEquals(category.getCategoryId(), transaction.getCategory().getCategoryId());
         assertEquals(150.0, transaction.getTransactionAmount());
         assertEquals("2026-07-10", transaction.getTransactionDate());
         assertEquals("spending", transaction.getTransactionType());
