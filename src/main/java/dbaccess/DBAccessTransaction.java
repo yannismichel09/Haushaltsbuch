@@ -166,4 +166,18 @@ public class DBAccessTransaction {
 		TypedQuery<Double> query = entityManager.createNamedQuery("sumTransactionsIncome", Double.class);
 		return query.getSingleResult();
 	}
+
+	// Methode zum Summieren aller Ausgaben einer Kategorie
+	public Double sumCategorySpending(int categoryId) {
+		TypedQuery<Double> query = entityManager.createNamedQuery("sumCategorySpending", Double.class);
+		query.setParameter("categoryId", categoryId);
+		return query.getSingleResult();
+	}
+
+	// Methode zum Summieren aller Einnahmen einer Kategorie
+	public Double sumCategoryIncome(int categoryId) {
+		TypedQuery<Double> query = entityManager.createNamedQuery("sumCategoryIncome", Double.class);
+		query.setParameter("categoryId", categoryId);
+		return query.getSingleResult();
+	}
 }
