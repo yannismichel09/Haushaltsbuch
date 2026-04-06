@@ -100,7 +100,7 @@ public class DBAccessCategory {
         Double amountMin,
         Double amountMax) {
 
-        StringBuilder query = new StringBuilder("SELECT c FROM Category c");
+        StringBuilder query = new StringBuilder("SELECT c FROM Category c WHERE 1=1");
 
         if (categoryId != null) query.append(" AND c.categoryId = :categoryId");
         if (keyword != null) query.append(" AND (c.categoryName LIKE :keyword OR c.categoryDescription LIKE :keyword)");
