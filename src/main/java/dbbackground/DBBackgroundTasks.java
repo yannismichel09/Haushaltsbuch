@@ -17,18 +17,18 @@ public class DBBackgroundTasks {
     public DBAccessTransaction dbAccessTransaction;
 
     public void processRecurringTransactions(String frequency) {
-    List<Transaction> transactions = dbAccessTransaction.getTransactionsByFrequency(frequency);
+        List<Transaction> transactions = dbAccessTransaction.getTransactionsByFrequency(frequency);
     
-    for (Transaction t : transactions) {
-        dbAccessTransaction.createTransaction(
-            t.getUser().getUserId(),
-            t.getCategory().getCategoryId(),
-            t.getTransactionAmount(),
-            LocalDate.now().toString(), 
-            t.getTransactionType(),
-            t.getTransactionDescription(),
-            t.getTransactionFrequency()
-        );
+        for (Transaction t : transactions) {
+            dbAccessTransaction.createTransaction(
+                t.getUser().getUserId(),
+                t.getCategory().getCategoryId(),
+                t.getTransactionAmount(),
+                LocalDate.now().toString(), 
+                t.getTransactionType(),
+                t.getTransactionDescription(),
+                "once"
+            );
+        }
     }
-}
 }
