@@ -100,4 +100,20 @@ public class DBAccessTestTransaction {
         Double sum = dbAccess.sumTransactionsIncome();
         assertEquals(300.0, sum);
     }
+
+    // Testet das Erstellen einer neuen Transaktion
+    @Test
+    void testCreateTransaction() {
+        Transaction transaction = dbAccess.createTransaction(1, 1, 150.0, "2026-07-10", 
+                                                             "spending", "Test Create Transaction", "monthly");
+        assertNotNull(transaction);
+        assertNotNull(transaction.getTransactionId());
+        assertEquals(1, transaction.getUser().getUserId());
+        assertEquals(1, transaction.getCategory().getCategoryId());
+        assertEquals(150.0, transaction.getTransactionAmount());
+        assertEquals("2026-07-10", transaction.getTransactionDate());
+        assertEquals("spending", transaction.getTransactionType());
+        assertEquals("Test Create Transaction", transaction.getTransactionDescription());
+        assertEquals("monthly", transaction.getTransactionFrequency());
+    }
 }
