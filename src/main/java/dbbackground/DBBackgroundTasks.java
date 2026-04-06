@@ -22,7 +22,7 @@ public class DBBackgroundTasks {
 	}
 
     public List<Category> backgroundCheckBudgetLimit() {
-        List<Category> categories = dbAccess.checkBudgetLimit(90.0);
+        List<Category> categories = dbAccess.checkBudgetLimit(0.9);
         return categories;
     }
 
