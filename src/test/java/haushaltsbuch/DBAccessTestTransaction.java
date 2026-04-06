@@ -111,6 +111,62 @@ public class DBAccessTestTransaction {
         assertEquals(300.0, sum);
     }
 
+        // Testet das Summieren aller Ausgaben einer Kategorie
+    @Test
+        void testSumCategorySpending() {
+        User user = dbAccessUser.createUser("testUserSumCategory", "testPassword123", "testsumcategory@test.com");
+        Category targetCategory = dbAccessCategory.createCategory("testCategorySumTarget", "Target Category", "blue", 500.0);
+        Category otherCategory = dbAccessCategory.createCategory("testCategorySumOther", "Other Category", "yellow", 500.0);
+
+        dbAccess.createTransaction(user.getUserId(), targetCategory.getCategoryId(), 80.0, "2026-08-10",
+                "spending", "Target spending", "monthly");
+        dbAccess.createTransaction(user.getUserId(), targetCategory.getCategoryId(), 20.0, "2026-08-11",
+                "income", "Target income", "monthly");
+        dbAccess.createTransaction(user.getUserId(), otherCategory.getCategoryId(), 999.0, "2026-08-12",
+                "spending", "Other spending", "monthly");
+
+        Double sum = dbAccess.sumCategorySpending(targetCategory.getCategoryId());
+        assertEquals(80.0, sum);
+    }
+
+    // Testet das Summieren der Ausgaben einer Kategorie ohne passende Transaktionen
+    @Test
+    void testSumCategorySpendingNoTransactions() {
+        Category category = dbAccessCategory.createCategory("testCategorySpendingEmpty", "Empty Spending Category", "gray", 200.0);
+
+        Double sum = dbAccess.sumCategorySpending(category.getCategoryId());
+        assertEquals(0.0, sum);
+    }
+
+        // Testet das Summieren aller Einnahmen einer Kategorie
+    @Test
+        void testSumCategoryIncome() {
+        User user = dbAccessUser.createUser("testUserSumCategoryIncome", "testPassword123", "testsumcategoryincome@test.com");
+        Category targetCategory = dbAccessCategory.createCategory("testCategoryIncomeTarget", "Income Target Category", "green", 500.0);
+        Category otherCategory = dbAccessCategory.createCategory("testCategoryIncomeOther", "Income Other Category", "orange", 500.0);
+
+        dbAccess.createTransaction(user.getUserId(), targetCategory.getCategoryId(), 55.0, "2026-08-13",
+            "income", "Target income 1", "monthly");
+        dbAccess.createTransaction(user.getUserId(), targetCategory.getCategoryId(), 45.0, "2026-08-14",
+            "income", "Target income 2", "monthly");
+        dbAccess.createTransaction(user.getUserId(), targetCategory.getCategoryId(), 12.0, "2026-08-15",
+            "spending", "Target spending", "monthly");
+        dbAccess.createTransaction(user.getUserId(), otherCategory.getCategoryId(), 999.0, "2026-08-16",
+            "income", "Other income", "monthly");
+
+        Double sum = dbAccess.sumCategoryIncome(targetCategory.getCategoryId());
+        assertEquals(100.0, sum);
+    }
+
+    // Testet das Summieren der Einnahmen einer Kategorie ohne passende Transaktionen
+    @Test
+    void testSumCategoryIncomeNoTransactions() {
+        Category category = dbAccessCategory.createCategory("testCategoryIncomeEmpty", "Empty Income Category", "black", 200.0);
+
+        Double sum = dbAccess.sumCategoryIncome(category.getCategoryId());
+        assertEquals(0.0, sum);
+    }
+
     // Testet das Erstellen einer neuen Transaktion
     @Test
     void testCreateTransaction() {
