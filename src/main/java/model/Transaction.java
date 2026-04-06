@@ -19,7 +19,8 @@ import jakarta.persistence.Table;
 @Table(name = "transactions")
 @NamedQueries({
     @NamedQuery(name="getAllTransactions", query="SELECT transaction FROM Transaction transaction"),
-    @NamedQuery(name="checkNetBalance", query="SELECT SUM(CASE WHEN t.transactionType = 'spending' THEN t.transactionAmount ELSE 0 END) - SUM(CASE WHEN t.transactionType = 'income' THEN t.transactionAmount ELSE 0 END) FROM Transaction t")
+    @NamedQuery(name="checkNetBalance", query="SELECT SUM(CASE WHEN t.transactionType = 'spending' THEN t.transactionAmount ELSE 0 END) - SUM(CASE WHEN t.transactionType = 'income' THEN t.transactionAmount ELSE 0 END) FROM Transaction t"),
+    @NamedQuery(name="sumTransactionsSpendings", query="SELECT SUM(CASE WHEN t.transactionType = 'spending' THEN t.transactionAmount ELSE 0 END) FROM Transaction t")
 })
 public class Transaction {
 
