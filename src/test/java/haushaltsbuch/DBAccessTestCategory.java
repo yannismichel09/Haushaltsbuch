@@ -62,6 +62,20 @@ public class DBAccessTestCategory {
         assertNull(category);
     }
 
+    // Testet das Abrufen aller Kategorien
+    @Test
+    void testGetAllCategories() {
+
+        Category category = dbAccess.createCategory("testGetAllCategories", "testGetAllCategoriesDescription", "testGetAllCategoriesColor", 120.0);
+        Category category2 = dbAccess.createCategory("testGetAllCategories2", "testGetAllCategoriesDescription2", "testGetAllCategoriesColor2", 220.0);
+
+        List<Category> categories = dbAccess.getAllCategories();
+        assertNotNull(categories);
+        assertEquals(2, categories.size());
+        assertTrue(categories.contains(category));
+        assertTrue(categories.contains(category2));
+    }
+
     // Testet das Updaten einer vorhandenen Kategorie
     @Test
     void testUpdateCategory() {
