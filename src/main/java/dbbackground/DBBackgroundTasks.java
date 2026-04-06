@@ -1,33 +1,34 @@
 package dbbackground;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import dbaccess.DBAccessWarning;
+import dbaccess.DBAccessTransaction;
 import jakarta.transaction.Transactional;
-import model.Category;
+import model.Transaction;
 
 @Service
 @Transactional
 public class DBBackgroundTasks {
-    private final DBAccessWarning dbAccess;
-	
-	@Autowired
-	public DBBackgroundTasks(DBAccessWarning dbAccess) {
-		
-		this.dbAccess=dbAccess;
-		
-	}
+    @Autowired
+    public DBAccessTransaction dbAccessTransaction;
 
-    public List<Category> backgroundCheckBudgetLimit() {
-        List<Category> categories = dbAccess.checkBudgetLimit(0.9);
-        return categories;
+    public void processRecurringTransactions(String frequency) {
+    List<Transaction> transactions = dbAccessTransaction.getTransactionsByFrequency(frequency);
+    
+    for (Transaction t : transactions) {
+        dbAccessTransaction.createTransaction(
+            t.getUser().getUserId(),
+            t.getCategory().getCategoryId(),
+            t.getTransactionAmount(),
+            LocalDate.now().toString(), 
+            t.getTransactionType(),
+            t.getTransactionDescription(),
+            t.getTransactionFrequency()
+        );
     }
-
-    public boolean backgroundCheckNetBalance() {
-        boolean result = dbAccess.checkNetBalanceNegative();
-        return result;
-    }
+}
 }

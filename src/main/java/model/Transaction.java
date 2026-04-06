@@ -23,7 +23,8 @@ import jakarta.persistence.Table;
     @NamedQuery(name="sumTransactionsSpendings", query="SELECT SUM(CASE WHEN t.transactionType = 'spending' THEN t.transactionAmount ELSE 0 END) FROM Transaction t"),
     @NamedQuery(name="sumTransactionsIncome", query="SELECT SUM(CASE WHEN t.transactionType = 'income' THEN t.transactionAmount ELSE 0 END) FROM Transaction t"),
     @NamedQuery(name="sumCategorySpending", query="SELECT COALESCE(SUM(t.transactionAmount), 0) FROM Transaction t WHERE t.category.categoryId = :categoryId AND t.transactionType = 'spending'"),
-    @NamedQuery(name="sumCategoryIncome", query="SELECT COALESCE(SUM(t.transactionAmount), 0) FROM Transaction t WHERE t.category.categoryId = :categoryId AND t.transactionType = 'income'")
+    @NamedQuery(name="sumCategoryIncome", query="SELECT COALESCE(SUM(t.transactionAmount), 0) FROM Transaction t WHERE t.category.categoryId = :categoryId AND t.transactionType = 'income'"),
+    @NamedQuery(name="getTransactionsByFrequency", query="SELECT t FROM Transaction t WHERE t.transactionFrequency = :transactionFrequency")
 })
 public class Transaction {
 
