@@ -29,7 +29,7 @@ public class DBAccessCSV {
 	}
 
 	// Methode zum Exportieren aller Kategorien in eine CSV-Datei
-	public String exportFilteredCategoriesToCsv(int categoryId, String keyword,String categoryColor, double amountMin, double amountMax) {
+	public String exportFilteredCategoriesToCsv(int categoryId, String keyword,String categoryColor, Double amountMin, Double amountMax) {
 
         DBAccessCategory dbAccessCategory = new DBAccessCategory(entityManager);
         List<Category> categories = dbAccessCategory.getFilteredCategories(categoryId, keyword, categoryColor, amountMin, amountMax);
@@ -50,7 +50,7 @@ public class DBAccessCSV {
     }
 
 	// Methode zum Exportieren gefilterter Transaktionen in eine CSV-Datei
-	public String exportFilteredTransactionsToCsv(Integer transactionId, Integer userId, Integer categoryId, Integer amountMin, Integer amountMax, String transactionDateFrom, String transactionDateTo, String transactionType, String keyword, String transactionFrequency) {
+	public String exportFilteredTransactionsToCsv(Integer transactionId, Integer userId, Integer categoryId, Double amountMin, Double amountMax, String transactionDateFrom, String transactionDateTo, String transactionType, String keyword, String transactionFrequency) {
 
         DBAccessTransaction dbAccessTransaction = new DBAccessTransaction(entityManager);
         List<Transaction> transactions = dbAccessTransaction.getFilteredTransactions(transactionId, userId, categoryId, amountMin, amountMax, transactionDateFrom, transactionDateTo, transactionType, keyword, transactionFrequency);

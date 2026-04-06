@@ -44,7 +44,7 @@ public class Transaction {
 
     // Betrag, Datum, Typ, Beschreibung und Frequenz der Transaktion
     @Column(name = "transaction_amount", nullable = false)
-    private Integer transactionAmount;
+    private Double transactionAmount;
 
     @Column(name = "transaction_date", nullable = false)
     private String transactionDate;
@@ -62,7 +62,7 @@ public class Transaction {
     public Transaction() {
     }
 
-    public Transaction(User user, Category category, Integer transactionAmount, String transactionDate, String transactionType) {
+    public Transaction(User user, Category category, Double transactionAmount, String transactionDate, String transactionType) {
         this.user = user;
         this.category = category;
         this.transactionAmount = transactionAmount;
@@ -91,11 +91,11 @@ public class Transaction {
         this.category = category;
     }
 
-    public Integer getTransactionAmount() {
+    public Double getTransactionAmount() {
         return transactionAmount;
     }
 
-    public void setTransactionAmount(Integer transactionAmount) {
+    public void setTransactionAmount(Double transactionAmount) {
         this.transactionAmount = transactionAmount;
     }
 

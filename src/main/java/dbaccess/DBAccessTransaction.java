@@ -31,7 +31,7 @@ public class DBAccessTransaction {
 	}
 
 	// Methode zum Erstellen einer neuen Transaktion
-	public Transaction createTransaction(int userId, int categoryId, Integer transactionAmount, String transactionDate, String transactionType, String transactionDescription, String transactionFrequency) {
+	public Transaction createTransaction(int userId, int categoryId, double transactionAmount, String transactionDate, String transactionType, String transactionDescription, String transactionFrequency) {
 		User user = entityManager.find(User.class, userId);
 		Category category = entityManager.find(Category.class, categoryId);
 
@@ -63,8 +63,8 @@ public class DBAccessTransaction {
 		Integer transactionId,
 		Integer userId,
 		Integer categoryId,
-		Integer amountMin,
-		Integer amountMax,
+		Double amountMin,
+		Double amountMax,
 		String transactionDateFrom,
 		String transactionDateTo,
 		String transactionType,
@@ -101,7 +101,7 @@ public class DBAccessTransaction {
 	}
 
 	// Methode zum Ändern einer Transaktion
-	public boolean updateTransaction(int transactionId, Integer userId, Integer categoryId, Integer transactionAmount, String transactionDate, String transactionType, String transactionDescription, String transactionFrequency) {
+	public boolean updateTransaction(int transactionId, Integer userId, Integer categoryId, Double transactionAmount, String transactionDate, String transactionType, String transactionDescription, String transactionFrequency) {
 		Transaction transaction = entityManager.find(Transaction.class, transactionId);
 		if (transaction == null) {
 			return false;
