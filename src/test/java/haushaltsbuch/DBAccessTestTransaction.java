@@ -1,13 +1,12 @@
 package haushaltsbuch;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -71,5 +70,18 @@ public class DBAccessTestTransaction {
     void testDeleteTransactionNotFound() {
         boolean deleted = dbAccess.deleteTransaction(88888);
         assertFalse(deleted);
+    }
+
+    // Testet das Summieren aller Transaktionen, die eine Ausgabe sind
+    @Test
+    void testSumTransactionsSpendings() {
+        Transaction transaction = dbAccess.createTransaction(5, 4, 140.0, "2026-08-08", 
+                                                             "spending", "Test Sum Transactions Spendings", "monthly");
+        Transaction transaction2 = dbAccess.createTransaction(9, 4, 30.0, "2026-08-08", 
+                                                             "spending", "Test Sum Transactions Spendings2", "monthly");
+        assertNotNull(transaction);
+        assertNotNull(transaction2);
+        Double sum = dbAccess.sumTransactionsSpendings();
+        assertEquals(170.0, sum);
     }
 }
