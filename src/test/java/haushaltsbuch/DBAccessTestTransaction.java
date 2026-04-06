@@ -84,4 +84,20 @@ public class DBAccessTestTransaction {
         Double sum = dbAccess.sumTransactionsSpendings();
         assertEquals(170.0, sum);
     }
+
+    // Testet das Summieren aller Transaktionen, die eine Einnahme sind
+    @Test
+    void testSumTransactionsIncome() {
+        Transaction transaction = dbAccess.createTransaction(5, 4, 250.0, "2026-08-08",
+                "income", "Test Sum Transactions Income", "monthly");
+        Transaction transaction2 = dbAccess.createTransaction(9, 4, 50.0, "2026-08-08",
+                "income", "Test Sum Transactions Income2", "monthly");
+        Transaction transaction3 = dbAccess.createTransaction(9, 4, 10.0, "2026-08-08",
+                "spending", "Test Sum Transactions Income3", "monthly");
+        assertNotNull(transaction);
+        assertNotNull(transaction2);
+        assertNotNull(transaction3);
+        Double sum = dbAccess.sumTransactionsIncome();
+        assertEquals(300.0, sum);
+    }
 }
