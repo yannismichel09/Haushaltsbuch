@@ -1,5 +1,7 @@
 package haushaltsbuch;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -104,5 +106,22 @@ public class DBAccessTestCategory {
     void testDeleteCategoryNotFound() {
         boolean deleted = dbAccess.deleteCategory(22222);
         assertFalse(deleted);
+    }
+
+    // Testet das Abrufen aller gefilterten Kategorien
+    @Test
+    void testGetFilteredCategories() {
+        Category category = dbAccess.createCategory("testGetFilteredCategories", "testGetFilteredCategoriesDescription", "testGetFilteredCategoriesColor", 222.2);
+        Category category2 = dbAccess.createCategory("testGetFilteredCategories2", "testGetFilteredCategoriesDescription2", "testGetFilteredCategoriesColor2", 23.9);
+        Category category3 = dbAccess.createCategory("testGetFilteredCategories3", "testGetFilteredCategoriesDescription3", "testGetFilteredCategoriesColor3", 95.2);
+        assertNotNull(category);
+        assertNotNull(category2);
+        assertNotNull(category3);
+        List<Category> categories = dbAccess.getFilteredCategories(null, "testGetFilteredCategories", null, 20.0, 180.4);
+        assertNotNull(categories);
+        assertEquals(2, categories.size());
+        assertTrue(categories.contains(category2));
+        assertTrue(categories.contains(category3));
+        assertFalse(categories.contains(category));
     }
 }
