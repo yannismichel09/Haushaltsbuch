@@ -153,11 +153,10 @@ public class DBAccessTransaction {
         return true;
     }
 
-	public Integer sumTransactionsSpendings() {
-		TypedQuery<Integer> query = entityManager.createNamedQuery("sumTransactionsSpendings", Integer.class);
-		List<Integer> result = query.getResultList();
+	public Double sumTransactionsSpendings() {
+		TypedQuery<Double> query = entityManager.createNamedQuery("sumTransactionsSpendings", Double.class);
+		List<Double> result = query.getResultList();
 
 		return result.get(0);
 	}
-
 }
