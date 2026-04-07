@@ -1,7 +1,10 @@
 package haushaltsbuch;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,5 +90,37 @@ public class DBAccessTestWarning {
 
         boolean result = dbAccess.checkNetBalanceNegative();
         assertFalse(result);
+    }
+
+    // Testet, dass checkBudgetLimit nur Kategorien zurückgibt, die den Schwellwert überschreiten
+    @Test
+    void testCheckBudgetLimit() {
+        User user = dbAccessUser.createUser("testUserBudgetLimit", "testPassword123", "testbudgetlimit@test.com");
+        Category overLimitCategory = dbAccessCategory.createCategory("testBudgetOver", "over", "red", 100.0);
+        Category belowLimitCategory = dbAccessCategory.createCategory("testBudgetBelow", "below", "blue", 100.0);
+
+        dbAccessTransaction.createTransaction(user.getUserId(), overLimitCategory.getCategoryId(), 85.0,
+                "2026-04-07", "spending", "over limit spending", "once");
+        dbAccessTransaction.createTransaction(user.getUserId(), belowLimitCategory.getCategoryId(), 40.0,
+                "2026-04-07", "spending", "below limit spending", "once");
+
+        List<Category> result = dbAccess.checkBudgetLimit(0.8);
+
+        assertEquals(1, result.size());
+        assertEquals(overLimitCategory.getCategoryId(), result.get(0).getCategoryId());
+    }
+
+    // Testet dass checkBudgetLimit bei genauem Erreichen des Schwellwerts keine Kategorie zurückgibt
+    @Test
+    void testCheckBudgetLimitAtThreshold() {
+        User user = dbAccessUser.createUser("testUserBudgetThreshold", "testPassword123", "testbudgetthreshold@test.com");
+        Category thresholdCategory = dbAccessCategory.createCategory("testBudgetThreshold", "threshold", "gray", 100.0);
+
+        dbAccessTransaction.createTransaction(user.getUserId(), thresholdCategory.getCategoryId(), 80.0,
+                "2026-04-07", "spending", "exact threshold spending", "once");
+
+        List<Category> result = dbAccess.checkBudgetLimit(0.8);
+
+        assertTrue(result.isEmpty());
     }
 }
