@@ -65,6 +65,82 @@ public class DBAccessTestTransaction {
         assertNull(transaction);
     }
 
+    // Testet das Filtern von Transaktionen
+    @Test
+    void testGetFilteredTransactions() {
+        User targetUser = dbAccessUser.createUser("testUserFilterTransaction", "1234", "test@filter-transaction.com");
+        User otherUser = dbAccessUser.createUser("testUserFilterTransactionOther", "1234", "test@filter-transaction-other.com");
+        Category targetCategory = dbAccessCategory.createCategory("testCategoryFilterTransaction", "Filter Category", "#123456", 400.0);
+        Category otherCategory = dbAccessCategory.createCategory("testCategoryFilterTransactionOther", "Other Filter Category", "#654321", 400.0);
+
+        Transaction matchingTransaction = dbAccess.createTransaction(targetUser.getUserId(), targetCategory.getCategoryId(), 125.0,
+            "2026-10-15", "spending", "Monthly grocery shopping", "monthly");
+        dbAccess.createTransaction(targetUser.getUserId(), targetCategory.getCategoryId(), 80.0,
+            "2026-10-15", "income", "Monthly grocery refund", "monthly");
+        dbAccess.createTransaction(targetUser.getUserId(), otherCategory.getCategoryId(), 125.0,
+            "2026-10-15", "spending", "Monthly grocery shopping", "monthly");
+        dbAccess.createTransaction(otherUser.getUserId(), targetCategory.getCategoryId(), 125.0,
+            "2026-10-15", "spending", "Monthly grocery shopping", "monthly");
+        dbAccess.createTransaction(targetUser.getUserId(), targetCategory.getCategoryId(), 125.0,
+            "2026-11-15", "spending", "Monthly grocery shopping", "weekly");
+
+        List<Transaction> filteredTransactions = dbAccess.getFilteredTransactions(
+            matchingTransaction.getTransactionId(),
+            targetUser.getUserId(),
+            targetCategory.getCategoryId(),
+            120.0,
+            130.0,
+            "2026-10-01",
+            "2026-10-31",
+            "spending",
+            "grocery",
+            "monthly");
+
+        assertNotNull(filteredTransactions);
+        assertEquals(1, filteredTransactions.size());
+        assertEquals(matchingTransaction.getTransactionId(), filteredTransactions.get(0).getTransactionId());
+        assertEquals("Monthly grocery shopping", filteredTransactions.get(0).getTransactionDescription());
+    }
+
+    // Testet das Filtern von Transaktionen mit mehreren Treffern
+    @Test
+    void testGetFilteredTransactionsMultipleResults() {
+        User targetUser = dbAccessUser.createUser("testUserFilterMulti", "1234", "test@filter-multi.com");
+        User otherUser = dbAccessUser.createUser("testUserFilterMultiOther", "1234", "test@filter-multi-other.com");
+        Category targetCategory = dbAccessCategory.createCategory("testCategoryFilterMulti", "Filter Multi Category", "#ABCDEF", 700.0);
+
+        Transaction matchingTransaction1 = dbAccess.createTransaction(targetUser.getUserId(), targetCategory.getCategoryId(), 90.0,
+            "2026-12-01", "spending", "Bus ticket work", "monthly");
+        Transaction matchingTransaction2 = dbAccess.createTransaction(targetUser.getUserId(), targetCategory.getCategoryId(), 110.0,
+            "2026-12-12", "spending", "Fuel for work", "monthly");
+
+        dbAccess.createTransaction(targetUser.getUserId(), targetCategory.getCategoryId(), 70.0,
+            "2026-12-08", "spending", "Groceries", "monthly");
+        dbAccess.createTransaction(targetUser.getUserId(), targetCategory.getCategoryId(), 95.0,
+            "2026-12-10", "income", "Work refund", "monthly");
+        dbAccess.createTransaction(otherUser.getUserId(), targetCategory.getCategoryId(), 100.0,
+            "2026-12-15", "spending", "Fuel for work", "monthly");
+
+        List<Transaction> filteredTransactions = dbAccess.getFilteredTransactions(
+            null,
+            targetUser.getUserId(),
+            targetCategory.getCategoryId(),
+            80.0,
+            120.0,
+            "2026-12-01",
+            "2026-12-31",
+            "spending",
+            "work",
+            "monthly");
+
+        assertNotNull(filteredTransactions);
+        assertEquals(2, filteredTransactions.size());
+        assertTrue(filteredTransactions.stream()
+            .anyMatch(transaction -> transaction.getTransactionId().equals(matchingTransaction1.getTransactionId())));
+        assertTrue(filteredTransactions.stream()
+            .anyMatch(transaction -> transaction.getTransactionId().equals(matchingTransaction2.getTransactionId())));
+    }
+
     // Testet das Löschen einer vorhandenen Transaktion
     @Test
     void testDeleteTransaction() {
