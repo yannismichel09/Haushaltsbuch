@@ -11,14 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import dbaccess.DBAccessTransaction;
 import dbaccess.DBAccessCategory;
+import dbaccess.DBAccessTransaction;
 import dbaccess.DBAccessUser;
 import haushaltsbuch.Studienprojekt.StudienprojektApplication;
 import jakarta.transaction.Transactional;
+import model.Category;
 import model.Transaction;
 import model.User;
-import model.Category;
 
 @Transactional
 @SpringBootTest(classes = StudienprojektApplication.class)
@@ -187,7 +187,7 @@ public class DBAccessTestTransaction {
         assertEquals(300.0, sum);
     }
 
-        // Testet das Summieren aller Ausgaben einer Kategorie
+    // Testet das Summieren aller Ausgaben einer Kategorie
     @Test
         void testSumCategorySpending() {
         User user = dbAccessUser.createUser("testUserSumCategory", "testPassword123", "testsumcategory@test.com");
@@ -214,7 +214,7 @@ public class DBAccessTestTransaction {
         assertEquals(0.0, sum);
     }
 
-        // Testet das Summieren aller Einnahmen einer Kategorie
+    // Testet das Summieren aller Einnahmen einer Kategorie
     @Test
         void testSumCategoryIncome() {
         User user = dbAccessUser.createUser("testUserSumCategoryIncome", "testPassword123", "testsumcategoryincome@test.com");
@@ -289,5 +289,28 @@ public class DBAccessTestTransaction {
     void testUpdateTransactionNotFound() {
         boolean updated = dbAccess.updateTransaction(99999, null, null, 100.0, null, null, null, null);
         assertFalse(updated);
+    }
+
+    // Testet das Abrufen aller Transaktionen, die eine bestimmte Häufigkeit haben
+    @Test
+    void testGetTransactionsByFrequency() {
+        User user = dbAccessUser.createUser("testUserForFrequency", "1234", "test@frequency.com");
+        Category category = dbAccessCategory.createCategory("testCategoryForFrequency", "Test Category for Frequency", "#00FF00", 222.2);
+
+        Transaction transaction = dbAccess.createTransaction(user.getUserId(), category.getCategoryId(), 277.0, "2026-09-04",
+                "spending", "Frequency Description", "monthly");
+        Transaction transaction2 = dbAccess.createTransaction(user.getUserId(), category.getCategoryId(), 11.5, "2026-09-05",
+                "income", "Frequency Description2", "monthly");
+
+        assertNotNull(transaction);
+        assertNotNull(transaction2);
+
+        List<Transaction> transactions = dbAccess.getTransactionsByFrequency("monthly");
+        assertNotNull(transactions);
+        assertEquals(2, transactions.size());
+
+        List<Transaction> transactions2 = dbAccess.getTransactionsByFrequency("weekly");
+        assertNotNull(transactions2);
+        assertTrue(transactions2.isEmpty());
     }
 }
