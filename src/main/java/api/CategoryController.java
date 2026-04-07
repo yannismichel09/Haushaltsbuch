@@ -24,8 +24,6 @@ import dto.CategoryUpdateDtoIn;
 import model.Category;
 import security.SecurityManager;
 
-
-
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
@@ -41,12 +39,15 @@ public class CategoryController {
     // Post-Mapping
 
     @PostMapping
-    public ResponseEntity<CategoryDtoOut> createCategory(@RequestHeader("Authorization") String token, @RequestBody CategoryCreateDtoIn categoryDtoIn) {
+    public ResponseEntity<CategoryDtoOut> createCategory(@RequestHeader("Authorization") String token,
+            @RequestBody CategoryCreateDtoIn categoryDtoIn) {
         checkIsAccepted(token);
-        Category category = dbAccessCategory.createCategory(categoryDtoIn.categoryName(), categoryDtoIn.categoryDescription(), categoryDtoIn.categoryColor(), categoryDtoIn.categoryLimit());
+        Category category = dbAccessCategory.createCategory(categoryDtoIn.categoryName(),
+                categoryDtoIn.categoryDescription(), categoryDtoIn.categoryColor(), categoryDtoIn.categoryLimit());
 
         return ResponseEntity.ok()
-                             .body(new CategoryDtoOut(category.getCategoryName(), category.getCategoryDescription(), category.getCategoryColor(), category.getCategoryLimit()));
+                .body(new CategoryDtoOut(category.getCategoryName(), category.getCategoryDescription(),
+                        category.getCategoryColor(), category.getCategoryLimit()));
     }
 
     // Get-Mapping
@@ -54,61 +55,70 @@ public class CategoryController {
     @GetMapping
     public ResponseEntity<Collection<CategoryDtoOut>> getAllCategories(@RequestHeader("Authorization") String token) {
         checkIsAccepted(token);
-        Collection<CategoryDtoOut> categories = dbAccessCategory.getAllCategories().stream().map(CategoryDtoOut::new).toList();
+        Collection<CategoryDtoOut> categories = dbAccessCategory.getAllCategories().stream().map(CategoryDtoOut::new)
+                .toList();
 
         return ResponseEntity.ok()
-                             .body(categories);
+                .body(categories);
     }
-    
+
     @GetMapping("/{categoryId}")
-    public ResponseEntity<CategoryDtoOut> getCategoryById(@PathVariable int categoryId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<CategoryDtoOut> getCategoryById(@PathVariable int categoryId,
+            @RequestHeader("Authorization") String token) {
         checkIsAccepted(token);
         Category category = dbAccessCategory.getCategoryById(categoryId);
-        
+
         return ResponseEntity.ok()
-                             .body(new CategoryDtoOut(category));
+                .body(new CategoryDtoOut(category));
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<Collection<CategoryDtoOut>> getFilteredCategories(@RequestHeader("Authorization") String token, @RequestBody CategoryFilterDtoIn categoryFilterDtoIn) {
+    public ResponseEntity<Collection<CategoryDtoOut>> getFilteredCategories(
+            @RequestHeader("Authorization") String token, @RequestBody CategoryFilterDtoIn categoryFilterDtoIn) {
         checkIsAccepted(token);
-        Collection<CategoryDtoOut> categories = dbAccessCategory.getFilteredCategories(categoryFilterDtoIn.categoryId(), categoryFilterDtoIn.keyword(), categoryFilterDtoIn.categoryColor(), categoryFilterDtoIn.amountMin(), categoryFilterDtoIn.amountMax()).stream().map(CategoryDtoOut::new).toList();
+        Collection<CategoryDtoOut> categories = dbAccessCategory.getFilteredCategories(categoryFilterDtoIn.categoryId(),
+                categoryFilterDtoIn.keyword(), categoryFilterDtoIn.categoryColor(), categoryFilterDtoIn.amountMin(),
+                categoryFilterDtoIn.amountMax()).stream().map(CategoryDtoOut::new).toList();
 
         return ResponseEntity.ok()
-                             .body(categories);
+                .body(categories);
     }
 
     // Delete-Mapping
-    
+
     @DeleteMapping("/{categoryId}")
-    public ResponseEntity<Boolean> deleteCategory(@PathVariable int categoryId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Boolean> deleteCategory(@PathVariable int categoryId,
+            @RequestHeader("Authorization") String token) {
         checkIsAccepted(token);
         boolean result = dbAccessCategory.deleteCategory(categoryId);
 
         return ResponseEntity.ok()
-                             .body(result);
+                .body(result);
     }
 
     // Put-Mapping
 
     @PutMapping("/{categoryId}")
-    public ResponseEntity<Boolean> updateCategory(@PathVariable int categoryId, @RequestHeader("Authorization") String token, @RequestBody CategoryUpdateDtoIn categoryUpdateDtoIn) {
+    public ResponseEntity<Boolean> updateCategory(@PathVariable int categoryId,
+            @RequestHeader("Authorization") String token, @RequestBody CategoryUpdateDtoIn categoryUpdateDtoIn) {
         checkIsAccepted(token);
-        boolean result = dbAccessCategory.updateCategory(categoryId, categoryUpdateDtoIn.categoryName(), categoryUpdateDtoIn.categoryDescription(), categoryUpdateDtoIn.categoryColor(), categoryUpdateDtoIn.categoryLimit());
+        boolean result = dbAccessCategory.updateCategory(categoryId, categoryUpdateDtoIn.categoryName(),
+                categoryUpdateDtoIn.categoryDescription(), categoryUpdateDtoIn.categoryColor(),
+                categoryUpdateDtoIn.categoryLimit());
 
         return ResponseEntity.ok()
-                             .body(result);
+                .body(result);
     }
 
     // Token-Check
 
-    private void checkIsAccepted(String token){
-		
-		if( !securityManager.isValid(token) ){
-			
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-	
-		}
-		
-	}
+    private void checkIsAccepted(String token) {
+
+        if (!securityManager.isValid(token)) {
+
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+
+        }
+
+    }
 }
