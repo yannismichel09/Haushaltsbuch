@@ -11,14 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import dbaccess.DBAccessTransaction;
 import dbaccess.DBAccessCategory;
+import dbaccess.DBAccessTransaction;
 import dbaccess.DBAccessUser;
 import haushaltsbuch.Studienprojekt.StudienprojektApplication;
 import jakarta.transaction.Transactional;
+import model.Category;
 import model.Transaction;
 import model.User;
-import model.Category;
 
 @Transactional
 @SpringBootTest(classes = StudienprojektApplication.class)
@@ -201,7 +201,7 @@ public class DBAccessTestTransaction {
         dbAccess.createTransaction(user.getUserId(), otherCategory.getCategoryId(), 999.0, "2026-08-12",
                 "spending", "Other spending", "monthly");
 
-        Double sum = dbAccess.sumCategorySpending(targetCategory.getCategoryId());
+        Double sum = dbAccess.sumCategorySpendings(targetCategory.getCategoryId());
         assertEquals(80.0, sum);
     }
 
@@ -210,7 +210,7 @@ public class DBAccessTestTransaction {
     void testSumCategorySpendingNoTransactions() {
         Category category = dbAccessCategory.createCategory("testCategorySpendingEmpty", "Empty Spending Category", "gray", 200.0);
 
-        Double sum = dbAccess.sumCategorySpending(category.getCategoryId());
+        Double sum = dbAccess.sumCategorySpendings(category.getCategoryId());
         assertEquals(0.0, sum);
     }
 
