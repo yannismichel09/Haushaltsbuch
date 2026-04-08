@@ -308,6 +308,8 @@ public class DBAccessTestTransaction {
         List<Transaction> transactions = dbAccess.getTransactionsByFrequency("monthly");
         assertNotNull(transactions);
         assertEquals(2, transactions.size());
+        assertTrue(transactions.contains(transaction));
+        assertTrue(transactions.contains(transaction2));
 
         List<Transaction> transactions2 = dbAccess.getTransactionsByFrequency("weekly");
         assertNotNull(transactions2);
