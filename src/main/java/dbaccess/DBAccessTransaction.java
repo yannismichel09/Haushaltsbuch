@@ -168,7 +168,7 @@ public class DBAccessTransaction {
 	}
 
 	// Methode zum Summieren aller Ausgaben einer Kategorie
-	public Double sumCategorySpending(int categoryId) {
+	public Double sumCategorySpendings(int categoryId) {
 		TypedQuery<Double> query = entityManager.createNamedQuery("sumCategorySpending", Double.class);
 		query.setParameter("categoryId", categoryId);
 		return query.getSingleResult();
