@@ -201,7 +201,7 @@ public class DBAccessTestTransaction {
         dbAccess.createTransaction(user.getUserId(), otherCategory.getCategoryId(), 999.0, "2026-08-12",
                 "spending", "Other spending", "monthly");
 
-        Double sum = dbAccess.sumCategorySpending(targetCategory.getCategoryId());
+        Double sum = dbAccess.sumCategorySpendings(targetCategory.getCategoryId());
         assertEquals(80.0, sum);
     }
 
@@ -210,7 +210,7 @@ public class DBAccessTestTransaction {
     void testSumCategorySpendingNoTransactions() {
         Category category = dbAccessCategory.createCategory("testCategorySpendingEmpty", "Empty Spending Category", "gray", 200.0);
 
-        Double sum = dbAccess.sumCategorySpending(category.getCategoryId());
+        Double sum = dbAccess.sumCategorySpendings(category.getCategoryId());
         assertEquals(0.0, sum);
     }
 
