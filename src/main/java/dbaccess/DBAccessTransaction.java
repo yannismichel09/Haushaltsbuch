@@ -2,7 +2,6 @@ package dbaccess;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.EntityManager;
@@ -17,7 +16,6 @@ public class DBAccessTransaction {
     @PersistenceContext
 	private final EntityManager entityManager;
 
-	@Autowired
 	public DBAccessTransaction(EntityManager entityManager) {
 
 		this.entityManager = entityManager;

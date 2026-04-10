@@ -2,7 +2,6 @@ package api;
 
 import java.util.Collection;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +27,6 @@ public class CategoryController {
     private final DBAccessCategory dbAccessCategory;
     private final ControllerTools controllerTools;
 
-    @Autowired
     public CategoryController(DBAccessCategory dbAccessCategory, ControllerTools controllerTools) {
         this.dbAccessCategory = dbAccessCategory;
         this.controllerTools = controllerTools;
