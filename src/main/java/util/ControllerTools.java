@@ -1,10 +1,12 @@
 package util;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import security.SecurityManager;
 
+@Component
 public class ControllerTools {
     private final SecurityManager securityManager;
 
