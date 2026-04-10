@@ -29,7 +29,7 @@ public class SettingsController {
         this.controllerTools = controllerTools;
     }
 
-    // Get current user settings
+    // Aktuelle Benutzereinstellungen abrufen
     @GetMapping("/{userId}")
     public ResponseEntity<UserDtoOut> getUserSettings(@RequestHeader("Authorization") String token,
             @PathVariable int userId) {
@@ -44,7 +44,7 @@ public class SettingsController {
         return ResponseEntity.ok().body(new UserDtoOut(user));
     }
 
-    // Update email
+    // E-Mail aktualisieren
     @PutMapping("/{userId}/email")
     public ResponseEntity<UserDtoOut> updateEmail(@RequestHeader("Authorization") String token,
             @PathVariable int userId, @RequestBody UserUpdateEmailDtoIn emailDtoIn) {
@@ -60,7 +60,7 @@ public class SettingsController {
         return ResponseEntity.ok().body(new UserDtoOut(user));
     }
 
-    // Update password
+    // Passwort aktualisieren
     @PutMapping("/{userId}/password")
     public ResponseEntity<Void> updatePassword(@RequestHeader("Authorization") String token,
             @PathVariable int userId, @RequestBody UserUpdatePasswordDtoIn passwordDtoIn) {
@@ -75,7 +75,7 @@ public class SettingsController {
         return ResponseEntity.ok().build();
     }
 
-    // Update username
+    // Benutzername aktualisieren
     @PutMapping("/{userId}/username")
     public ResponseEntity<UserDtoOut> updateUsername(@RequestHeader("Authorization") String token,
             @PathVariable int userId, @RequestBody UserUpdateUsernameDtoIn usernameDtoIn) {
@@ -91,7 +91,7 @@ public class SettingsController {
         return ResponseEntity.ok().body(new UserDtoOut(user));
     }
 
-    // Update profile picture
+    // Profilbild aktualisieren
     @PutMapping("/{userId}/profile-picture")
     public ResponseEntity<UserDtoOut> updateProfilePicture(@RequestHeader("Authorization") String token,
             @PathVariable int userId, @RequestBody UserUpdateProfilePictureDtoIn profilePictureDtoIn) {
