@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EntityScan(basePackages = "model")
 @EnableJpaRepositories(basePackages = "model")
-@ComponentScan(basePackages = {"haushaltsbuch.Studienprojekt", "dbaccess", "dbbackground", "scheduled"})
+@ComponentScan(basePackages = {"haushaltsbuch.Studienprojekt", "api", "dbaccess", "dbbackground", "scheduled", "security", "util"})
 @EnableScheduling
 public class StudienprojektApplication {
 
