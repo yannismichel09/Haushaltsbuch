@@ -2,7 +2,6 @@ package api;
 
 import java.util.Collection;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -19,7 +18,6 @@ public class WarningController {
     private final DBAccessWarning dbAccessWarning;
     private final ControllerTools controllerTools;
 
-    @Autowired
     public WarningController(DBAccessWarning dbAccessWarning, ControllerTools controllerTools) {
         this.dbAccessWarning = dbAccessWarning;
         this.controllerTools = controllerTools;

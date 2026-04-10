@@ -2,7 +2,6 @@ package dbaccess;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.EntityManager;
@@ -15,7 +14,6 @@ public class DBAccessCSV {
     @PersistenceContext
 	private final EntityManager entityManager;
 
-	@Autowired
 	public DBAccessCSV(EntityManager entityManager) {
 
 		this.entityManager = entityManager;
