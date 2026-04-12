@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Haushaltsbuch</title>
+</head>
+<body>
+    <div id="welcome">
+        <h1 id="welcomeHeader1">Welcome to your digital Budget Book!</h1>
+        <h1 id="welcomeHeader2">Control your money. Understand your spending. Plan smarter.</h1>
+        <p id="loginText"> Already have an account?</p>
+        <button id="loginButton">Login</button>
+        <p id="registerText">Don't have an account yet?</p>
+        <button id="registerButton">Register</button>
+    </div>
+    <div id="login" style="display: none">
+        <h2 id="loginHeader">Login</h2>
+        <table>
+        <tr>
+            <td>
+                <label for="username">Username:</label>
+            </td>
+            <td>
+                 <input id="loginUsername" type="text" name="username" placeholder="Username" />
+             </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="password">Password:</label>
+            </td>
+            <td>
+                 <input id="loginPassword" type="password" name="password" placeholder="Password" />
+             </td>
+        </tr>
+        </table>
+        <button id="loginCancel">Cancel</button>
+        <button id="loginSubmit">Login</button>
+    </div>
+    <div id="register" style="display: none">
+        <h2 id="registerHeader">Register</h2>
+        <table>
+        <tr>
+            <td>
+                <label for="username">Username:</label>
+            </td>
+            <td>
+                 <input id="registerUsername" type="text" name="username" placeholder="Username" />
+             </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="email">E-Mail:</label>
+            </td>
+            <td>
+                 <input id="registerEmail" type="email" name="email" placeholder="E-Mail" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="password">Password:</label>
+            </td>
+            <td>
+                 <input id="registerPassword" type="password" name="password" placeholder="Password" />
+             </td>
+        </tr>
+        </table>
+        <button id="registerCancel">Cancel</button>
+        <button id="registerSubmit">Register</button>
+    </div>
+</body>
+</html>
