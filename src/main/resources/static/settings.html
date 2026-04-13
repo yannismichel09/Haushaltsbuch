@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Settings</title>
+    <link rel="stylesheet" href="style/tabs.css">
+</head>
+<body>
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'account')">Account</button>
+        <button class="tablinks" onclick="openTab(event, 'security')">Security</button>
+    </div>
+
+    <!-- Account Tab -->
+    <div id="account" class="tabcontent">
+        <h2>Account Settings</h2>
+        <p>Welcome to your Account Settings</p>
+        <p>Here you can find information about your profile</p>
+
+        <!-- Profilbild Bereich -->
+        <div class="account-section">
+            <h3>Profile Picture</h3>
+            <table>
+                <tr>
+                    <td>
+                        <img id="profilePicture" alt="Profile Picture" />
+                    </td>
+                    <td>
+                        <p>Change Profile Picture</p>
+                        <button>Change Image</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Benutzername Bereich -->
+        <div class="account-section">
+            <h3>Username</h3>
+            <label for="usernameInput">New Username:</label>
+            <input type="text" id="usernameInput" placeholder="Please enter your new username" readonly>
+            <button>Edit</button>
+            <div>
+                <button>Cancel</button>
+                <button>Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Tab -->
+    <div id="security" class="tabcontent">
+        <h2>Security</h2>
+        <p>Here you can manage your account security</p>
+        <p>Keep your data safe</p>
+
+        <div class="account-section">
+            <h3>Change E-Mail</h3>
+            <label for="emailInput">E-Mail Address</label>
+            <div>
+                <input type="email" id="emailInput" placeholder="Please enter your e-mail address" readonly>
+                <button>Edit</button>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- Passwort Bereich -->
+        <div class="account-section">
+            <h3>Change Password</h3>
+            <label for="oldPasswordInput">Old Password</label>
+            <br>
+            <input type="password" id="oldPasswordInput" placeholder="Please enter your old password">
+            <br>
+            <label for="passwordInput">New Password</label>
+            <br>
+            <input type="password" id="passwordInput" placeholder="Please enter your new password">
+            <br>
+            <label for="passwordConfirmInput">Repeat Password</label>
+            <br>
+            <input type="password" id="passwordConfirmInput" placeholder="Please repeat your new password">
+            <br><br>
+            <button>Save</button>
+        </div>
+    </div>
+
+    <script src="js/tabs.js"></script>
+</body>
+</html>
