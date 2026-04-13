@@ -1,4 +1,4 @@
-// Setzt die Hoehe des iframes passend zum aktuellen Inhaltsdokument.
+// Setzt die Höhe des iframes passend zum aktuellen Inhaltsdokument.
 function resizeFrame(iframe) {
   if (!iframe) {
     return;
@@ -16,7 +16,7 @@ function resizeFrame(iframe) {
   }
 }
 
-// Initialisiert automatische Hoehen-Updates bei Inhaltsaenderungen im iframe.
+// Initialisiert automatische Höhen-Updates bei Inhaltsänderungen im iframe.
 function initAutoResizeForFrame(iframe) {
   if (!iframe) {
     return;
