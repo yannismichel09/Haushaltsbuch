@@ -63,7 +63,8 @@ public class Transaction {
     private String transactionDescription;
 
     @Column(name = "transaction_frequency", nullable = false)
-    private String transactionFrequency;
+    @Enumerated(EnumType.STRING)
+    private TransactionFrequency transactionFrequency;
 
     // Konstruktoren
     public Transaction() {
@@ -130,11 +131,11 @@ public class Transaction {
         this.transactionDescription = transactionDescription;
     }
 
-    public String getTransactionFrequency() {
+    public TransactionFrequency getTransactionFrequency() {
         return transactionFrequency;
     }
 
-    public void setTransactionFrequency(String transactionFrequency) {
+    public void setTransactionFrequency(TransactionFrequency transactionFrequency) {
         this.transactionFrequency = transactionFrequency;
     }
 }
