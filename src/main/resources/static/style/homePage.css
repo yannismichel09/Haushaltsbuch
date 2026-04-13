@@ -1,0 +1,38 @@
+#header {
+    display: flex;
+    align-items: center;
+    border: 2px solid black;
+    border-bottom: none;
+}
+  
+#logo {
+    padding: 20px;
+    font-weight: bold;
+    font-size: 18px;
+    border-right: 2px solid black;
+    min-width: 150px;
+    text-align: center;
+}
+  
+#headerText {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+}
+  
+#userInfo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+    border-left: 2px solid black;
+    min-width: 150px;
+    justify-content: center;
+}
+  
+#profilePicture {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid black;
+}
