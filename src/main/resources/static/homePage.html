@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="style/tabs.css">
+</head>
+<body>
+  <div id="header">
+      <div id="logo">Budget Book</div>
+      <div id="headerText">
+          <p id="welcomeText">Welcome to your digital Budget Book!</p>
+          <p id="welcomeText2">Control your money. Understand your spending. Plan smarter.</p>
+      </div>
+      <div id="userInfo">
+          <span id="username"></span>
+          <img id="profilePicture" />
+      </div>
+  </div> 
+
+  <div class="tab">
+    <button class="tablinks" onclick="openTab(event, 'dashboard')">Dashboard</button>
+    <button class="tablinks" onclick="openTab(event, 'transactions')">Transactions</button>
+    <button class="tablinks" onclick="openTab(event, 'categories')">Categories</button>
+    <button class="tablinks" onclick="openTab(event, 'settings')">Settings</button>
+  </div>
+  
+  <div id="dashboard" class="tabcontent">
+  </div>
+  <div id="transactions" class="tabcontent">
+  </div>
+  <div id="categories" class="tabcontent">
+  </div>
+  <div id="settings" class="tabcontent">
+  </div>
+  
+  <script src="js/tabs.js"></script>
+</body>
+</html>
