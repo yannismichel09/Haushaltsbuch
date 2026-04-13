@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import dbbackground.DBBackgroundTasks;
+import model.TransactionFrequency;
 
 
 @Component
@@ -20,18 +21,18 @@ public class ScheduledTasks {
     @Scheduled(cron = "0 0 0 * * MON") 
     public void processWeeklyTransactions() {
         log.info("Verarbeite wöchentliche Transaktionen");
-        dbBackgroundTasks.processRecurringTransactions("weekly");
+        dbBackgroundTasks.processRecurringTransactions(TransactionFrequency.weekly);
     }
 
     @Scheduled(cron = "0 0 0 1 * *") 
     public void processMonthlyTransactions() {
         log.info("Verarbeite monatliche Transaktionen");
-        dbBackgroundTasks.processRecurringTransactions("monthly");
+        dbBackgroundTasks.processRecurringTransactions(TransactionFrequency.monthly);
     }
 
     @Scheduled(cron = "0 0 0 1 1 *") 
     public void processYearlyTransactions() {
         log.info("Verarbeite jährliche Transaktionen");
-        dbBackgroundTasks.processRecurringTransactions("yearly");
+        dbBackgroundTasks.processRecurringTransactions(TransactionFrequency.yearly);
     }
 }

@@ -8,6 +8,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import model.Category;
+import model.TransactionFrequency;
 import model.Transaction;
 import model.TransactionType;
 import model.User;
@@ -30,7 +31,7 @@ public class DBAccessTransaction {
 	}
 
 	// Methode zum Erstellen einer neuen Transaktion
-	public Transaction createTransaction(int userId, int categoryId, Double transactionAmount, String transactionDate, TransactionType transactionType, String transactionDescription, String transactionFrequency) {
+	public Transaction createTransaction(int userId, int categoryId, Double transactionAmount, String transactionDate, TransactionType transactionType, String transactionDescription, TransactionFrequency transactionFrequency) {
 		User user = entityManager.find(User.class, userId);
 		Category category = entityManager.find(Category.class, categoryId);
 
@@ -68,7 +69,7 @@ public class DBAccessTransaction {
 		String transactionDateTo,
 		TransactionType transactionType,
 		String keyword,
-		String transactionFrequency) {
+		TransactionFrequency transactionFrequency) {
 
 		StringBuilder query = new StringBuilder("SELECT t FROM Transaction t WHERE 1=1");
 
@@ -100,7 +101,7 @@ public class DBAccessTransaction {
 	}
 
 	// Methode zum Ändern einer Transaktion
-	public boolean updateTransaction(int transactionId, Integer userId, Integer categoryId, Double transactionAmount, String transactionDate, TransactionType transactionType, String transactionDescription, String transactionFrequency) {
+	public boolean updateTransaction(int transactionId, Integer userId, Integer categoryId, Double transactionAmount, String transactionDate, TransactionType transactionType, String transactionDescription, TransactionFrequency transactionFrequency) {
 		Transaction transaction = entityManager.find(Transaction.class, transactionId);
 		if (transaction == null) {
 			return false;
@@ -185,7 +186,7 @@ public class DBAccessTransaction {
 	}
 
 	// Methode zum Abrufen aller Transaktionen, die eine bestimmte Häufigkeit haben
-	public List<Transaction> getTransactionsByFrequency(String transactionFrequency) {
+	public List<Transaction> getTransactionsByFrequency(TransactionFrequency transactionFrequency) {
 		TypedQuery<Transaction> query = entityManager.createNamedQuery("getTransactionsByFrequency", Transaction.class);
 		query.setParameter("transactionFrequency", transactionFrequency);
 		List<Transaction> result = query.getResultList();

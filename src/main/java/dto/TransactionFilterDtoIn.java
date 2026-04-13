@@ -1,6 +1,7 @@
 package dto;
 
 import model.TransactionType;
+import model.TransactionFrequency;
 
 public record TransactionFilterDtoIn(
     Integer transactionId,
@@ -12,6 +13,6 @@ public record TransactionFilterDtoIn(
     String transactionDateTo,
     TransactionType transactionType,
     String keyword,
-    String transactionFrequency) {
+    TransactionFrequency transactionFrequency) {
 
 }

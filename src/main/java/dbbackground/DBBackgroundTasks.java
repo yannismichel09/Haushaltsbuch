@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import dbaccess.DBAccessTransaction;
 import jakarta.transaction.Transactional;
 import model.Transaction;
+import model.TransactionFrequency;
 
 @Service
 @Transactional
@@ -16,7 +17,7 @@ public class DBBackgroundTasks {
     @Autowired
     public DBAccessTransaction dbAccessTransaction;
 
-    public void processRecurringTransactions(String frequency) {
+    public void processRecurringTransactions(TransactionFrequency frequency) {
         List<Transaction> transactions = dbAccessTransaction.getTransactionsByFrequency(frequency);
     
         for (Transaction t : transactions) {
@@ -27,7 +28,7 @@ public class DBBackgroundTasks {
                 LocalDate.now().toString(), 
                 t.getTransactionType(),
                 t.getTransactionDescription(),
-                "once"
+                TransactionFrequency.once
             );
         }
     }
