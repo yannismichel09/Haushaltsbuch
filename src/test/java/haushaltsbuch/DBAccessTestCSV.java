@@ -14,6 +14,7 @@ import dbaccess.DBAccessCategory;
 import dbaccess.DBAccessTransaction;
 import haushaltsbuch.Studienprojekt.StudienprojektApplication;
 import model.Category;
+import model.TransactionType;
 
 @Transactional
 @SpringBootTest(classes = StudienprojektApplication.class)
@@ -31,7 +32,7 @@ class DBAccessTestCSV {
     // Testet das Exportieren gefilterter Transaktionen in CSV
     @Test
     void testExportFilteredTransactionsToCsv() {
-        dbAccessTransaction.createTransaction(1, 1, 100.0, "2026-05-05", "spending", "Test Transaction", "monthly");
+        dbAccessTransaction.createTransaction(1, 1, 100.0, "2026-05-05", TransactionType.spending, "Test Transaction", "monthly");
 
         String csv = dbAccessCSV.exportFilteredTransactionsToCsv(null, null, null, null, null, null, null, null, null, null);
 

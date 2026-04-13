@@ -5,6 +5,8 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,11 +21,11 @@ import jakarta.persistence.Table;
 @Table(name = "transactions")
 @NamedQueries({
     @NamedQuery(name="getAllTransactions", query="SELECT transaction FROM Transaction transaction"),
-    @NamedQuery(name="checkNetBalance", query="SELECT SUM(CASE WHEN t.transactionType = 'spending' THEN t.transactionAmount ELSE 0 END) - SUM(CASE WHEN t.transactionType = 'income' THEN t.transactionAmount ELSE 0 END) FROM Transaction t"),
-    @NamedQuery(name="sumTransactionsSpendings", query="SELECT SUM(CASE WHEN t.transactionType = 'spending' THEN t.transactionAmount ELSE 0 END) FROM Transaction t"),
-    @NamedQuery(name="sumTransactionsIncome", query="SELECT SUM(CASE WHEN t.transactionType = 'income' THEN t.transactionAmount ELSE 0 END) FROM Transaction t"),
-    @NamedQuery(name="sumCategorySpending", query="SELECT COALESCE(SUM(t.transactionAmount), 0) FROM Transaction t WHERE t.category.categoryId = :categoryId AND t.transactionType = 'spending'"),
-    @NamedQuery(name="sumCategoryIncome", query="SELECT COALESCE(SUM(t.transactionAmount), 0) FROM Transaction t WHERE t.category.categoryId = :categoryId AND t.transactionType = 'income'"),
+    @NamedQuery(name="checkNetBalance", query="SELECT SUM(CASE WHEN t.transactionType = :spendingType THEN t.transactionAmount ELSE 0 END) - SUM(CASE WHEN t.transactionType = :incomeType THEN t.transactionAmount ELSE 0 END) FROM Transaction t"),
+    @NamedQuery(name="sumTransactionsSpendings", query="SELECT SUM(CASE WHEN t.transactionType = :spendingType THEN t.transactionAmount ELSE 0 END) FROM Transaction t"),
+    @NamedQuery(name="sumTransactionsIncome", query="SELECT SUM(CASE WHEN t.transactionType = :incomeType THEN t.transactionAmount ELSE 0 END) FROM Transaction t"),
+    @NamedQuery(name="sumCategorySpending", query="SELECT COALESCE(SUM(t.transactionAmount), 0) FROM Transaction t WHERE t.category.categoryId = :categoryId AND t.transactionType = :spendingType"),
+    @NamedQuery(name="sumCategoryIncome", query="SELECT COALESCE(SUM(t.transactionAmount), 0) FROM Transaction t WHERE t.category.categoryId = :categoryId AND t.transactionType = :incomeType"),
     @NamedQuery(name="getTransactionsByFrequency", query="SELECT t FROM Transaction t WHERE t.transactionFrequency = :transactionFrequency")
 })
 public class Transaction {
@@ -54,7 +56,8 @@ public class Transaction {
     private String transactionDate;
 
     @Column(name = "transaction_type", nullable = false)
-    private String transactionType;
+    @Enumerated(EnumType.STRING)
+    private TransactionType transactionType;
 
     @Column(name = "transaction_description")
     private String transactionDescription;
@@ -66,7 +69,7 @@ public class Transaction {
     public Transaction() {
     }
 
-    public Transaction(User user, Category category, Double transactionAmount, String transactionDate, String transactionType) {
+    public Transaction(User user, Category category, Double transactionAmount, String transactionDate, TransactionType transactionType) {
         this.user = user;
         this.category = category;
         this.transactionAmount = transactionAmount;
@@ -111,11 +114,11 @@ public class Transaction {
         this.transactionDate = transactionDate;
     }
 
-    public String getTransactionType() {
+    public TransactionType getTransactionType() {
         return transactionType;
     }
 
-    public void setTransactionType(String transactionType) {
+    public void setTransactionType(TransactionType transactionType) {
         this.transactionType = transactionType;
     }
 

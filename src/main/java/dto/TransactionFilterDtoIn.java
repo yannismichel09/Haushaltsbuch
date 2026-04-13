@@ -1,5 +1,7 @@
 package dto;
 
+import model.TransactionType;
+
 public record TransactionFilterDtoIn(
     Integer transactionId,
     Integer userId,
@@ -8,7 +10,7 @@ public record TransactionFilterDtoIn(
     Double amountMax,
     String transactionDateFrom,
     String transactionDateTo,
-    String transactionType,
+    TransactionType transactionType,
     String keyword,
     String transactionFrequency) {
 
