@@ -9,6 +9,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import model.Category;
 import model.Transaction;
+import model.TransactionType;
 import model.User;
 
 @Repository
@@ -29,7 +30,7 @@ public class DBAccessTransaction {
 	}
 
 	// Methode zum Erstellen einer neuen Transaktion
-	public Transaction createTransaction(int userId, int categoryId, Double transactionAmount, String transactionDate, String transactionType, String transactionDescription, String transactionFrequency) {
+	public Transaction createTransaction(int userId, int categoryId, Double transactionAmount, String transactionDate, TransactionType transactionType, String transactionDescription, String transactionFrequency) {
 		User user = entityManager.find(User.class, userId);
 		Category category = entityManager.find(Category.class, categoryId);
 
@@ -65,7 +66,7 @@ public class DBAccessTransaction {
 		Double amountMax,
 		String transactionDateFrom,
 		String transactionDateTo,
-		String transactionType,
+		TransactionType transactionType,
 		String keyword,
 		String transactionFrequency) {
 
@@ -79,7 +80,7 @@ public class DBAccessTransaction {
 		if (transactionDateFrom != null) query.append(" AND t.transactionDate >= :transactionDateFrom");
 		if (transactionDateTo != null) query.append(" AND t.transactionDate <= :transactionDateTo");
 		if (transactionType != null) query.append(" AND t.transactionType = :transactionType");
-		if (keyword != null) query.append(" AND (t.transactionDescription LIKE :keyword OR t.transactionType LIKE :keyword)");
+		if (keyword != null) query.append(" AND t.transactionDescription LIKE :keyword");
 		if (transactionFrequency != null) query.append(" AND t.transactionFrequency = :transactionFrequency");
 
 		TypedQuery<Transaction> q = entityManager.createQuery(query.toString(), Transaction.class);
@@ -99,7 +100,7 @@ public class DBAccessTransaction {
 	}
 
 	// Methode zum Ändern einer Transaktion
-	public boolean updateTransaction(int transactionId, Integer userId, Integer categoryId, Double transactionAmount, String transactionDate, String transactionType, String transactionDescription, String transactionFrequency) {
+	public boolean updateTransaction(int transactionId, Integer userId, Integer categoryId, Double transactionAmount, String transactionDate, TransactionType transactionType, String transactionDescription, String transactionFrequency) {
 		Transaction transaction = entityManager.find(Transaction.class, transactionId);
 		if (transaction == null) {
 			return false;
@@ -154,6 +155,7 @@ public class DBAccessTransaction {
 	// Methode zum Summieren aller Transaktionen, die eine Ausgabe sind
 	public Double sumTransactionsSpendings() {
 		TypedQuery<Double> query = entityManager.createNamedQuery("sumTransactionsSpendings", Double.class);
+		query.setParameter("spendingType", TransactionType.spending);
 		List<Double> result = query.getResultList();
 
 		return result.get(0);
@@ -162,6 +164,7 @@ public class DBAccessTransaction {
 	// Methode zum Summieren aller Transaktionen, die eine Einnahme sind
 	public Double sumTransactionsIncome() {
 		TypedQuery<Double> query = entityManager.createNamedQuery("sumTransactionsIncome", Double.class);
+		query.setParameter("incomeType", TransactionType.income);
 		return query.getSingleResult();
 	}
 
@@ -169,6 +172,7 @@ public class DBAccessTransaction {
 	public Double sumCategorySpendings(int categoryId) {
 		TypedQuery<Double> query = entityManager.createNamedQuery("sumCategorySpending", Double.class);
 		query.setParameter("categoryId", categoryId);
+		query.setParameter("spendingType", TransactionType.spending);
 		return query.getSingleResult();
 	}
 
@@ -176,6 +180,7 @@ public class DBAccessTransaction {
 	public Double sumCategoryIncome(int categoryId) {
 		TypedQuery<Double> query = entityManager.createNamedQuery("sumCategoryIncome", Double.class);
 		query.setParameter("categoryId", categoryId);
+		query.setParameter("incomeType", TransactionType.income);
 		return query.getSingleResult();
 	}
 

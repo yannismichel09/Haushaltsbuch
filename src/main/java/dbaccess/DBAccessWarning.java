@@ -8,6 +8,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import model.Category;
+import model.TransactionType;
 
 @Repository
 public class DBAccessWarning {
@@ -30,6 +31,7 @@ public class DBAccessWarning {
 	public List<Category> checkBudgetLimit(double percent) {
 		TypedQuery<Category> query = entityManager.createNamedQuery("checkBudgetLimit", Category.class);
 		query.setParameter("percent", percent);
+		query.setParameter("spendingType", TransactionType.spending);
 		List<Category> result = query.getResultList();
 		return result;
 	}
@@ -37,6 +39,8 @@ public class DBAccessWarning {
 	// Methode zur Prüfung, ob die Ausgaben höher sind als die Einnahmen
 	public boolean checkNetBalanceNegative() {
 		TypedQuery<Double> query = entityManager.createNamedQuery("checkNetBalance", Double.class);
+		query.setParameter("spendingType", TransactionType.spending);
+		query.setParameter("incomeType", TransactionType.income);
 		Double result = query.getSingleResult();
 		return result != null && result > 0;
 	}

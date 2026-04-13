@@ -8,6 +8,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import model.Category;
 import model.Transaction;
+import model.TransactionType;
 
 @Repository
 public class DBAccessCSV {
@@ -48,7 +49,7 @@ public class DBAccessCSV {
     }
 
 	// Methode zum Exportieren gefilterter Transaktionen in eine CSV-Datei
-	public String exportFilteredTransactionsToCsv(Integer transactionId, Integer userId, Integer categoryId, Double amountMin, Double amountMax, String transactionDateFrom, String transactionDateTo, String transactionType, String keyword, String transactionFrequency) {
+    public String exportFilteredTransactionsToCsv(Integer transactionId, Integer userId, Integer categoryId, Double amountMin, Double amountMax, String transactionDateFrom, String transactionDateTo, TransactionType transactionType, String keyword, String transactionFrequency) {
 
         DBAccessTransaction dbAccessTransaction = new DBAccessTransaction(entityManager);
         List<Transaction> transactions = dbAccessTransaction.getFilteredTransactions(transactionId, userId, categoryId, amountMin, amountMax, transactionDateFrom, transactionDateTo, transactionType, keyword, transactionFrequency);

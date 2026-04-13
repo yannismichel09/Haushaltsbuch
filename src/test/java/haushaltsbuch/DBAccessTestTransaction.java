@@ -18,6 +18,7 @@ import haushaltsbuch.Studienprojekt.StudienprojektApplication;
 import jakarta.transaction.Transactional;
 import model.Category;
 import model.Transaction;
+import model.TransactionType;
 import model.User;
 
 @Transactional
@@ -37,9 +38,9 @@ public class DBAccessTestTransaction {
     @Test
     void testGetAllTransactions() {
         Transaction transaction1 = dbAccess.createTransaction(1, 1, 100.0, "2026-05-05", 
-                                                              "spending", "Test Transaction", "monthly");
+                                                              TransactionType.spending, "Test Transaction", "monthly");
         Transaction transaction2 = dbAccess.createTransaction(2, 1, 300.0, "2026-05-07", 
-                                                              "spending", "Test Transaction2", "monthly");
+                                                              TransactionType.spending, "Test Transaction2", "monthly");
         List<Transaction> transactions = dbAccess.getAllTransactions();
         assertNotNull(transaction1);
         assertNotNull(transaction2);
@@ -51,7 +52,7 @@ public class DBAccessTestTransaction {
     @Test
     void testGetTransactionById() {
         Transaction transaction = dbAccess.createTransaction(1, 1, 100.0, "2026-05-05", 
-                                                             "spending", "Test Transaction", "monthly");
+                                                             TransactionType.spending, "Test Transaction", "monthly");
         Transaction transaction2 = dbAccess.getTransactionById(transaction.getTransactionId());
         assertNotNull(transaction2);
         assertEquals(transaction, transaction2);
@@ -74,15 +75,15 @@ public class DBAccessTestTransaction {
         Category otherCategory = dbAccessCategory.createCategory("testCategoryFilterTransactionOther", "Other Filter Category", "#654321", 400.0);
 
         Transaction matchingTransaction = dbAccess.createTransaction(targetUser.getUserId(), targetCategory.getCategoryId(), 125.0,
-            "2026-10-15", "spending", "Monthly grocery shopping", "monthly");
+            "2026-10-15", TransactionType.spending, "Monthly grocery shopping", "monthly");
         dbAccess.createTransaction(targetUser.getUserId(), targetCategory.getCategoryId(), 80.0,
-            "2026-10-15", "income", "Monthly grocery refund", "monthly");
+            "2026-10-15", TransactionType.income, "Monthly grocery refund", "monthly");
         dbAccess.createTransaction(targetUser.getUserId(), otherCategory.getCategoryId(), 125.0,
-            "2026-10-15", "spending", "Monthly grocery shopping", "monthly");
+            "2026-10-15", TransactionType.spending, "Monthly grocery shopping", "monthly");
         dbAccess.createTransaction(otherUser.getUserId(), targetCategory.getCategoryId(), 125.0,
-            "2026-10-15", "spending", "Monthly grocery shopping", "monthly");
+            "2026-10-15", TransactionType.spending, "Monthly grocery shopping", "monthly");
         dbAccess.createTransaction(targetUser.getUserId(), targetCategory.getCategoryId(), 125.0,
-            "2026-11-15", "spending", "Monthly grocery shopping", "weekly");
+            "2026-11-15", TransactionType.spending, "Monthly grocery shopping", "weekly");
 
         List<Transaction> filteredTransactions = dbAccess.getFilteredTransactions(
             matchingTransaction.getTransactionId(),
@@ -92,7 +93,7 @@ public class DBAccessTestTransaction {
             130.0,
             "2026-10-01",
             "2026-10-31",
-            "spending",
+            TransactionType.spending,
             "grocery",
             "monthly");
 
@@ -110,16 +111,16 @@ public class DBAccessTestTransaction {
         Category targetCategory = dbAccessCategory.createCategory("testCategoryFilterMulti", "Filter Multi Category", "#ABCDEF", 700.0);
 
         Transaction matchingTransaction1 = dbAccess.createTransaction(targetUser.getUserId(), targetCategory.getCategoryId(), 90.0,
-            "2026-12-01", "spending", "Bus ticket work", "monthly");
+            "2026-12-01", TransactionType.spending, "Bus ticket work", "monthly");
         Transaction matchingTransaction2 = dbAccess.createTransaction(targetUser.getUserId(), targetCategory.getCategoryId(), 110.0,
-            "2026-12-12", "spending", "Fuel for work", "monthly");
+            "2026-12-12", TransactionType.spending, "Fuel for work", "monthly");
 
         dbAccess.createTransaction(targetUser.getUserId(), targetCategory.getCategoryId(), 70.0,
-            "2026-12-08", "spending", "Groceries", "monthly");
+            "2026-12-08", TransactionType.spending, "Groceries", "monthly");
         dbAccess.createTransaction(targetUser.getUserId(), targetCategory.getCategoryId(), 95.0,
-            "2026-12-10", "income", "Work refund", "monthly");
+            "2026-12-10", TransactionType.income, "Work refund", "monthly");
         dbAccess.createTransaction(otherUser.getUserId(), targetCategory.getCategoryId(), 100.0,
-            "2026-12-15", "spending", "Fuel for work", "monthly");
+            "2026-12-15", TransactionType.spending, "Fuel for work", "monthly");
 
         List<Transaction> filteredTransactions = dbAccess.getFilteredTransactions(
             null,
@@ -129,7 +130,7 @@ public class DBAccessTestTransaction {
             120.0,
             "2026-12-01",
             "2026-12-31",
-            "spending",
+            TransactionType.spending,
             "work",
             "monthly");
 
@@ -145,7 +146,7 @@ public class DBAccessTestTransaction {
     @Test
     void testDeleteTransaction() {
         Transaction transaction = dbAccess.createTransaction(3, 3, 499.0, "2026-06-08", 
-                                                             "spending", "Test Delete Transaction", "monthly");
+                                                             TransactionType.spending, "Test Delete Transaction", "monthly");
         boolean deleted = dbAccess.deleteTransaction(transaction.getTransactionId());
         assertTrue(deleted);
         assertNull(dbAccess.getTransactionById(transaction.getTransactionId()));
@@ -162,9 +163,9 @@ public class DBAccessTestTransaction {
     @Test
     void testSumTransactionsSpendings() {
         Transaction transaction = dbAccess.createTransaction(5, 4, 140.0, "2026-08-08", 
-                                                             "spending", "Test Sum Transactions Spendings", "monthly");
+                                                             TransactionType.spending, "Test Sum Transactions Spendings", "monthly");
         Transaction transaction2 = dbAccess.createTransaction(9, 4, 30.0, "2026-08-08", 
-                                                             "spending", "Test Sum Transactions Spendings2", "monthly");
+                                                             TransactionType.spending, "Test Sum Transactions Spendings2", "monthly");
         assertNotNull(transaction);
         assertNotNull(transaction2);
         Double sum = dbAccess.sumTransactionsSpendings();
@@ -175,11 +176,11 @@ public class DBAccessTestTransaction {
     @Test
     void testSumTransactionsIncome() {
         Transaction transaction = dbAccess.createTransaction(5, 4, 250.0, "2026-08-08",
-                "income", "Test Sum Transactions Income", "monthly");
+                TransactionType.income, "Test Sum Transactions Income", "monthly");
         Transaction transaction2 = dbAccess.createTransaction(9, 4, 50.0, "2026-08-08",
-                "income", "Test Sum Transactions Income2", "monthly");
+                TransactionType.income, "Test Sum Transactions Income2", "monthly");
         Transaction transaction3 = dbAccess.createTransaction(9, 4, 10.0, "2026-08-08",
-                "spending", "Test Sum Transactions Income3", "monthly");
+                TransactionType.spending, "Test Sum Transactions Income3", "monthly");
         assertNotNull(transaction);
         assertNotNull(transaction2);
         assertNotNull(transaction3);
@@ -195,11 +196,11 @@ public class DBAccessTestTransaction {
         Category otherCategory = dbAccessCategory.createCategory("testCategorySumOther", "Other Category", "yellow", 500.0);
 
         dbAccess.createTransaction(user.getUserId(), targetCategory.getCategoryId(), 80.0, "2026-08-10",
-                "spending", "Target spending", "monthly");
+                TransactionType.spending, "Target spending", "monthly");
         dbAccess.createTransaction(user.getUserId(), targetCategory.getCategoryId(), 20.0, "2026-08-11",
-                "income", "Target income", "monthly");
+                TransactionType.income, "Target income", "monthly");
         dbAccess.createTransaction(user.getUserId(), otherCategory.getCategoryId(), 999.0, "2026-08-12",
-                "spending", "Other spending", "monthly");
+                TransactionType.spending, "Other spending", "monthly");
 
         Double sum = dbAccess.sumCategorySpendings(targetCategory.getCategoryId());
         assertEquals(80.0, sum);
@@ -222,13 +223,13 @@ public class DBAccessTestTransaction {
         Category otherCategory = dbAccessCategory.createCategory("testCategoryIncomeOther", "Income Other Category", "orange", 500.0);
 
         dbAccess.createTransaction(user.getUserId(), targetCategory.getCategoryId(), 55.0, "2026-08-13",
-            "income", "Target income 1", "monthly");
+            TransactionType.income, "Target income 1", "monthly");
         dbAccess.createTransaction(user.getUserId(), targetCategory.getCategoryId(), 45.0, "2026-08-14",
-            "income", "Target income 2", "monthly");
+            TransactionType.income, "Target income 2", "monthly");
         dbAccess.createTransaction(user.getUserId(), targetCategory.getCategoryId(), 12.0, "2026-08-15",
-            "spending", "Target spending", "monthly");
+            TransactionType.spending, "Target spending", "monthly");
         dbAccess.createTransaction(user.getUserId(), otherCategory.getCategoryId(), 999.0, "2026-08-16",
-            "income", "Other income", "monthly");
+            TransactionType.income, "Other income", "monthly");
 
         Double sum = dbAccess.sumCategoryIncome(targetCategory.getCategoryId());
         assertEquals(100.0, sum);
@@ -250,14 +251,14 @@ public class DBAccessTestTransaction {
         Category category = dbAccessCategory.createCategory("testCategoryForTransaction", "Test Category for Transaction", "#FF0000", 500.0);
         
         Transaction transaction = dbAccess.createTransaction(user.getUserId(), category.getCategoryId(), 150.0, "2026-07-10", 
-                                                             "spending", "Test Create Transaction", "monthly");
+                                                             TransactionType.spending, "Test Create Transaction", "monthly");
         assertNotNull(transaction);
         assertNotNull(transaction.getTransactionId());
         assertEquals(user.getUserId(), transaction.getUser().getUserId());
         assertEquals(category.getCategoryId(), transaction.getCategory().getCategoryId());
         assertEquals(150.0, transaction.getTransactionAmount());
         assertEquals("2026-07-10", transaction.getTransactionDate());
-        assertEquals("spending", transaction.getTransactionType());
+        assertEquals(TransactionType.spending, transaction.getTransactionType());
         assertEquals("Test Create Transaction", transaction.getTransactionDescription());
         assertEquals("monthly", transaction.getTransactionFrequency());
     }
@@ -269,17 +270,17 @@ public class DBAccessTestTransaction {
         Category category = dbAccessCategory.createCategory("testCategoryForUpdate", "Test Category for Update", "#00FF00", 300.0);
 
         Transaction transaction = dbAccess.createTransaction(user.getUserId(), category.getCategoryId(), 200.0, "2026-09-01",
-                "spending", "Original Description", "monthly");
+                TransactionType.spending, "Original Description", "monthly");
 
         boolean updated = dbAccess.updateTransaction(transaction.getTransactionId(), null, null, 350.0, "2026-09-15",
-                "income", "Updated Description", "weekly");
+                TransactionType.income, "Updated Description", "weekly");
 
         assertTrue(updated);
         Transaction updatedTransaction = dbAccess.getTransactionById(transaction.getTransactionId());
         assertNotNull(updatedTransaction);
         assertEquals(350.0, updatedTransaction.getTransactionAmount());
         assertEquals("2026-09-15", updatedTransaction.getTransactionDate());
-        assertEquals("income", updatedTransaction.getTransactionType());
+        assertEquals(TransactionType.income, updatedTransaction.getTransactionType());
         assertEquals("Updated Description", updatedTransaction.getTransactionDescription());
         assertEquals("weekly", updatedTransaction.getTransactionFrequency());
     }
@@ -298,9 +299,9 @@ public class DBAccessTestTransaction {
         Category category = dbAccessCategory.createCategory("testCategoryForFrequency", "Test Category for Frequency", "#00FF00", 222.2);
 
         Transaction transaction = dbAccess.createTransaction(user.getUserId(), category.getCategoryId(), 277.0, "2026-09-04",
-                "spending", "Frequency Description", "monthly");
+                TransactionType.spending, "Frequency Description", "monthly");
         Transaction transaction2 = dbAccess.createTransaction(user.getUserId(), category.getCategoryId(), 11.5, "2026-09-05",
-                "income", "Frequency Description2", "monthly");
+                TransactionType.income, "Frequency Description2", "monthly");
 
         assertNotNull(transaction);
         assertNotNull(transaction2);

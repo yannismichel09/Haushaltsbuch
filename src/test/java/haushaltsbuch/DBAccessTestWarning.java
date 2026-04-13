@@ -17,6 +17,7 @@ import dbaccess.DBAccessWarning;
 import haushaltsbuch.Studienprojekt.StudienprojektApplication;
 import jakarta.transaction.Transactional;
 import model.Category;
+import model.TransactionType;
 import model.User;
 
 @Transactional
@@ -47,7 +48,7 @@ public class DBAccessTestWarning {
     void testCheckNetBalanceNegativeOnlyIncome() {
         User user = dbAccessUser.createUser("testUserIncome", "testPassword123", "testincome@test.com");
         Category category = dbAccessCategory.createCategory("testIncomeCategory", "testIncomeDescription", "green", 1000.0);
-        dbAccessTransaction.createTransaction(user.getUserId(), category.getCategoryId(), 500.0, "2026-04-06", "income", "testIncomeTransaction", "once");
+        dbAccessTransaction.createTransaction(user.getUserId(), category.getCategoryId(), 500.0, "2026-04-06", TransactionType.income, "testIncomeTransaction", "once");
 
         boolean result = dbAccess.checkNetBalanceNegative();
         assertFalse(result);
@@ -58,7 +59,7 @@ public class DBAccessTestWarning {
     void testCheckNetBalanceNegativeOnlySpending() {
         User user = dbAccessUser.createUser("testUserSpending", "testPassword123", "testspending@test.com");
         Category category = dbAccessCategory.createCategory("testSpendingCategory", "testSpendingDescription", "red", 1000.0);
-        dbAccessTransaction.createTransaction(user.getUserId(), category.getCategoryId(), 500.0, "2026-04-06", "spending", "testSpendingTransaction", "once");
+        dbAccessTransaction.createTransaction(user.getUserId(), category.getCategoryId(), 500.0, "2026-04-06", TransactionType.spending, "testSpendingTransaction", "once");
 
         boolean result = dbAccess.checkNetBalanceNegative();
         assertTrue(result);
@@ -71,8 +72,8 @@ public class DBAccessTestWarning {
         Category category1 = dbAccessCategory.createCategory("testIncomeCategory2", "testIncomeDescription2", "green", 1000.0);
         Category category2 = dbAccessCategory.createCategory("testSpendingCategory2", "testSpendingDescription2", "red", 1000.0);
 
-        dbAccessTransaction.createTransaction(user.getUserId(), category1.getCategoryId(), 100.0, "2026-04-06", "income", "testIncomeTransaction2", "once");
-        dbAccessTransaction.createTransaction(user.getUserId(), category2.getCategoryId(), 500.0, "2026-04-06", "spending", "testSpendingTransaction2", "once");
+        dbAccessTransaction.createTransaction(user.getUserId(), category1.getCategoryId(), 100.0, "2026-04-06", TransactionType.income, "testIncomeTransaction2", "once");
+        dbAccessTransaction.createTransaction(user.getUserId(), category2.getCategoryId(), 500.0, "2026-04-06", TransactionType.spending, "testSpendingTransaction2", "once");
 
         boolean result = dbAccess.checkNetBalanceNegative();
         assertTrue(result);
@@ -85,8 +86,8 @@ public class DBAccessTestWarning {
         Category category1 = dbAccessCategory.createCategory("testIncomeCategory3", "testIncomeDescription3", "green", 1000.0);
         Category category2 = dbAccessCategory.createCategory("testSpendingCategory3", "testSpendingDescription3", "red", 1000.0);
 
-        dbAccessTransaction.createTransaction(user.getUserId(), category1.getCategoryId(), 500.0, "2026-04-06", "income", "testIncomeTransaction3", "once");
-        dbAccessTransaction.createTransaction(user.getUserId(), category2.getCategoryId(), 100.0, "2026-04-06", "spending", "testSpendingTransaction3", "once");
+        dbAccessTransaction.createTransaction(user.getUserId(), category1.getCategoryId(), 500.0, "2026-04-06", TransactionType.income, "testIncomeTransaction3", "once");
+        dbAccessTransaction.createTransaction(user.getUserId(), category2.getCategoryId(), 100.0, "2026-04-06", TransactionType.spending, "testSpendingTransaction3", "once");
 
         boolean result = dbAccess.checkNetBalanceNegative();
         assertFalse(result);
@@ -100,9 +101,9 @@ public class DBAccessTestWarning {
         Category belowLimitCategory = dbAccessCategory.createCategory("testBudgetBelow", "below", "blue", 100.0);
 
         dbAccessTransaction.createTransaction(user.getUserId(), overLimitCategory.getCategoryId(), 85.0,
-                "2026-04-07", "spending", "over limit spending", "once");
+                "2026-04-07", TransactionType.spending, "over limit spending", "once");
         dbAccessTransaction.createTransaction(user.getUserId(), belowLimitCategory.getCategoryId(), 40.0,
-                "2026-04-07", "spending", "below limit spending", "once");
+                "2026-04-07", TransactionType.spending, "below limit spending", "once");
 
         List<Category> result = dbAccess.checkBudgetLimit(0.8);
 
@@ -117,7 +118,7 @@ public class DBAccessTestWarning {
         Category thresholdCategory = dbAccessCategory.createCategory("testBudgetThreshold", "threshold", "gray", 100.0);
 
         dbAccessTransaction.createTransaction(user.getUserId(), thresholdCategory.getCategoryId(), 80.0,
-                "2026-04-07", "spending", "exact threshold spending", "once");
+                "2026-04-07", TransactionType.spending, "exact threshold spending", "once");
 
         List<Category> result = dbAccess.checkBudgetLimit(0.8);
 
