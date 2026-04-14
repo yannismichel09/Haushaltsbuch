@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import dbaccess.DBAccessUser;
+import dto.UserAuthDtoOut;
 import dto.UserDtoOut;
 import dto.UserLoginDtoIn;
 import dto.UserRegisterDtoIn;
@@ -30,19 +31,20 @@ public class UserController {
         this.controllerTools = controllerTools;
     }
 
-    // Registriert einen neuen Benutzer.
+    // Registriert einen neuen Benutzer und gibt einen Zugriffstoken zurück.
     @PostMapping("/register")
-    public ResponseEntity<UserDtoOut> registerUser(@RequestBody UserRegisterDtoIn userRegisterDtoIn) {
+        public ResponseEntity<UserAuthDtoOut> registerUser(@RequestBody UserRegisterDtoIn userRegisterDtoIn) {
         User user = dbAccessUser.createUser(userRegisterDtoIn.username(), userRegisterDtoIn.password(),
                 userRegisterDtoIn.email());
+        String token = securityManager.createBenutzerToken(user);
 
         return ResponseEntity.ok()
-                .body(new UserDtoOut(user));
+            .body(new UserAuthDtoOut(token, new UserDtoOut(user)));
     }
 
-    // Meldet einen Benutzer an und gibt ein Zugriffstoken zurueck.
+    // Meldet einen Benutzer an und gibt Zugriffstoken und Benutzerdaten zurück.
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody UserLoginDtoIn userLoginDtoIn) {
+    public ResponseEntity<UserAuthDtoOut> loginUser(@RequestBody UserLoginDtoIn userLoginDtoIn) {
         User user = dbAccessUser.getUserByUsernameAndPassword(userLoginDtoIn.username(), userLoginDtoIn.password());
 
         if (user == null) {
@@ -51,7 +53,7 @@ public class UserController {
 
         String token = securityManager.createBenutzerToken(user);
         return ResponseEntity.ok()
-                .body(token);
+            .body(new UserAuthDtoOut(token, new UserDtoOut(user)));
     }
 
     // Meldet den aktuellen Benutzer ab und entfernt das Token.
