@@ -1,3 +1,4 @@
+// Ruft die Kategorien ab, bei denen das Budget über einen bestimmten Prozentsatz liegt (90%) / Wird für die Warnung benötigt
 async function checkBudgetLimit() {
     try {
         let response = await fetch(WARNING_BASE_PATH+"/budgetlimit", {
@@ -18,6 +19,7 @@ async function checkBudgetLimit() {
     }
 }
 
+// Ruft ab, ob die Ausgaben höher sind als die Einnahmen (Saldo) / Wird für die Warnung benötigt
 async function checkNetBalanceNegative() {
     try {
         let response = await fetch(WARNING_BASE_PATH+"/netbalance", {
