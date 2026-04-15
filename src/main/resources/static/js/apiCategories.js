@@ -21,7 +21,7 @@ async function createCategory(categoryCreateDtoIn) {
 	}
 }
 
-// Gibt alle Kategorien zurueck.
+// Gibt alle Kategorien zurück.
 async function getAllCategories() {
 	try {
 		let response = await fetch(CATEGORY_BASE_PATH, {
@@ -42,7 +42,7 @@ async function getAllCategories() {
 	}
 }
 
-// Gibt eine Kategorie anhand der ID zurueck.
+// Gibt eine Kategorie anhand der ID zurück.
 async function getCategoryById(categoryId) {
 	try {
 		let response = await fetch(CATEGORY_BASE_PATH + "/" + categoryId, {
@@ -63,7 +63,7 @@ async function getCategoryById(categoryId) {
 	}
 }
 
-// Gibt gefilterte Kategorien zurueck.
+// Gibt gefilterte Kategorien zurück.
 async function getFilteredCategories(categoryFilterDtoIn) {
 	try {
 		let response = await fetch(CATEGORY_BASE_PATH + "/filter", {
@@ -86,7 +86,7 @@ async function getFilteredCategories(categoryFilterDtoIn) {
 	}
 }
 
-// Loescht eine Kategorie anhand der ID.
+// Löscht eine Kategorie anhand der ID.
 async function deleteCategory(categoryId) {
 	try {
 		let response = await fetch(CATEGORY_BASE_PATH + "/" + categoryId, {
