@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<title>Dashboard</title>
+</head>
+<body>
+	<main>
+		<section>
+			<div>
+				<div>
+					<h3>Income</h3>
+					<p>0,00 €</p>
+				</div>
+				<div>
+					<h3>Spending</h3>
+					<p>0,00 €</p>
+				</div>
+				<div>
+					<h3>Net Balance</h3>
+					<p>0,00 €</p>
+				</div>
+			</div>
+		</section>
+
+		<section>
+			<h2>Search and Filter</h2>
+			<form action="#" method="get">
+				<fieldset>
+					<legend>Filter Options</legend>
+					<div>
+						<div>
+							<label for="search-input">Search</label>
+							<input type="text" id="search-input" name="search" placeholder="Search...">
+						</div>
+					</div>
+
+					<details>
+						<summary>Toggle Filters</summary>
+						<div>
+							<div>
+								<div>
+									<label for="filter-type">Type</label>
+									<select id="filter-type" name="filterType">
+										<option value="" selected>All</option>
+										<option value="income">Income</option>
+										<option value="spending">Spending</option>
+									</select>
+								</div>
+								<div>
+									<label for="filter-category">Category</label>
+									<select id="filter-category" name="filterCategory">
+										<option value="" selected>All</option>
+									</select>
+								</div>
+								<div>
+									<label for="filter-frequency">Frequency</label>
+									<select id="filter-frequency" name="filterFrequency">
+										<option value="" selected>All</option>
+										<option value="once">Once</option>
+										<option value="weekly">Weekly</option>
+										<option value="monthly">Monthly</option>
+										<option value="yearly">Yearly</option>
+									</select>
+								</div>
+							</div>
+							<div>
+								<div>
+									<label for="filter-date-from">Date from</label>
+									<input type="date" id="filter-date-from" name="filterDateFrom">
+								</div>
+								<div>
+									<label for="filter-date-to">Date to</label>
+									<input type="date" id="filter-date-to" name="filterDateTo">
+								</div>
+							</div>
+							<div>
+								<div>
+									<label for="filter-amount-from">Amount from (€)</label>
+									<input type="number" id="filter-amount-from" name="filterAmountFrom" step="0.01" placeholder="0.00">
+								</div>
+								<div>
+									<label for="filter-amount-to">Amount to (€)</label>
+									<input type="number" id="filter-amount-to" name="filterAmountTo" step="0.01" placeholder="0.00">
+								</div>
+							</div>
+						</div>
+					</details>
+
+					<button type="submit">OK</button>
+					<button type="reset">Reset</button>
+					<button type="button">CSV Export</button>
+				</fieldset>
+			</form>
+		</section>
+
+		<section>
+			<h2>Monthly Trend</h2>
+			<div>
+				<canvas id="monthly-trend-chart" aria-label="Monthly trend for income and spending" role="img"></canvas>
+			</div>
+		</section>
+
+		<section>
+			<h2>Budget vs Actual</h2>
+			<div>
+				<div>
+					<span>Category 1</span>
+					<span>430 € / 750 €</span>
+				</div>
+				<div>
+					<progress value="430" max="750">430 / 750</progress>
+				</div>
+
+				<div>
+					<span>Category 2</span>
+					<span>620 € / 900 €</span>
+				</div>
+				<div>
+					<progress value="620" max="900">620 / 900</progress>
+				</div>
+
+				<div>
+					<span>Category 3</span>
+					<span>280 € / 500 €</span>
+				</div>
+				<div>
+					<progress value="280" max="500">280 / 500</progress>
+				</div>
+			</div>
+		</section>
+
+		
+	</main>
+
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script>
+		const chartCanvas = document.getElementById("monthly-trend-chart");
+
+		if (chartCanvas) {
+			new Chart(chartCanvas, {
+				type: "line",
+				data: {
+					labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+					datasets: [
+						{
+							label: "Income",
+							data: [1200, 1400, 1300, 1500, 1600, 1550, 1700, 1650, 1750, 1800, 1900, 2000]
+						},
+						{
+							label: "Spending",
+							data: [800, 900, 850, 950, 1000, 980, 1020, 990, 1100, 1080, 1150, 1200]
+						}
+					]
+				},
+				options: {
+					responsive: true,
+					plugins: {
+						legend: {
+							display: true,
+							position: "top"
+						}
+					},
+					scales: {
+						x: {
+							title: {
+								display: true,
+								text: "Months"
+							}
+						},
+						y: {
+							beginAtZero: true,
+							title: {
+								display: true,
+								text: "Amount"
+							}
+						}
+					}
+				}
+			});
+		}
+	</script>
+</body>
+</html>
