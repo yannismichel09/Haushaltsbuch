@@ -46,6 +46,18 @@ public class CategoryController {
                         category.getCategoryColor(), category.getCategoryLimit()));
     }
 
+    @PostMapping("/filter")
+    public ResponseEntity<Collection<CategoryDtoOut>> getFilteredCategories(
+            @RequestHeader("Authorization") String token, @RequestBody CategoryFilterDtoIn categoryFilterDtoIn) {
+        controllerTools.checkIsAccepted(token);
+        Collection<CategoryDtoOut> categories = dbAccessCategory.getFilteredCategories(categoryFilterDtoIn.categoryId(),
+                categoryFilterDtoIn.keyword(), categoryFilterDtoIn.categoryColor(), categoryFilterDtoIn.amountMin(),
+                categoryFilterDtoIn.amountMax()).stream().map(CategoryDtoOut::new).toList();
+
+        return ResponseEntity.ok()
+                .body(categories);
+    }
+
     // Get-Mapping
 
     @GetMapping
@@ -66,18 +78,6 @@ public class CategoryController {
 
         return ResponseEntity.ok()
                 .body(new CategoryDtoOut(category));
-    }
-
-    @GetMapping("/filter")
-    public ResponseEntity<Collection<CategoryDtoOut>> getFilteredCategories(
-            @RequestHeader("Authorization") String token, @RequestBody CategoryFilterDtoIn categoryFilterDtoIn) {
-        controllerTools.checkIsAccepted(token);
-        Collection<CategoryDtoOut> categories = dbAccessCategory.getFilteredCategories(categoryFilterDtoIn.categoryId(),
-                categoryFilterDtoIn.keyword(), categoryFilterDtoIn.categoryColor(), categoryFilterDtoIn.amountMin(),
-                categoryFilterDtoIn.amountMax()).stream().map(CategoryDtoOut::new).toList();
-
-        return ResponseEntity.ok()
-                .body(categories);
     }
 
     // Delete-Mapping

@@ -49,6 +49,24 @@ public class TransactionController {
                 .body(new TransactionDtoOut(transaction));
     }
 
+    // Liefert Transaktionen anhand von Filterkriterien.
+    @PostMapping("/filter")
+    public ResponseEntity<Collection<TransactionDtoOut>> getFilteredTransactions(
+            @RequestHeader("Authorization") String token,
+            @RequestBody TransactionFilterDtoIn transactionFilterDtoIn) {
+        controllerTools.checkIsAccepted(token);
+        Collection<TransactionDtoOut> transactions = dbAccessTransaction.getFilteredTransactions(
+                transactionFilterDtoIn.transactionId(), transactionFilterDtoIn.userId(),
+                transactionFilterDtoIn.categoryId(), transactionFilterDtoIn.amountMin(),
+                transactionFilterDtoIn.amountMax(), transactionFilterDtoIn.transactionDateFrom(),
+                transactionFilterDtoIn.transactionDateTo(), transactionFilterDtoIn.transactionType(),
+                transactionFilterDtoIn.keyword(), transactionFilterDtoIn.transactionFrequency()).stream()
+                .map(TransactionDtoOut::new).toList();
+
+        return ResponseEntity.ok()
+                .body(transactions);
+    }
+
     // Get-Mapping
 
     // Liefert alle vorhandenen Transaktionen.
@@ -72,24 +90,6 @@ public class TransactionController {
 
         return ResponseEntity.ok()
                 .body(new TransactionDtoOut(transaction));
-    }
-
-    // Liefert Transaktionen anhand von Filterkriterien.
-    @GetMapping("/filter")
-    public ResponseEntity<Collection<TransactionDtoOut>> getFilteredTransactions(
-            @RequestHeader("Authorization") String token,
-            @RequestBody TransactionFilterDtoIn transactionFilterDtoIn) {
-        controllerTools.checkIsAccepted(token);
-        Collection<TransactionDtoOut> transactions = dbAccessTransaction.getFilteredTransactions(
-                transactionFilterDtoIn.transactionId(), transactionFilterDtoIn.userId(),
-                transactionFilterDtoIn.categoryId(), transactionFilterDtoIn.amountMin(),
-                transactionFilterDtoIn.amountMax(), transactionFilterDtoIn.transactionDateFrom(),
-                transactionFilterDtoIn.transactionDateTo(), transactionFilterDtoIn.transactionType(),
-                transactionFilterDtoIn.keyword(), transactionFilterDtoIn.transactionFrequency()).stream()
-                .map(TransactionDtoOut::new).toList();
-
-        return ResponseEntity.ok()
-                .body(transactions);
     }
 
     // Delete-Mapping
