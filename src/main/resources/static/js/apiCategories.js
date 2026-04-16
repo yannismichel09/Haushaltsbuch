@@ -67,7 +67,7 @@ async function getCategoryById(categoryId) {
 async function getFilteredCategories(categoryFilterDtoIn) {
 	try {
 		let response = await fetch(CATEGORY_BASE_PATH + "/filter", {
-			method: "GET",
+			method: "POST",
 			headers: {
 				"Accept": "application/json",
 				"Content-Type": "application/json",
