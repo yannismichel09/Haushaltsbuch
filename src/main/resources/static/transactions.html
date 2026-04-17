@@ -45,6 +45,7 @@
                 <div class="form-group">
                     <label for="frequency">Frequency</label>
                     <select id="frequency" name="frequency" class="select-field">
+                        <option value="" disabled selected>Select...</option>
                         <option value="once">Once</option>
                         <option value="weekly">Weekly</option>
                         <option value="monthly">Monthly</option>
@@ -67,66 +68,73 @@
 
         <section class="search-filter">
             <h2>Search and Filter</h2>
-            <div class="filter-controls">
-                
-                <div class="form-group">
-                    <label for="search-input">Search</label>
-                    <input type="text" id="search-input" name="search" class="input-field" placeholder="Search...">
-                </div>
-
-                <div class="form-group">
-                    <label for="filter-type">Type</label>
-                    <select id="filter-type" name="filterType" class="select-field">
-                        <option value="" disabled selected>Select...</option>
-                        <option value="income">Income</option>
-                        <option value="spending">Spending</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="filter-category">Category</label>
-                    <select id="filter-category" name="filterCategory" class="select-field">
-                        <option value="" disabled selected>Select...</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="filter-frequency">Frequency</label>
-                    <select id="filter-frequency" name="filterFrequency" class="select-field">
-                        <option value="" disabled selected>Select...</option>
-                        <option value="once">Once</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly">Yearly</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="filter-date-from">Date from</label>
-                    <input type="date" id="filter-date-from" name="filterDateFrom" class="input-field">
-                </div>
-
-                <div class="form-group">
-                    <label for="filter-date-to">Date to</label>
-                    <input type="date" id="filter-date-to" name="filterDateTo" class="input-field">
-                </div>
-
-                <div class="form-group">
-                    <label for="filter-amount-from">Amount from (€)</label>
-                    <input type="number" id="filter-amount-from" name="filterAmountFrom" class="input-field" step="0.01" placeholder="0.00">
-                </div>
-
-                <div class="form-group">
-                    <label for="filter-amount-to">Amount to (€)</label>
-                    <input type="number" id="filter-amount-to" name="filterAmountTo" class="input-field" step="0.01" placeholder="0.00">
-                </div>
-
-                <div class="action-buttons">
-                    <button type="button" id="apply-filter" class="btn-action">OK</button>
-                    <button type="button" id="reset-filter" class="btn-action">Reset</button>
-                    <button type="button" id="csv-export" class="btn-action">CSV Export</button>
-                </div>
-            </div>
+            <form action="#" method="get">
+                <fieldset>
+                    <legend>Filter Options</legend>
+                    <div>
+                        <div>
+                            <label for="search-input">Search</label>
+                            <input type="text" id="search-input" name="search" placeholder="Search...">
+                        </div>
+                    </div>
+        
+                    <details>
+                        <summary>Toggle Filters</summary>
+                        <div>
+                            <div>
+                                <div>
+                                    <label for="filter-type">Type</label>
+                                    <select id="filter-type" name="filterType">
+                                        <option value="" selected>All</option>
+                                        <option value="income">Income</option>
+                                        <option value="spending">Spending</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="filter-category">Category</label>
+                                    <select id="filter-category" name="filterCategory">
+                                        <option value="" selected>All</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="filter-frequency">Frequency</label>
+                                    <select id="filter-frequency" name="filterFrequency">
+                                        <option value="" selected>All</option>
+                                        <option value="once">Once</option>
+                                        <option value="weekly">Weekly</option>
+                                        <option value="monthly">Monthly</option>
+                                        <option value="yearly">Yearly</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    <label for="filter-date-from">Date from</label>
+                                    <input type="date" id="filter-date-from" name="filterDateFrom">
+                                </div>
+                                <div>
+                                    <label for="filter-date-to">Date to</label>
+                                    <input type="date" id="filter-date-to" name="filterDateTo">
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    <label for="filter-amount-from">Amount from (€)</label>
+                                    <input type="number" id="filter-amount-from" name="filterAmountFrom" step="0.01" placeholder="0.00">
+                                </div>
+                                <div>
+                                    <label for="filter-amount-to">Amount to (€)</label>
+                                    <input type="number" id="filter-amount-to" name="filterAmountTo" step="0.01" placeholder="0.00">
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+        
+                    <button type="submit">OK</button>
+                    <button type="reset">Reset</button>
+                    <button type="button">CSV Export</button>
+                </fieldset>
+            </form>
         </section>
 
         <section class="transaction-list-section">
