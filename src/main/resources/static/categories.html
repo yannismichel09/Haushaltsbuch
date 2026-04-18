@@ -24,7 +24,7 @@
 
 				<div>
 					<label for="category-color">Color</label>
-					<input type="text" id="category-color" name="categoryColor">
+					<input type="color" id="category-color" name="categoryColor" value="#000000">
 				</div>
 
 				<div>
@@ -53,8 +53,29 @@
 						<summary>Toggle Filters</summary>
 						<div>
 							<div>
-								<label for="filter-color">Color</label>
-								<input type="text" id="filter-color" name="categoryColor">
+								<fieldset>
+									<legend>Colors (current examples)</legend>
+
+									<div>
+										<input type="checkbox" id="filter-color-red" name="categoryColors" value="#FF0000">
+										<label for="filter-color-red">Red (#FF0000)</label>
+									</div>
+
+									<div>
+										<input type="checkbox" id="filter-color-green" name="categoryColors" value="#00AA00">
+										<label for="filter-color-green">Green (#00AA00)</label>
+									</div>
+
+									<div>
+										<input type="checkbox" id="filter-color-blue" name="categoryColors" value="#0066FF">
+										<label for="filter-color-blue">Blue (#0066FF)</label>
+									</div>
+
+									<div>
+										<input type="checkbox" id="filter-color-orange" name="categoryColors" value="#FF9900">
+										<label for="filter-color-orange">Orange (#FF9900)</label>
+									</div>
+								</fieldset>
 							</div>
 							<div>
 								<div>
