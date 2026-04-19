@@ -32,4 +32,12 @@ document.addEventListener("DOMContentLoaded", () => {
 		picker.appendChild(input);
 		picker.appendChild(circle);
 	});
+
+	document.getElementById("reset-category-btn").addEventListener("click", () => {
+		document.getElementById("category-name").value = "";
+		document.getElementById("category-description").value = "";
+		document.getElementById("category-limit").value = "";
+		hidden.value = "";
+		picker.querySelectorAll("input[type='radio']").forEach(r => r.checked = false);
+	});
 });
