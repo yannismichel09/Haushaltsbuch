@@ -59,4 +59,31 @@ document.addEventListener("DOMContentLoaded", () => {
 			filterGrid.appendChild(item);
 		});
 	}
+
+	document.getElementById("add-category-btn").addEventListener("click", async () => {
+		const name  = document.getElementById("category-name").value.trim();
+		const color = hidden.value;
+
+		if (!name) {
+			alert("Please enter a category name.");
+			return;
+		}
+		if (!color) {
+			alert("Please select a color.");
+			return;
+		}
+
+		const limitRaw = document.getElementById("category-limit").value;
+		const dto = {
+			categoryName:        name,
+			categoryDescription: document.getElementById("category-description").value.trim(),
+			categoryColor:       color,
+			categoryLimit:       limitRaw !== "" ? parseFloat(limitRaw) : null,
+		};
+
+		const result = await createCategory(dto);
+		if (result) {
+			document.getElementById("add-category-form").reset();
+		}
+	});
 });
