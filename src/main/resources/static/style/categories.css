@@ -1,0 +1,26 @@
+.color-picker {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+	align-items: center;
+}
+.color-picker input[type="radio"] {
+	display: none;
+}
+.color-circle {
+	display: inline-block;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	cursor: pointer;
+	border: 3px solid transparent;
+	box-sizing: border-box;
+	transition: transform 0.1s, border-color 0.1s;
+}
+.color-circle:hover {
+	transform: scale(1.15);
+}
+.color-picker input[type="radio"]:checked + .color-circle {
+	border: 3px solid #000;
+	box-shadow: inset 0 0 0 2px #fff;
+}
