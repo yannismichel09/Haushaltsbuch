@@ -3,6 +3,7 @@
   border: 2px solid black;
   border-bottom: none;
   background-color: #f1f1f1;
+  display: flex;
 }
 
 .tab button {
@@ -13,7 +14,7 @@
   cursor: pointer;
   padding: 14px 16px;
   transition: 0.3s;
-  width: 25%;
+  flex: 1; 
   border-right: 1px solid black;
 }
 
