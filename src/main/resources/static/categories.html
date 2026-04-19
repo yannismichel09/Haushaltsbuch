@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Categories</title>
+	<link rel="stylesheet" href="style/categories.css">
 </head>
 <body>
 
@@ -23,8 +24,9 @@
 				</div>
 
 				<div>
-					<label for="category-color">Color</label>
-					<input type="color" id="category-color" name="categoryColor" value="#000000">
+					<label>Color</label>
+					<input type="hidden" id="category-color" name="categoryColor" value="">
+					<div class="color-picker" id="color-picker"></div>
 				</div>
 
 				<div>
@@ -105,6 +107,9 @@
 		</section>
 
 	</main>
+
+	<script src="js/apiCategories.js"></script>
+	<script src="js/categories.js"></script>
 
 </body>
 </html>
