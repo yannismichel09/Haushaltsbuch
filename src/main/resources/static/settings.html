@@ -27,7 +27,7 @@
                     </td>
                     <td>
                         <p>Change Profile Picture</p>
-                        <button>Change Image</button>
+                        <button id="change-profile-picture-btn" class="btn-action">Change Image</button>
                     </td>
                 </tr>
             </table>
@@ -38,10 +38,10 @@
             <h3>Username</h3>
             <label for="usernameInput">New Username:</label>
             <input type="text" id="usernameInput" placeholder="Please enter your new username" readonly>
-            <button>Edit</button>
+            <button id="edit-username-btn" class="btn-action">Edit</button>
             <div>
-                <button>Cancel</button>
-                <button>Save</button>
+                <button type="button" id="cancel-username-btn" class="btn-action">Cancel</button>
+                <button type="button" id="save-username-btn" class="btn-action">Save</button>
             </div>
         </div>
     </div>
@@ -57,7 +57,7 @@
             <label for="emailInput">E-Mail Address</label>
             <div>
                 <input type="email" id="emailInput" placeholder="Please enter your e-mail address" readonly>
-                <button>Edit</button>
+                <button id="edit-email-btn" class="btn-action">Edit</button>
             </div>
         </div>
 
@@ -78,7 +78,8 @@
             <br>
             <input type="password" id="passwordConfirmInput" placeholder="Please repeat your new password">
             <br><br>
-            <button>Save</button>
+            <button type="button" id="reset-password-btn" class="btn-action">Reset</button>
+            <button type="button" id="save-password-btn" class="btn-action">Save</button>
         </div>
     </div>
 
