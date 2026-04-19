@@ -14,6 +14,32 @@
 	box-sizing: border-box;
 }
 
+.color-limit-row {
+	display: flex;
+	align-items: flex-start;
+	gap: 16px;
+	margin-bottom: 12px;
+}
+
+.color-block {
+	flex: 1;
+}
+
+.limit-block {
+	flex: 1;
+	text-align: left;
+}
+
+.limit-block label {
+	display: block;
+	margin-bottom: 4px;
+}
+
+.limit-block input[type="number"] {
+	width: 100%;
+	box-sizing: border-box;
+}
+
 .color-picker {
 	display: flex;
 	gap: 10px;
