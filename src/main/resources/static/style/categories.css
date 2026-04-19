@@ -1,3 +1,19 @@
+.field-full {
+	width: 100%;
+	margin-bottom: 12px;
+}
+
+#add-category-form .field-full label {
+	display: block;
+	margin-bottom: 4px;
+}
+
+#add-category-form .field-full input[type="text"] {
+	display: block;
+	width: 100%;
+	box-sizing: border-box;
+}
+
 .color-picker {
 	display: flex;
 	gap: 10px;
