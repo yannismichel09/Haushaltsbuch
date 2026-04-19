@@ -15,12 +15,12 @@
 			<form id="add-category-form">
 				<div class="field-full">
 					<label for="category-name">Name</label>
-					<input type="text" id="category-name" name="categoryName">
+					<input type="text" id="category-name" name="categoryName" placeholder="z. B. Lebensmittel">
 				</div>
 
 				<div class="field-full">
 					<label for="category-description">Description</label>
-					<input type="text" id="category-description" name="categoryDescription">
+					<input type="text" id="category-description" name="categoryDescription" placeholder="Kurze Beschreibung der Kategorie">
 				</div>
 
 				<div class="color-limit-row">
@@ -32,7 +32,7 @@
 
 					<div class="limit-block">
 						<label for="category-limit">Budget Limit (€)</label>
-						<input type="number" id="category-limit" name="categoryLimit" step="0.01">
+						<input type="number" id="category-limit" name="categoryLimit" step="0.01" placeholder="0,00">
 					</div>
 				</div>
 
@@ -51,7 +51,7 @@
 					<legend>Filter Options</legend>
 					<div>
 						<label for="search-input">Search</label>
-						<input type="text" id="search-input" name="keyword">
+						<input type="text" id="search-input" name="keyword" placeholder="Kategorie suchen...">
 					</div>
 
 					<details>
@@ -66,11 +66,11 @@
 							<div>
 								<div>
 									<label for="filter-amount-min">Amount from (€)</label>
-									<input type="number" id="filter-amount-min" name="amountMin" step="0.01">
+									<input type="number" id="filter-amount-min" name="amountMin" step="0.01" placeholder="0,00">
 								</div>
 								<div>
 									<label for="filter-amount-max">Amount to (€)</label>
-									<input type="number" id="filter-amount-max" name="amountMax" step="0.01">
+									<input type="number" id="filter-amount-max" name="amountMax" step="0.01" placeholder="999,99">
 								</div>
 							</div>
 						</div>
