@@ -24,6 +24,7 @@ async function registerUser(userRegisterDtoIn) {
 		const authPayload = await response.json();
 		globalToken = authPayload.token;
 		currentUser = authPayload.user;
+		currentUserId = authPayload.user.id;
 
 		return authPayload;
 	} catch (error) {
@@ -50,6 +51,7 @@ async function loginUser(userLoginDtoIn) {
 		const authPayload = await response.json();
 		globalToken = authPayload.token;
 		currentUser = authPayload.user;
+		currentUserId = authPayload.user.id;
 
 		return authPayload;
 	} catch (error) {
