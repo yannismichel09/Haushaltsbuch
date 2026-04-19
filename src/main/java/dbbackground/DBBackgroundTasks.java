@@ -19,17 +19,51 @@ public class DBBackgroundTasks {
 
     public void processRecurringTransactions(TransactionFrequency frequency) {
         List<Transaction> transactions = dbAccessTransaction.getTransactionsByFrequency(frequency);
-    
+
+        LocalDate now = LocalDate.now();
+
         for (Transaction t : transactions) {
-            dbAccessTransaction.createTransaction(
-                t.getUser().getUserId(),
-                t.getCategory().getCategoryId(),
-                t.getTransactionAmount(),
-                LocalDate.now().toString(), 
-                t.getTransactionType(),
-                t.getTransactionDescription(),
-                TransactionFrequency.once
-            );
+            LocalDate transactionDate = LocalDate.parse(t.getTransactionDate());
+            if (t.getTransactionFrequency() == TransactionFrequency.weekly) {
+                if (now.getDayOfWeek() == transactionDate.getDayOfWeek()) {
+                    dbAccessTransaction.createTransaction(
+                        t.getUser().getUserId(),
+                        t.getCategory().getCategoryId(),
+                        t.getTransactionAmount(),
+                        LocalDate.now().toString(), 
+                        t.getTransactionType(),
+                        t.getTransactionDescription(),
+                        TransactionFrequency.once
+                    );
+                }
+            } else if (t.getTransactionFrequency() == TransactionFrequency.monthly) {
+                int dayOfMonth = Math.min(now.lengthOfMonth(), transactionDate.lengthOfMonth());
+                if (now.getDayOfMonth() == dayOfMonth) {
+                    dbAccessTransaction.createTransaction(
+                        t.getUser().getUserId(),
+                        t.getCategory().getCategoryId(),
+                        t.getTransactionAmount(),
+                        LocalDate.now().toString(), 
+                        t.getTransactionType(),
+                        t.getTransactionDescription(),
+                        TransactionFrequency.once
+                    );
+                }
+            } else if (t.getTransactionFrequency() == TransactionFrequency.yearly) {
+                int dayOfYear = transactionDate.getDayOfYear();
+                int dayOfMonth = transactionDate.getDayOfMonth();
+                if (now.getDayOfYear() == dayOfYear && now.getDayOfMonth() == dayOfMonth) {
+                    dbAccessTransaction.createTransaction(
+                        t.getUser().getUserId(),
+                        t.getCategory().getCategoryId(),
+                        t.getTransactionAmount(),
+                        LocalDate.now().toString(), 
+                        t.getTransactionType(),
+                        t.getTransactionDescription(),
+                        TransactionFrequency.once
+                    );
+                }
+            }
         }
     }
 }
