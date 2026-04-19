@@ -18,21 +18,21 @@ public class ScheduledTasks {
 
     private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
 
-    @Scheduled(cron = "0 0 0 * * MON") 
+    @Scheduled(cron = "0 0 0 * * *") 
     public void processWeeklyTransactions() {
         log.info("Verarbeite wöchentliche Transaktionen");
         dbBackgroundTasks.processRecurringTransactions(TransactionFrequency.weekly);
     }
 
-    @Scheduled(cron = "0 0 0 1 * *") 
+    @Scheduled(cron = "0 0 0 * * *") 
     public void processMonthlyTransactions() {
         log.info("Verarbeite monatliche Transaktionen");
         dbBackgroundTasks.processRecurringTransactions(TransactionFrequency.monthly);
     }
 
-    @Scheduled(cron = "0 0 0 1 1 *") 
+    @Scheduled(cron = "0 0 0 * * *") 
     public void processYearlyTransactions() {
         log.info("Verarbeite jährliche Transaktionen");
         dbBackgroundTasks.processRecurringTransactions(TransactionFrequency.yearly);
-    }
+    }  
 }
