@@ -23,15 +23,17 @@
 					<input type="text" id="category-description" name="categoryDescription">
 				</div>
 
-				<div>
-					<label>Color</label>
-					<input type="hidden" id="category-color" name="categoryColor" value="">
-					<div class="color-picker" id="color-picker"></div>
-				</div>
+				<div class="color-limit-row">
+					<div class="color-block">
+						<label>Color</label>
+						<input type="hidden" id="category-color" name="categoryColor" value="">
+						<div class="color-picker" id="color-picker"></div>
+					</div>
 
-				<div>
-					<label for="category-limit">Budget Limit (€)</label>
-					<input type="number" id="category-limit" name="categoryLimit" step="0.01">
+					<div class="limit-block">
+						<label for="category-limit">Budget Limit (€)</label>
+						<input type="number" id="category-limit" name="categoryLimit" step="0.01">
+					</div>
 				</div>
 
 				<div>
