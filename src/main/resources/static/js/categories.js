@@ -11,6 +11,14 @@ const CATEGORY_COLORS = [
 	{ id: "brown", hex: "#795548", label: "Brown" },
 ];
 
+function createColorElement(tag, className, hex, title) {
+	const el = document.createElement(tag);
+	el.className = className;
+	el.style.backgroundColor = hex;
+	el.title = title;
+	return el;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
 	const picker = document.getElementById("color-picker");
 	const hidden = document.getElementById("category-color");
@@ -23,21 +31,32 @@ document.addEventListener("DOMContentLoaded", () => {
 		input.value = hex;
 		input.addEventListener("change", () => hidden.value = hex);
 
-		const circle = document.createElement("label");
+		const circle = createColorElement("label", "color-circle", hex, label);
 		circle.htmlFor = "color-" + id;
-		circle.className = "color-circle";
-		circle.style.backgroundColor = hex;
-		circle.title = label;
 
 		picker.appendChild(input);
 		picker.appendChild(circle);
 	});
 
-	document.getElementById("reset-category-btn").addEventListener("click", () => {
-		document.getElementById("category-name").value = "";
-		document.getElementById("category-description").value = "";
-		document.getElementById("category-limit").value = "";
-		hidden.value = "";
-		picker.querySelectorAll("input[type='radio']").forEach(r => r.checked = false);
-	});
+
+	const filterGrid = document.getElementById("filter-color-grid");
+	if (filterGrid) {
+		CATEGORY_COLORS.forEach(({ id, hex, label }) => {
+			const item = document.createElement("label");
+			item.className = "filter-color-item";
+
+			const checkbox = document.createElement("input");
+			checkbox.type = "checkbox";
+			checkbox.id = "filter-color-" + id;
+			checkbox.name = "categoryColors";
+			checkbox.value = hex;
+
+			const dot = createColorElement("span", "filter-color-dot", hex, label);
+
+			item.appendChild(checkbox);
+			item.appendChild(dot);
+			item.appendChild(document.createTextNode(label));
+			filterGrid.appendChild(item);
+		});
+	}
 });

@@ -37,7 +37,7 @@
 				</div>
 
 				<div>
-					<button type="button" id="reset-category-btn" class="btn-action">Reset</button>
+					<button type="reset" class="btn-action">Reset</button>
 					<button type="button" id="add-category-btn" class="btn-action">Add</button>
 				</div>
 			</form>
@@ -59,27 +59,8 @@
 						<div>
 							<div>
 								<fieldset>
-									<legend>Colors (current examples)</legend>
-
-									<div>
-										<input type="checkbox" id="filter-color-red" name="categoryColors" value="#FF0000">
-										<label for="filter-color-red">Red (#FF0000)</label>
-									</div>
-
-									<div>
-										<input type="checkbox" id="filter-color-green" name="categoryColors" value="#00AA00">
-										<label for="filter-color-green">Green (#00AA00)</label>
-									</div>
-
-									<div>
-										<input type="checkbox" id="filter-color-blue" name="categoryColors" value="#0066FF">
-										<label for="filter-color-blue">Blue (#0066FF)</label>
-									</div>
-
-									<div>
-										<input type="checkbox" id="filter-color-orange" name="categoryColors" value="#FF9900">
-										<label for="filter-color-orange">Orange (#FF9900)</label>
-									</div>
+									<legend>Colors</legend>
+									<div class="filter-color-grid" id="filter-color-grid"></div>
 								</fieldset>
 							</div>
 							<div>

@@ -3,12 +3,14 @@
 	margin-bottom: 12px;
 }
 
-#add-category-form .field-full label {
+#add-category-form .field-full label,
+.limit-block label {
 	display: block;
 	margin-bottom: 4px;
 }
 
-#add-category-form .field-full input[type="text"] {
+#add-category-form .field-full input[type="text"],
+.limit-block input[type="number"] {
 	display: block;
 	width: 100%;
 	box-sizing: border-box;
@@ -21,23 +23,9 @@
 	margin-bottom: 12px;
 }
 
-.color-block {
-	flex: 1;
-}
-
+.color-block,
 .limit-block {
 	flex: 1;
-	text-align: left;
-}
-
-.limit-block label {
-	display: block;
-	margin-bottom: 4px;
-}
-
-.limit-block input[type="number"] {
-	width: 100%;
-	box-sizing: border-box;
 }
 
 .color-picker {
@@ -46,23 +34,53 @@
 	flex-wrap: wrap;
 	align-items: center;
 }
-.color-picker input[type="radio"] {
+
+.color-picker input[type="radio"],
+.filter-color-item input[type="checkbox"] {
 	display: none;
 }
-.color-circle {
+
+.color-circle,
+.filter-color-dot {
 	display: inline-block;
-	width: 28px;
-	height: 28px;
 	border-radius: 50%;
 	cursor: pointer;
 	border: 3px solid transparent;
 	box-sizing: border-box;
-	transition: transform 0.1s, border-color 0.1s;
+	transition: transform 0.1s;
+	flex-shrink: 0;
 }
-.color-circle:hover {
+
+.color-circle {
+	width: 28px;
+	height: 28px;
+}
+
+.filter-color-dot {
+	width: 22px;
+	height: 22px;
+}
+
+.color-circle:hover,
+.filter-color-dot:hover {
 	transform: scale(1.15);
 }
-.color-picker input[type="radio"]:checked + .color-circle {
+
+.color-picker input[type="radio"]:checked + .color-circle,
+.filter-color-item input[type="checkbox"]:checked + .filter-color-dot {
 	border: 3px solid #000;
 	box-shadow: inset 0 0 0 2px #fff;
+}
+
+.filter-color-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 6px 16px;
+}
+
+.filter-color-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	cursor: pointer;
 }
