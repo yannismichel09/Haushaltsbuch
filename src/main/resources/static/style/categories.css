@@ -3,6 +3,17 @@
 	margin-bottom: 12px;
 }
 
+.search-field-full {
+	width: 100%;
+	margin-bottom: 12px;
+}
+
+.search-field-full input[type="text"] {
+	display: block;
+	width: 100%;
+	box-sizing: border-box;
+}
+
 #add-category-form .field-full label,
 .limit-block label {
 	display: block;
