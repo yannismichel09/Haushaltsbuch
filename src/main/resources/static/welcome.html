@@ -2,7 +2,10 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome Page, Login and Register Dialog</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/welcome.css">
 </head>
 <body>
     <div id="welcome">
@@ -13,59 +16,46 @@
         <p id="registerText">Don't have an account yet?</p>
         <button id="registerButton">Register</button>
     </div>
+
     <div id="login" style="display: none">
         <h2 id="loginHeader">Login</h2>
         <table>
         <tr>
-            <td>
-                <label for="username">Username:</label>
-            </td>
-            <td>
-                 <input id="loginUsername" type="text" name="username" placeholder="Username" />
-             </td>
+            <td><label for="username">Username:</label></td>
+            <td><input id="loginUsername" type="text" name="username" placeholder="Username" /></td>
         </tr>
         <tr>
-            <td>
-                <label for="password">Password:</label>
-            </td>
-            <td>
-                 <input id="loginPassword" type="password" name="password" placeholder="Password" />
-             </td>
+            <td><label for="password">Password:</label></td>
+            <td><input id="loginPassword" type="password" name="password" placeholder="Password" /></td>
         </tr>
         </table>
         <button id="loginCancel">Cancel</button>
         <button id="loginSubmit">Login</button>
     </div>
+
     <div id="register" style="display: none">
         <h2 id="registerHeader">Register</h2>
         <table>
         <tr>
-            <td>
-                <label for="username">Username:</label>
-            </td>
-            <td>
-                 <input id="registerUsername" type="text" name="username" placeholder="Username" />
-             </td>
+            <td><label for="username">Username:</label></td>
+            <td><input id="registerUsername" type="text" name="username" placeholder="Username" /></td>
         </tr>
         <tr>
-            <td>
-                <label for="email">E-Mail:</label>
-            </td>
-            <td>
-                 <input id="registerEmail" type="email" name="email" placeholder="E-Mail" />
-            </td>
+            <td><label for="email">E-Mail:</label></td>
+            <td><input id="registerEmail" type="email" name="email" placeholder="E-Mail" /></td>
         </tr>
         <tr>
-            <td>
-                <label for="password">Password:</label>
-            </td>
-            <td>
-                 <input id="registerPassword" type="password" name="password" placeholder="Password" />
-             </td>
+            <td><label for="password">Password:</label></td>
+            <td><input id="registerPassword" type="password" name="password" placeholder="Password" /></td>
         </tr>
         </table>
         <button id="registerCancel">Cancel</button>
         <button id="registerSubmit">Register</button>
     </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/global.js"></script>
+    <script src="js/apiUser.js"></script>
+    <script src="js/welcome.js"></script>
 </body>
 </html>

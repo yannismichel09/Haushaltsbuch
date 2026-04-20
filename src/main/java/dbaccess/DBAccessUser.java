@@ -8,10 +8,12 @@ import org.springframework.stereotype.Repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import model.User;
 import util.PasswordTools;
 
 @Repository
+@Transactional
 public class DBAccessUser {
 
 	@PersistenceContext

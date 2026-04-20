@@ -6,12 +6,14 @@ import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import model.Category;
 import model.Transaction;
 import model.TransactionFrequency;
 import model.TransactionType;
 
 @Repository
+@Transactional
 public class DBAccessCSV {
     @PersistenceContext
 	private final EntityManager entityManager;
