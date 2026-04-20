@@ -53,12 +53,15 @@ document.addEventListener('DOMContentLoaded', () => {
         btnSubmitLogin.disabled = true;
         btnSubmitLogin.textContent = "Loading...";
 
-        const result = await loginUser({ username, password });
-
-        if (result && result.token) {
-            globalToken = result.token; 
-            window.location.href = "homePage.html"; 
-        } else {
+        try {
+            const result = await loginUser({ username, password });
+            if (result && result.token) {
+                saveSession(result.token, result.user); 
+                window.location.href = "homePage.html"; 
+            } else {
+                throw new Error();
+            }
+        } catch (e) {
             alert("Login failed. Username or password is incorrect.");
             btnSubmitLogin.disabled = false;
             btnSubmitLogin.textContent = "Login";
@@ -78,12 +81,15 @@ document.addEventListener('DOMContentLoaded', () => {
         btnSubmitRegister.disabled = true;
         btnSubmitRegister.textContent = "Loading...";
 
-        const result = await registerUser({ username, email, password });
-
-        if (result && result.token) {
-            globalToken = result.token; 
-            window.location.href = "homePage.html";
-        } else {
+        try {
+            const result = await registerUser({ username, email, password });
+            if (result && result.token) {
+                saveSession(result.token, result.user);
+                window.location.href = "homePage.html";
+            } else {
+                throw new Error();
+            }
+        } catch (e) {
             alert("Registration failed.");
             btnSubmitRegister.disabled = false;
             btnSubmitRegister.textContent = "Register";
