@@ -7,9 +7,11 @@ import org.springframework.stereotype.Repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import model.Category;
 
 @Repository
+@Transactional
 public class DBAccessCategory {
     @PersistenceContext
 	private final EntityManager entityManager;

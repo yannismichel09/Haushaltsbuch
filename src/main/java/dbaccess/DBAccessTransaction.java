@@ -7,13 +7,15 @@ import org.springframework.stereotype.Repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import model.Category;
-import model.TransactionFrequency;
 import model.Transaction;
+import model.TransactionFrequency;
 import model.TransactionType;
 import model.User;
 
 @Repository
+@Transactional
 public class DBAccessTransaction {
     @PersistenceContext
 	private final EntityManager entityManager;
