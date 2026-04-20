@@ -1,10 +1,3 @@
-// Setzt die aktuelle Benutzersitzung im Frontend zurück.
-function clearUserSession() {
-	globalToken = null;
-	currentUser = null;
-	currentUserId = null;
-}
-
 // Registriert einen neuen Benutzer über die User-API.
 async function registerUser(userRegisterDtoIn) {
 	try {
@@ -76,7 +69,7 @@ async function logoutUser() {
 
 		const wasLoggedOut = await response.json();
 		if (wasLoggedOut) {
-			clearUserSession();
+			logout();
 		}
 
 		return wasLoggedOut;
@@ -102,7 +95,7 @@ async function deleteUser(userId) {
 
 		const wasDeleted = await response.json();
 		if (wasDeleted) {
-			clearUserSession();
+			logout();
 		}
 
 		return wasDeleted;
