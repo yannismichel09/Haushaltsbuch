@@ -1,5 +1,3 @@
-lucide.createIcons();
-
 document.addEventListener('DOMContentLoaded', () => {
     const welcomeDiv = document.getElementById('welcome');
     const loginDiv = document.getElementById('login');
