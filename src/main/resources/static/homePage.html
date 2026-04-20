@@ -14,9 +14,14 @@
           <h1>Control your money. Understand your spending. Plan smarter.</h1>
       </div>
       <div id="userInfo">
-          <span id="username"></span>
-          <img id="profilePicture" />
-      </div>
+        <span id="username"></span>
+        <div class="user-menu-container">
+            <img id="profilePicture" onclick="toggleDropdown()" />
+            <div id="dropdownMenu" class="dropdown-content">
+                <button onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </div>
   </div> 
 
   <div class="tab">

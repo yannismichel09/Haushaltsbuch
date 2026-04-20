@@ -1,9 +1,19 @@
 function updateHeaderUI() {
   const usernameElement = document.getElementById('username');
+  const profileImgElement = document.getElementById('profilePicture');
 
-  // Prüfen, ob der User eingeloggt ist und das Element existiert
-  if (currentUser && usernameElement) {
-      usernameElement.textContent = currentUser.userName;
+  if (currentUser) {
+      if (usernameElement) {
+          usernameElement.textContent = currentUser.username;
+      }
+
+      if (profileImgElement) {
+          if (currentUser.userProfilePicture) {
+              profileImgElement.src = "data:image/png;base64," + currentUser.userProfilePicture;
+          } else {
+              profileImgElement.src = "icons/Gray-Profile-Picture.jpeg";
+          }
+      }
   }
 }
 
@@ -70,3 +80,19 @@ window.addEventListener('resize', () => {
   frames.forEach((frame) => resizeFrame(frame));
 });
 });
+
+function toggleDropdown() {
+  document.getElementById("dropdownMenu").classList.toggle("show");
+}
+
+window.onclick = function(event) {
+  if (!event.target.matches('#profilePicture')) {
+      const dropdowns = document.getElementsByClassName("dropdown-content");
+      for (let i = 0; i < dropdowns.length; i++) {
+          let openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
+              openDropdown.classList.remove('show');
+          }
+      }
+  }
+}
