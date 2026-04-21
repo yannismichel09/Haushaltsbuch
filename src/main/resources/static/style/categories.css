@@ -97,16 +97,25 @@
 }
 
 .filter-color-grid {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	gap: 6px 16px;
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    align-items: center;
+    column-gap: clamp(12px, 3vw, 180px);
+    row-gap: 8px;
+    width: 100%;
 }
 
 .filter-color-item {
 	display: flex;
 	align-items: center;
+	justify-content: center;
 	gap: 8px;
 	cursor: pointer;
+}
+
+main > section:nth-of-type(2) details fieldset {
+    width: 100%;
+    min-width: 0;
 }
 
 /* Dashboard-inspiriertes Styling fuer Suche und Filter */
