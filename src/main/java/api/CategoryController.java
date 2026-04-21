@@ -34,6 +34,7 @@ public class CategoryController {
 
     // Post-Mapping
 
+        // Legt eine neue Kategorie an und gibt die erzeugte Kategorie inklusive ID zurück.
     @PostMapping
     public ResponseEntity<CategoryDtoOut> createCategory(@RequestHeader("Authorization") String token,
             @RequestBody CategoryCreateDtoIn categoryDtoIn) {
@@ -42,10 +43,11 @@ public class CategoryController {
                 categoryDtoIn.categoryDescription(), categoryDtoIn.categoryColor(), categoryDtoIn.categoryLimit());
 
         return ResponseEntity.ok()
-                .body(new CategoryDtoOut(category.getCategoryName(), category.getCategoryDescription(),
+                .body(new CategoryDtoOut(category.getCategoryId(), category.getCategoryName(), category.getCategoryDescription(),
                         category.getCategoryColor(), category.getCategoryLimit()));
     }
 
+    // Liefert alle Kategorien zurück, die auf die übergebenen Filterwerte passen.
     @PostMapping("/filter")
     public ResponseEntity<Collection<CategoryDtoOut>> getFilteredCategories(
             @RequestHeader("Authorization") String token, @RequestBody CategoryFilterDtoIn categoryFilterDtoIn) {
@@ -60,6 +62,7 @@ public class CategoryController {
 
     // Get-Mapping
 
+        // Liefert alle vorhandenen Kategorien des Systems zurück.
     @GetMapping
     public ResponseEntity<Collection<CategoryDtoOut>> getAllCategories(@RequestHeader("Authorization") String token) {
         controllerTools.checkIsAccepted(token);
@@ -70,6 +73,7 @@ public class CategoryController {
                 .body(categories);
     }
 
+        // Liefert eine einzelne Kategorie anhand ihrer ID zurück.
     @GetMapping("/{categoryId}")
     public ResponseEntity<CategoryDtoOut> getCategoryById(@PathVariable int categoryId,
             @RequestHeader("Authorization") String token) {
@@ -82,6 +86,7 @@ public class CategoryController {
 
     // Delete-Mapping
 
+        // Entfernt eine Kategorie anhand ihrer ID aus der Datenbank.
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<Boolean> deleteCategory(@PathVariable int categoryId,
             @RequestHeader("Authorization") String token) {
@@ -94,6 +99,7 @@ public class CategoryController {
 
     // Put-Mapping
 
+        // Aktualisiert die Werte einer bestehenden Kategorie.
     @PutMapping("/{categoryId}")
     public ResponseEntity<Boolean> updateCategory(@PathVariable int categoryId,
             @RequestHeader("Authorization") String token, @RequestBody CategoryUpdateDtoIn categoryUpdateDtoIn) {
