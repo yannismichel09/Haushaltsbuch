@@ -187,6 +187,40 @@ document.addEventListener("DOMContentLoaded", () => {
 		renderCategories(applyCategoryFilters(allCategories));
 	};
 
+	// Prüft, ob der Kategoriename bereits existiert (ohne Berücksichtigung der aktuell bearbeiteten Kategorie).
+	const hasDuplicateCategoryName = (categoryName, ignoredCategoryId = null) => {
+		const normalizedName = (categoryName || "").trim().toLowerCase();
+		if (!normalizedName) {
+			return false;
+		}
+
+		return allCategories.some((entry) => {
+			if (ignoredCategoryId !== null && entry.categoryId === ignoredCategoryId) {
+				return false;
+			}
+
+			return (entry.categoryName || "").trim().toLowerCase() === normalizedName;
+		});
+	};
+
+	// Wandelt technische API-Fehler in gut verständliche UI-Meldungen um.
+	const getCategorySaveErrorMessage = (error, wasEditing) => {
+		if (error && error.message) {
+			const message = error.message.toLowerCase();
+			if (message.includes("already exists") || message.includes("unique") || message.includes("duplicate")) {
+				return "A category with this name already exists.";
+			}
+		}
+
+		if (error && error.status === 500 && !wasEditing) {
+			return "Category could not be created. A category with this name may already exist.";
+		}
+
+		return wasEditing
+			? "Category could not be updated."
+			: "Category could not be created.";
+	};
+
 	// Befuellt das Formular mit den Daten einer vorhandenen Kategorie und aktiviert den Bearbeitungsmodus.
 	const startEditCategory = (categoryId) => {
 		const category = allCategories.find((entry) => entry.categoryId === categoryId);
@@ -355,6 +389,11 @@ document.addEventListener("DOMContentLoaded", () => {
 			return;
 		}
 
+		if (hasDuplicateCategoryName(name, editingCategoryId)) {
+			alert("A category with this name already exists.");
+			return;
+		}
+
 		try {
 			const wasEditing = editingCategoryId !== null;
 			const result = editingCategoryId === null
@@ -367,7 +406,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				alert(wasEditing ? "Category was updated successfully." : "Category was created successfully.");
 			}
 		} catch (error) {
-			alert(error.message || "Category could not be saved.");
+			alert(getCategorySaveErrorMessage(error, editingCategoryId !== null));
 		}
 	});
 
