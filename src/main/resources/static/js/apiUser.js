@@ -60,13 +60,11 @@ async function logoutUser() {
 		}
 
 		const wasLoggedOut = await response.json();
-		if (wasLoggedOut) {
-			logout();
-		}
-
 		return wasLoggedOut;
 	} catch (error) {
 		console.log(error);
+	} finally {
+		logout();
 	}
 }
 
@@ -86,13 +84,12 @@ async function deleteUser(userId) {
 		}
 
 		const wasDeleted = await response.json();
-		if (wasDeleted) {
-			logout();
-		}
-
 		return wasDeleted;
+
 	} catch (error) {
 		console.log(error);
+	} finally {
+		logout();
 	}
 }
 
