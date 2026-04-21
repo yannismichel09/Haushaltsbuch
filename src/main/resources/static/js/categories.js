@@ -81,9 +81,14 @@ document.addEventListener("DOMContentLoaded", () => {
 			categoryLimit:       limitRaw !== "" ? parseFloat(limitRaw) : null,
 		};
 
-		const result = await createCategory(dto);
-		if (result) {
-			document.getElementById("add-category-form").reset();
+		try {
+			const result = await createCategory(dto);
+			if (result) {
+				document.getElementById("add-category-form").reset();
+				alert("Category was created successfully.");
+			}
+		} catch (error) {
+			alert(error.message || "Category could not be created.");
 		}
 	});
 });
