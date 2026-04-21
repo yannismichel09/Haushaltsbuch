@@ -13,7 +13,31 @@ async function throwCategoryApiError(response, actionName) {
 	}
 
 	let errorText = await response.text();
-	throw new Error("API Category error: " + actionName + " (" + response.status + ") " + errorText);
+	let parsedError = null;
+
+	try {
+		parsedError = errorText ? JSON.parse(errorText) : null;
+	} catch (_) {
+		parsedError = null;
+	}
+
+	const rawMessage = (parsedError && parsedError.message) ? parsedError.message : errorText;
+	const normalizedMessage = (rawMessage || "").toLowerCase();
+	let userMessage = "Category request failed (" + response.status + ").";
+
+	if ((actionName === "createCategory" || actionName === "updateCategory") &&
+		(response.status === 409 || normalizedMessage.includes("unique") || normalizedMessage.includes("duplicate"))) {
+		userMessage = "A category with this name already exists.";
+	} else if (actionName === "createCategory" && response.status === 500) {
+		userMessage = "Category could not be created. If this name already exists, please choose a different one.";
+	}
+
+	const error = new Error(userMessage);
+	error.status = response.status;
+	error.actionName = actionName;
+	error.rawErrorText = errorText;
+	error.rawErrorMessage = rawMessage;
+	throw error;
 }
 
 // Fuehrt einen Kategorien-Request aus und gibt die JSON-Antwort zurueck.
