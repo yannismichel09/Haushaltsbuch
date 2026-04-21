@@ -12,6 +12,7 @@
 		<!-- Neue Kategorie anlegen -->
 		<section>
 			<h2>Add Category</h2>
+			<p id="category-form-mode" class="category-form-mode" hidden>Edit mode: update the selected category.</p>
 			<form id="add-category-form">
 				<div class="field-full">
 					<label for="category-name">Category Name</label>
@@ -38,6 +39,7 @@
 
 				<div>
 					<button type="reset" class="btn-action">Reset</button>
+					<button type="button" id="cancel-edit-category-btn" class="btn-action" hidden>Cancel Edit</button>
 					<button type="button" id="add-category-btn" class="btn-action">Add</button>
 				</div>
 			</form>

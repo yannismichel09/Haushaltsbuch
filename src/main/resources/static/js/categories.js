@@ -11,6 +11,7 @@ const CATEGORY_COLORS = [
 	{ id: "brown", hex: "#795548", label: "Brown" },
 ];
 
+// Erzeugt ein farbiges HTML-Element fuer Picker und Filteranzeige.
 function createColorElement(tag, className, hex, title) {
 	const el = document.createElement(tag);
 	el.className = className;
@@ -19,6 +20,7 @@ function createColorElement(tag, className, hex, title) {
 	return el;
 }
 
+// Formatiert ein Budget-Limit als Euro-Betrag fuer die Ausgabe in der Liste.
 function formatAmount(amount) {
 	if (amount === null || amount === undefined || Number.isNaN(amount)) {
 		return "-";
@@ -30,6 +32,19 @@ function formatAmount(amount) {
 	}).format(amount);
 }
 
+// Liest die aktuellen Werte aus dem Kategorie-Formular und baut daraus das DTO fuer die API.
+function getCategoryFormValues() {
+	const limitRaw = document.getElementById("category-limit").value;
+
+	return {
+		categoryName: document.getElementById("category-name").value.trim(),
+		categoryDescription: document.getElementById("category-description").value.trim(),
+		categoryColor: document.getElementById("category-color").value,
+		categoryLimit: limitRaw !== "" ? parseFloat(limitRaw) : null,
+	};
+}
+
+// Rendert die uebergebenen Kategorien als Karten in den Ergebnisbereich.
 function renderCategories(categories) {
 	const container = document.getElementById("filtered-categories-list");
 	if (!container) {
@@ -71,15 +86,37 @@ function renderCategories(categories) {
 		limit.className = "category-card-limit";
 		limit.textContent = "Limit: " + formatAmount(category.categoryLimit);
 
+		const actions = document.createElement("div");
+		actions.className = "category-card-actions";
+
+		const editButton = document.createElement("button");
+		editButton.type = "button";
+		editButton.className = "category-card-button category-card-button-edit";
+		editButton.textContent = "Edit";
+		editButton.dataset.action = "edit";
+		editButton.dataset.categoryId = category.categoryId;
+
+		const deleteButton = document.createElement("button");
+		deleteButton.type = "button";
+		deleteButton.className = "category-card-button category-card-button-delete";
+		deleteButton.textContent = "Delete";
+		deleteButton.dataset.action = "delete";
+		deleteButton.dataset.categoryId = category.categoryId;
+
+		actions.appendChild(editButton);
+		actions.appendChild(deleteButton);
+
 		card.appendChild(titleRow);
 		card.appendChild(description);
 		card.appendChild(limit);
+		card.appendChild(actions);
 		fragment.appendChild(card);
 	});
 
 	container.appendChild(fragment);
 }
 
+// Wendet die aktuell ausgewaehlten Such- und Filterwerte auf die geladene Kategorienliste an.
 function applyCategoryFilters(categories) {
 	const keyword = document.getElementById("search-input")?.value.trim().toLowerCase() || "";
 	const amountMinRaw = document.getElementById("filter-amount-min")?.value || "";
@@ -104,14 +141,100 @@ function applyCategoryFilters(categories) {
 	});
 }
 
+// Initialisiert die komplette Kategorien-Seite nach dem Laden des DOM.
 document.addEventListener("DOMContentLoaded", () => {
 	let allCategories = [];
+	let editingCategoryId = null;
 
 	const picker = document.getElementById("color-picker");
 	const hidden = document.getElementById("category-color");
 	const filterForm = document.getElementById("category-filter-form");
 	const exportCsvBtn = document.getElementById("category-export-csv-btn");
+	const addCategoryForm = document.getElementById("add-category-form");
+	const addCategoryButton = document.getElementById("add-category-btn");
+	const cancelEditButton = document.getElementById("cancel-edit-category-btn");
+	const formModeInfo = document.getElementById("category-form-mode");
+	const categoryList = document.getElementById("filtered-categories-list");
+	let isProgrammaticReset = false;
 
+	// Synchronisiert die aktuell ausgewaehlte Farbe zwischen Hidden-Input und Radiobuttons.
+	const syncSelectedColor = (colorValue) => {
+		hidden.value = colorValue || "";
+		document.querySelectorAll("input[name='colorChoice']").forEach((input) => {
+			input.checked = input.value === colorValue;
+		});
+	};
+
+	// Beendet den Bearbeitungsmodus und setzt die Formularsteuerung auf "Add" zurueck.
+	const leaveEditMode = () => {
+		syncSelectedColor("");
+		editingCategoryId = null;
+		addCategoryButton.textContent = "Add";
+		cancelEditButton.hidden = true;
+		formModeInfo.hidden = true;
+	};
+
+	// Setzt das Formular vollstaendig zurueck und verhindert dabei doppelte Reset-Nachbearbeitung.
+	const resetCategoryForm = () => {
+		isProgrammaticReset = true;
+		addCategoryForm.reset();
+		leaveEditMode();
+		isProgrammaticReset = false;
+	};
+
+	// Rendert die Kategorienliste immer auf Basis des aktuellen Filterzustands.
+	const renderCurrentCategories = () => {
+		renderCategories(applyCategoryFilters(allCategories));
+	};
+
+	// Befuellt das Formular mit den Daten einer vorhandenen Kategorie und aktiviert den Bearbeitungsmodus.
+	const startEditCategory = (categoryId) => {
+		const category = allCategories.find((entry) => entry.categoryId === categoryId);
+		if (!category) {
+			alert("Category could not be found.");
+			return;
+		}
+
+		editingCategoryId = categoryId;
+		document.getElementById("category-name").value = category.categoryName || "";
+		document.getElementById("category-description").value = category.categoryDescription || "";
+		document.getElementById("category-limit").value = category.categoryLimit ?? "";
+		syncSelectedColor(category.categoryColor || "");
+		addCategoryButton.textContent = "Save";
+		cancelEditButton.hidden = false;
+		formModeInfo.hidden = false;
+		window.scrollTo({ top: 0, behavior: "smooth" });
+	};
+
+	// Laedt alle Kategorien vom Backend und zeigt sie direkt mit den aktiven Filtern an.
+	const loadAndRenderAllCategories = async () => {
+		const categories = await getAllCategories();
+		allCategories = Array.isArray(categories) ? categories : [];
+		renderCurrentCategories();
+	};
+
+	// Loescht eine Kategorie nach Benutzerbestaetigung und aktualisiert anschliessend die Liste.
+	const handleDeleteCategory = async (categoryId) => {
+		const category = allCategories.find((entry) => entry.categoryId === categoryId);
+		if (!category) {
+			return;
+		}
+
+		const confirmed = window.confirm("Delete category '" + category.categoryName + "'?");
+		if (!confirmed) {
+			return;
+		}
+
+		const result = await deleteCategory(categoryId);
+		if (result) {
+			if (editingCategoryId === categoryId) {
+				resetCategoryForm();
+			}
+			await loadAndRenderAllCategories();
+		}
+	};
+
+	// Baut den Farbpicker fuer das Formular auf.
 	CATEGORY_COLORS.forEach(({ id, hex, label }) => {
 		const input = document.createElement("input");
 		input.type = "radio";
@@ -127,7 +250,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		picker.appendChild(circle);
 	});
 
-
+	// Baut die Farbfilter fuer die Suchmaske auf.
 	const filterGrid = document.getElementById("filter-color-grid");
 	if (filterGrid) {
 		CATEGORY_COLORS.forEach(({ id, hex, label }) => {
@@ -149,16 +272,11 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	}
 
-	const loadAndRenderAllCategories = async () => {
-		const categories = await getAllCategories();
-		allCategories = Array.isArray(categories) ? categories : [];
-		renderCategories(allCategories);
-	};
-
+	// Verarbeitet Suche und Reset in der Filtermaske.
 	if (filterForm) {
 		filterForm.addEventListener("submit", (event) => {
 			event.preventDefault();
-			renderCategories(applyCategoryFilters(allCategories));
+			renderCurrentCategories();
 		});
 
 		filterForm.addEventListener("reset", () => {
@@ -166,15 +284,67 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	}
 
+	// Zeigt bis zur echten Implementierung einen Platzhalter fuer den CSV-Export an.
 	if (exportCsvBtn) {
 		exportCsvBtn.addEventListener("click", () => {
 			alert("CSV export is not implemented yet.");
 		});
 	}
 
+	// Bricht den Bearbeitungsmodus manuell ueber den Formularbutton ab.
+	if (cancelEditButton) {
+		cancelEditButton.addEventListener("click", () => {
+			resetCategoryForm();
+		});
+	}
+
+	// Sorgt dafuer, dass ein normaler Formular-Reset ebenfalls den Bearbeitungsmodus verlaesst.
+	if (addCategoryForm) {
+		addCategoryForm.addEventListener("reset", () => {
+			if (isProgrammaticReset) {
+				return;
+			}
+
+			window.setTimeout(() => {
+				leaveEditMode();
+				syncSelectedColor("");
+			}, 0);
+		});
+	}
+
+	// Reagiert zentral auf Klicks auf Edit- und Delete-Buttons innerhalb der Kartenliste.
+	if (categoryList) {
+		categoryList.addEventListener("click", async (event) => {
+			const button = event.target.closest("button[data-action]");
+			if (!button) {
+				return;
+			}
+
+			const categoryId = Number(button.dataset.categoryId);
+			if (!Number.isInteger(categoryId)) {
+				return;
+			}
+
+			if (button.dataset.action === "edit") {
+				startEditCategory(categoryId);
+				return;
+			}
+
+			if (button.dataset.action === "delete") {
+				try {
+					await handleDeleteCategory(categoryId);
+				} catch (error) {
+					alert(error.message || "Category could not be deleted.");
+				}
+			}
+		});
+	}
+
+	// Erstellt neue Kategorien oder speichert Aenderungen an einer bestehenden Kategorie.
 	document.getElementById("add-category-btn").addEventListener("click", async () => {
-		const name  = document.getElementById("category-name").value.trim();
-		const color = hidden.value;
+		const dto = getCategoryFormValues();
+		const name  = dto.categoryName;
+		const color = dto.categoryColor;
 
 		if (!name) {
 			alert("Please enter a category name.");
@@ -185,27 +355,23 @@ document.addEventListener("DOMContentLoaded", () => {
 			return;
 		}
 
-		const limitRaw = document.getElementById("category-limit").value;
-		const dto = {
-			categoryName:        name,
-			categoryDescription: document.getElementById("category-description").value.trim(),
-			categoryColor:       color,
-			categoryLimit:       limitRaw !== "" ? parseFloat(limitRaw) : null,
-		};
-
 		try {
-			const result = await createCategory(dto);
+			const wasEditing = editingCategoryId !== null;
+			const result = editingCategoryId === null
+				? await createCategory(dto)
+				: await updateCategory(editingCategoryId, dto);
+
 			if (result) {
-				document.getElementById("add-category-form").reset();
-				hidden.value = "";
+				resetCategoryForm();
 				await loadAndRenderAllCategories();
-				alert("Category was created successfully.");
+				alert(wasEditing ? "Category was updated successfully." : "Category was created successfully.");
 			}
 		} catch (error) {
-			alert(error.message || "Category could not be created.");
+			alert(error.message || "Category could not be saved.");
 		}
 	});
 
+	// Laedt zum Start alle Kategorien und zeigt bei Fehlern einen leeren Zustand an.
 	loadAndRenderAllCategories().catch(() => {
 		renderCategories([]);
 		alert("Categories could not be loaded.");

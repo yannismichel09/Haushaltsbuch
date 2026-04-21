@@ -1,3 +1,4 @@
+/* Grundlayout der Eingabefelder im Kategorie-Formular */
 .field-full {
 	width: 100%;
 	margin-bottom: 12px;
@@ -14,12 +15,23 @@
 	box-sizing: border-box;
 }
 
+/* Hinweisbox fuer den aktiven Bearbeitungsmodus */
 #add-category-form .field-full label,
 .limit-block label {
 	display: block;
 	margin-bottom: 4px;
 }
 
+.category-form-mode {
+    margin: 0 0 12px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    background-color: #eef6ff;
+    color: #27527a;
+    font-weight: 600;
+}
+
+/* Layout fuer Text-, Limit- und Farbeingabe der Kategorie */
 #add-category-form .field-full input[type="text"],
 .limit-block input[type="number"] {
 	display: block;
@@ -39,6 +51,7 @@
 	flex: 1;
 }
 
+/* Farbpicker fuer Kategorien und Filter */
 .color-picker {
 	display: flex;
 	gap: 10px;
@@ -96,7 +109,7 @@
 	cursor: pointer;
 }
 
-/* Dashboard-style Search and Filter Section */
+/* Dashboard-inspiriertes Styling fuer Suche und Filter */
 main > section:nth-of-type(2) {
     background-color: #ffffff;
     padding: 25px; 
@@ -185,6 +198,7 @@ main > section:nth-of-type(2) button:hover {
     opacity: 0.9;
 }
 
+/* Kartenlayout fuer die gefilterten Kategorien */
 #filtered-categories-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -232,6 +246,37 @@ main > section:nth-of-type(2) button:hover {
     color: #2f3a46;
 }
 
+/* Aktionsbuttons fuer Bearbeiten und Loeschen */
+.category-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.category-card-button {
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.category-card-button-edit {
+    background-color: #2c3e50;
+    color: #fff;
+}
+
+.category-card-button-delete {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
+.category-card-button:hover {
+    opacity: 0.9;
+}
+
+/* Leerzustand, wenn keine Kategorie gefunden wurde */
 .categories-empty-state {
     margin: 0;
     padding: 16px;

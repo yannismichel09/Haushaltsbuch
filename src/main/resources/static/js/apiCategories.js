@@ -1,31 +1,51 @@
+// Prueft, ob fuer den Request ein gueltiger Login-Token vorhanden ist.
+function ensureCategoryAuth() {
+	if (!globalToken) {
+		throw new Error("Not authenticated. Please log in again.");
+	}
+}
+
+// Wertet fehlgeschlagene API-Antworten einheitlich aus und liefert eine sprechende Fehlermeldung.
+async function throwCategoryApiError(response, actionName) {
+	if (response.status === 400 || response.status === 401 || response.status === 403) {
+		logout();
+		throw new Error("Session expired. Please log in again.");
+	}
+
+	let errorText = await response.text();
+	throw new Error("API Category error: " + actionName + " (" + response.status + ") " + errorText);
+}
+
+// Fuehrt einen Kategorien-Request aus und gibt die JSON-Antwort zurueck.
+async function sendCategoryRequest(path, method, actionName, body = null) {
+	ensureCategoryAuth();
+
+	const headers = {
+		"Accept": "application/json",
+		"Authorization": globalToken
+	};
+
+	if (body !== null) {
+		headers["Content-Type"] = "application/json";
+	}
+
+	const response = await fetch(CATEGORY_BASE_PATH + path, {
+		method,
+		headers,
+		body: body !== null ? JSON.stringify(body) : null
+	});
+
+	if (!response.ok) {
+		await throwCategoryApiError(response, actionName);
+	}
+
+	return await response.json();
+}
+
 // Erstellt eine neue Kategorie.
 async function createCategory(categoryCreateDtoIn) {
 	try {
-		if (!globalToken) {
-			throw new Error("Not authenticated. Please log in again.");
-		}
-
-		let response = await fetch(CATEGORY_BASE_PATH, {
-			method: "POST",
-			headers: {
-				"Accept": "application/json",
-				"Content-Type": "application/json",
-				"Authorization": globalToken
-			},
-			body: JSON.stringify(categoryCreateDtoIn)
-		});
-
-		if (!response.ok) {
-			if (response.status === 400 || response.status === 401 || response.status === 403) {
-				logout();
-				throw new Error("Session expired. Please log in again.");
-			}
-
-			let errorText = await response.text();
-			throw new Error("API Category error: createCategory (" + response.status + ") " + errorText);
-		}
-
-		return await response.json();
+		return await sendCategoryRequest("", "POST", "createCategory", categoryCreateDtoIn);
 	} catch (error) {
 		console.error(error);
 		throw error;
@@ -35,108 +55,49 @@ async function createCategory(categoryCreateDtoIn) {
 // Gibt alle Kategorien zurück.
 async function getAllCategories() {
 	try {
-		let response = await fetch(CATEGORY_BASE_PATH, {
-			method: "GET",
-			headers: {
-				"Accept": "application/json",
-				"Authorization": globalToken
-			}
-		});
-
-		if (!response.ok) {
-			throw new Error("API Category error: getAllCategories");
-		}
-
-		return await response.json();
+		return await sendCategoryRequest("", "GET", "getAllCategories");
 	} catch (error) {
-		console.log(error);
+		console.error(error);
+		throw error;
 	}
 }
 
 // Gibt eine Kategorie anhand der ID zurück.
 async function getCategoryById(categoryId) {
 	try {
-		let response = await fetch(CATEGORY_BASE_PATH + "/" + categoryId, {
-			method: "GET",
-			headers: {
-				"Accept": "application/json",
-				"Authorization": globalToken
-			}
-		});
-
-		if (!response.ok) {
-			throw new Error("API Category error: getCategoryById");
-		}
-
-		return await response.json();
+		return await sendCategoryRequest("/" + categoryId, "GET", "getCategoryById");
 	} catch (error) {
-		console.log(error);
+		console.error(error);
+		throw error;
 	}
 }
 
 // Gibt gefilterte Kategorien zurück.
 async function getFilteredCategories(categoryFilterDtoIn) {
 	try {
-		let response = await fetch(CATEGORY_BASE_PATH + "/filter", {
-			method: "POST",
-			headers: {
-				"Accept": "application/json",
-				"Content-Type": "application/json",
-				"Authorization": globalToken
-			},
-			body: JSON.stringify(categoryFilterDtoIn)
-		});
-
-		if (!response.ok) {
-			throw new Error("API Category error: getFilteredCategories");
-		}
-
-		return await response.json();
+		return await sendCategoryRequest("/filter", "POST", "getFilteredCategories", categoryFilterDtoIn);
 	} catch (error) {
-		console.log(error);
+		console.error(error);
+		throw error;
 	}
 }
 
 // Löscht eine Kategorie anhand der ID.
 async function deleteCategory(categoryId) {
 	try {
-		let response = await fetch(CATEGORY_BASE_PATH + "/" + categoryId, {
-			method: "DELETE",
-			headers: {
-				"Accept": "application/json",
-				"Authorization": globalToken
-			}
-		});
-
-		if (!response.ok) {
-			throw new Error("API Category error: deleteCategory");
-		}
-
-		return await response.json();
+		return await sendCategoryRequest("/" + categoryId, "DELETE", "deleteCategory");
 	} catch (error) {
-		console.log(error);
+		console.error(error);
+		throw error;
 	}
 }
 
 // Aktualisiert eine Kategorie anhand der ID.
 async function updateCategory(categoryId, categoryUpdateDtoIn) {
 	try {
-		let response = await fetch(CATEGORY_BASE_PATH + "/" + categoryId, {
-			method: "PUT",
-			headers: {
-				"Accept": "application/json",
-				"Content-Type": "application/json",
-				"Authorization": globalToken
-			},
-			body: JSON.stringify(categoryUpdateDtoIn)
-		});
-
-		if (!response.ok) {
-			throw new Error("API Category error: updateCategory");
-		}
-
-		return await response.json();
+		return await sendCategoryRequest("/" + categoryId, "PUT", "updateCategory", categoryUpdateDtoIn);
 	} catch (error) {
-		console.log(error);
+		console.error(error);
+		throw error;
 	}
 }
