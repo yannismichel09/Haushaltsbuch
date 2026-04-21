@@ -1,6 +1,10 @@
 // Erstellt eine neue Kategorie.
 async function createCategory(categoryCreateDtoIn) {
 	try {
+		if (!globalToken) {
+			throw new Error("Not authenticated. Please log in again.");
+		}
+
 		let response = await fetch(CATEGORY_BASE_PATH, {
 			method: "POST",
 			headers: {
@@ -12,12 +16,19 @@ async function createCategory(categoryCreateDtoIn) {
 		});
 
 		if (!response.ok) {
-			throw new Error("API Category error: createCategory");
+			if (response.status === 400 || response.status === 401 || response.status === 403) {
+				logout();
+				throw new Error("Session expired. Please log in again.");
+			}
+
+			let errorText = await response.text();
+			throw new Error("API Category error: createCategory (" + response.status + ") " + errorText);
 		}
 
 		return await response.json();
 	} catch (error) {
-		console.log(error);
+		console.error(error);
+		throw error;
 	}
 }
 
