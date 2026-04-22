@@ -5,6 +5,7 @@
     <title>Transactions</title>
     <link rel="stylesheet" href="style/searchFDashboardTransactions.css">
     <link rel="stylesheet" href="style/transactions.css">
+    <link rel="stylesheet" href="style/categories.css">
 </head>
 <body>
 
@@ -63,7 +64,8 @@
                 </div>
                 
                 <div class="form-actions">
-                    <button type="button" id="reset-transaction-btn" class="btn-action">Reset</button>
+                    <button type="reset" id="reset-transaction-btn" class="btn-action">Reset</button>
+                    <button type="button" id="cancel-edit-transaction-btn" class="btn-action" hidden>Cancel Edit</button>
                     <button type="button" id="add-transaction-btn" class="btn-action">Add</button>
                 </div>
             </form>
@@ -150,6 +152,7 @@
     <script src="js/global.js"></script>
     <script src="js/apiTransactions.js"></script>
     <script src="js/apiCategories.js"></script> 
+    <script src="js/apiUser.js"></script>
     <script src="js/transactions.js"></script>
 
 </body>

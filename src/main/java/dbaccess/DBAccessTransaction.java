@@ -37,6 +37,9 @@ public class DBAccessTransaction {
 		User user = entityManager.find(User.class, userId);
 		Category category = entityManager.find(Category.class, categoryId);
 
+		if (user == null) throw new IllegalArgumentException("User mit ID " + userId + " nicht gefunden!");
+        if (category == null) throw new IllegalArgumentException("Kategorie mit ID " + categoryId + " nicht gefunden!");
+
 		Transaction transaction = new Transaction();
 		transaction.setUser(user);
 		transaction.setCategory(category);

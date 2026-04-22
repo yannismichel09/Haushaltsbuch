@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -15,7 +16,10 @@ import jakarta.persistence.Table;
 // User-Entität, die der Datenbanktabelle "users" entspricht
 @Entity
 @Table(name = "users")
-@NamedQuery(name="getUserByUsername", query="SELECT user FROM User user WHERE user.userName = :userName")
+@NamedQueries({
+@NamedQuery(name="getUserByUsername", query="SELECT user FROM User user WHERE user.userName = :userName"),
+@NamedQuery(name="getAllUsers", query="SELECT user FROM User user")
+})
 public class User {
 
 

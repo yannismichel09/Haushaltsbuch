@@ -1,5 +1,7 @@
 package haushaltsbuch;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -41,6 +43,26 @@ class DBAccessTestUser {
         assertNotNull(user2);
         assertEquals("testUserById", user2.getUserName());
         assertEquals("test@UserById.com", user2.getUserEmail());
+    }
+
+    // Testet das Abrufen aller Benutzer
+    @Test
+    void testGetAllUsers() {
+        User user = dbAccess.createUser("testGetAllUsers1", "1234", "test@GetAllUsers1.com");
+        User user2 = dbAccess.createUser("testGetAllUsers2", "1234", "test@GetAllUsers2.com");
+        List<User> users = dbAccess.getAllUsers();
+        assertNotNull(user);
+        assertNotNull(user2);
+        assertNotNull(users);
+        assertFalse(users.isEmpty());
+        assertEquals(2, users.size());
+    }
+
+    // Testet das Abrufen aller Benutzer, wenn keine vorhanden sind
+    @Test
+    void testGetAllUsersNoUsers() {
+        List<User> users = dbAccess.getAllUsers();
+        assertNull(users);
     }
 
     // Testet das Abrufen eines nicht vorhandenen Benutzers anhand seiner ID
