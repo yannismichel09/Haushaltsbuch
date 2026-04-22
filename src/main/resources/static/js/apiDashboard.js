@@ -23,7 +23,7 @@ async function getAllDashboardTransactions() {
 async function getFilteredDashboardTransactions(transactionFilterDtoIn) {
 	try {
 		let response = await fetch(DASHBOARD_BASE_PATH + "/transactions/filter", {
-			method: "GET",
+			method: "POST",
 			headers: {
 				"Accept": "application/json",
 				"Authorization": globalToken,

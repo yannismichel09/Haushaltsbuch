@@ -3,8 +3,8 @@ package api;
 import java.util.Collection;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,25 +32,6 @@ public class DashboardController {
     public ResponseEntity<Collection<TransactionDtoOut>> getAllTransactions(@RequestHeader("Authorization") String token) {
         controllerTools.checkIsAccepted(token);
         Collection<TransactionDtoOut> transactions = dbAccessTransaction.getAllTransactions().stream().map(TransactionDtoOut::new).toList();
-
-        return ResponseEntity.ok()
-                             .body(transactions);
-    }
-
-    @GetMapping("/transactions/filter")
-    public ResponseEntity<Collection<TransactionDtoOut>> getFilteredTransactions(@RequestHeader("Authorization") String token, @RequestBody TransactionFilterDtoIn filterDtoIn) {
-        controllerTools.checkIsAccepted(token);
-        Collection<TransactionDtoOut> transactions = dbAccessTransaction.getFilteredTransactions(
-                filterDtoIn.transactionId(),
-                filterDtoIn.userId(),
-                filterDtoIn.categoryId(),
-                filterDtoIn.amountMin(),
-                filterDtoIn.amountMax(),
-                filterDtoIn.transactionDateFrom(),
-                filterDtoIn.transactionDateTo(),
-                filterDtoIn.transactionType(),
-                filterDtoIn.keyword(),
-                filterDtoIn.transactionFrequency()).stream().map(TransactionDtoOut::new).toList();
 
         return ResponseEntity.ok()
                              .body(transactions);
@@ -90,6 +71,27 @@ public class DashboardController {
 
         return ResponseEntity.ok()
                              .body(sum);
+    }
+
+    // Post-Mapping
+
+    @PostMapping("/transactions/filter")
+    public ResponseEntity<Collection<TransactionDtoOut>> getDashboardFilteredTransactions(@RequestHeader("Authorization") String token, @RequestBody TransactionFilterDtoIn filterDtoIn) {
+        controllerTools.checkIsAccepted(token);
+        Collection<TransactionDtoOut> transactions = dbAccessTransaction.getFilteredTransactions(
+                filterDtoIn.transactionId(),
+                filterDtoIn.userId(),
+                filterDtoIn.categoryId(),
+                filterDtoIn.amountMin(),
+                filterDtoIn.amountMax(),
+                filterDtoIn.transactionDateFrom(),
+                filterDtoIn.transactionDateTo(),
+                filterDtoIn.transactionType(),
+                filterDtoIn.keyword(),
+                filterDtoIn.transactionFrequency()).stream().map(TransactionDtoOut::new).toList();
+
+        return ResponseEntity.ok()
+                             .body(transactions);
     }
 
 }
