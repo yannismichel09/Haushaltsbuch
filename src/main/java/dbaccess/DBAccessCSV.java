@@ -31,10 +31,12 @@ public class DBAccessCSV {
 	}
 
 	// Methode zum Exportieren aller Kategorien in eine CSV-Datei
-    public String exportFilteredCategoriesToCsv(Integer categoryId, String keyword,String categoryColor, Double amountMin, Double amountMax) {
+    public String exportFilteredCategoriesToCsv(Integer categoryId, String keyword,
+            List<String> categoryColors, Double amountMin, Double amountMax) {
 
         DBAccessCategory dbAccessCategory = new DBAccessCategory(entityManager);
-        List<Category> categories = dbAccessCategory.getFilteredCategories(categoryId, keyword, categoryColor, amountMin, amountMax);
+        List<Category> categories = dbAccessCategory.getFilteredCategories(categoryId, keyword, categoryColors,
+                amountMin, amountMax);
 
         StringBuilder sb = new StringBuilder();
 

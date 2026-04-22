@@ -36,7 +36,7 @@ public class CSVController {
                 : new CategoryFilterDtoIn(null, null, null, null, null);
 
         String csv = dbAccessCSV.exportFilteredCategoriesToCsv(filterDtoIn.categoryId(), filterDtoIn.keyword(),
-                filterDtoIn.categoryColor(), filterDtoIn.amountMin(), filterDtoIn.amountMax());
+            filterDtoIn.categoryColors(), filterDtoIn.amountMin(), filterDtoIn.amountMax());
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=categories.csv")

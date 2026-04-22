@@ -53,8 +53,8 @@ public class CategoryController {
             @RequestHeader("Authorization") String token, @RequestBody CategoryFilterDtoIn categoryFilterDtoIn) {
         controllerTools.checkIsAccepted(token);
         Collection<CategoryDtoOut> categories = dbAccessCategory.getFilteredCategories(categoryFilterDtoIn.categoryId(),
-                categoryFilterDtoIn.keyword(), categoryFilterDtoIn.categoryColor(), categoryFilterDtoIn.amountMin(),
-                categoryFilterDtoIn.amountMax()).stream().map(CategoryDtoOut::new).toList();
+            categoryFilterDtoIn.keyword(), categoryFilterDtoIn.categoryColors(), categoryFilterDtoIn.amountMin(),
+            categoryFilterDtoIn.amountMax()).stream().map(CategoryDtoOut::new).toList();
 
         return ResponseEntity.ok()
                 .body(categories);

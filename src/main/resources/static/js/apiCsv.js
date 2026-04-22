@@ -18,7 +18,8 @@ function parseCsvFilename(contentDisposition, fallbackName) {
 
 // Startet den Download einer CSV-Datei im Browser.
 function triggerCsvDownload(csvContent, filename) {
-	const csvBlob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
+	const normalizedCsvContent = String(csvContent ?? "").replace(/\r?\n/g, "\r\n");
+	const csvBlob = new Blob(["\uFEFF", normalizedCsvContent], { type: "text/csv;charset=utf-8" });
 	const downloadUrl = URL.createObjectURL(csvBlob);
 
 	const link = document.createElement("a");
@@ -28,7 +29,7 @@ function triggerCsvDownload(csvContent, filename) {
 	link.click();
 	document.body.removeChild(link);
 
-	URL.revokeObjectURL(downloadUrl);
+	window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
 }
 
 // Exportiert gefilterte Kategorien als CSV.
