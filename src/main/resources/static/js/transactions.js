@@ -22,12 +22,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     const addForm = document.getElementById("add-transaction-form");
     const listContainer = document.getElementById("filtered-transactions-list");
     
-    if (resetBtn) {
-        resetBtn.addEventListener("click", () => {
-            if (addForm) addForm.reset();
-            leaveEditMode();
-            const spendingRadio = document.querySelector('input[name="transaction-type"][value="spending"]');
-            if (spendingRadio) spendingRadio.checked = true;
+    const filterForm = document.querySelector(".search-filter form");
+    if (filterForm) {
+        filterForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            await handleFilter();
+        });
+
+        filterForm.addEventListener("reset", () => {
+            setTimeout(loadAllTransactions, 10);
         });
     }
 
@@ -44,17 +47,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         listContainer.addEventListener("click", async (event) => {
             const btn = event.target.closest("button[data-action]");
             if (!btn) return;
-
             const tId = btn.dataset.id; 
             const action = btn.dataset.action;
-
-            console.log("Aktion:", action, "für ID:", tId);
-
-            if (tId === "undefined" || !tId) {
-                console.error("Fehler: Diese Transaktion hat keine gültige ID!");
-                return;
-            }
-
+            if (tId === "undefined" || !tId) return;
             if (action === "edit") {
                 startEditTransaction(tId);
             } else if (action === "delete") {
@@ -66,14 +61,46 @@ document.addEventListener("DOMContentLoaded", async () => {
     await initializePage();
 });
 
+async function handleFilter() {
+    const searchVal = document.getElementById("search-input").value.trim();
+    const typeVal = document.getElementById("filter-type").value;
+    const catVal = document.getElementById("filter-category").value;
+    const freqVal = document.getElementById("filter-frequency").value;
+    const dateFromVal = document.getElementById("filter-date-from").value;
+    const dateToVal = document.getElementById("filter-date-to").value;
+    const amountMinVal = document.getElementById("filter-amount-from").value;
+    const amountMaxVal = document.getElementById("filter-amount-to").value;
+
+    const filterDto = {
+        transactionId: null,
+        userId: null,       
+        categoryId: catVal ? parseInt(catVal) : null,
+        amountMin: amountMinVal !== "" ? parseFloat(amountMinVal) : null,
+        amountMax: amountMaxVal !== "" ? parseFloat(amountMaxVal) : null,
+        transactionDateFrom: dateFromVal || null,
+        transactionDateTo: dateToVal || null,
+        transactionType: typeVal || null, 
+        keyword: searchVal || null,       
+        transactionFrequency: freqVal || null
+    };
+
+    console.log("Sende DTO an Java-Backend:", filterDto);
+
+    try {
+        const filteredData = await getFilteredTransactions(filterDto);
+        
+        renderTransactions(filteredData || []);
+    } catch (e) {
+        console.error("Fehler beim Filtern:", e);
+    }
+}
+
 function leaveEditMode() {
     editingTransactionId = null;
     const addBtn = document.getElementById("add-transaction-btn");
     const cancelBtn = document.getElementById("cancel-edit-transaction-btn");
-    
     if (addBtn) addBtn.textContent = "Add";
     if (cancelBtn) cancelBtn.hidden = true;
-    
     const selects = ["payed-by-select", "category-select", "frequency"];
     selects.forEach(id => {
         const el = document.getElementById(id);
@@ -82,96 +109,68 @@ function leaveEditMode() {
 }
 
 function startEditTransaction(transactionId) {
-    if (!transactionId) return;
-
-    const t = allTransactions.find((item) => {
-        const itemId = String(item.transactionId || item.id);
-        return itemId === String(transactionId);
-    });
-
-    if (!t) {
-        console.error("Transaktion nicht gefunden", transactionId);
-        return;
-    }
-
+    const t = allTransactions.find((item) => String(item.transactionId || item.id) === String(transactionId));
+    if (!t) return;
     editingTransactionId = transactionId;
-
-    if (document.getElementById("desc")) document.getElementById("desc").value = t.transactionDescription || "";
-    if (document.getElementById("amount")) document.getElementById("amount").value = t.transactionAmount || "";
-    if (document.getElementById("date")) document.getElementById("date").value = t.transactionDate || "";
-    if (document.getElementById("category-select")) document.getElementById("category-select").value = t.categoryId || "";
-    if (document.getElementById("frequency")) document.getElementById("frequency").value = t.transactionFrequency || "";
-    
-    const userSelect = document.getElementById("payed-by-select");
-    if (userSelect) userSelect.value = String(t.userId);
-    
+    document.getElementById("desc").value = t.transactionDescription || "";
+    document.getElementById("amount").value = t.transactionAmount || "";
+    document.getElementById("date").value = t.transactionDate || "";
+    document.getElementById("category-select").value = t.categoryId || "";
+    document.getElementById("frequency").value = t.transactionFrequency || "";
+    document.getElementById("payed-by-select").value = String(t.userId);
     const radio = document.querySelector(`input[name="transaction-type"][value="${t.transactionType}"]`);
     if (radio) radio.checked = true;
-
-    const addBtn = document.getElementById("add-transaction-btn");
-    const cancelBtn = document.getElementById("cancel-edit-transaction-btn");
-    
-    if (addBtn) addBtn.textContent = "Save Changes";
-    if (cancelBtn) cancelBtn.hidden = false;
-
+    document.getElementById("add-transaction-btn").textContent = "Save Changes";
+    document.getElementById("cancel-edit-transaction-btn").hidden = false;
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 async function initializePage() {
     try {
         const [categories, users] = await Promise.all([getAllCategories(), getAllUsers()]);
-        
         allCategories = Array.isArray(categories) ? categories : (categories.categories || []);
         allUsers = users || [];
-
         fillCategoryDropdowns(allCategories);
         fillUserDropdown(allUsers);
-        
         await loadAllTransactions();
-    } catch (e) { console.error("Fehler bei Init:", e); }
+    } catch (e) { console.error(e); }
 }
 
 async function loadAllTransactions() {
     try {
         allTransactions = await getTransactions();
         renderTransactions(allTransactions);
-    } catch (e) { console.error("Fehler beim Laden:", e); }
+    } catch (e) { console.error(e); }
 }
 
 async function handleAddTransaction() {
-    const desc = document.getElementById("desc")?.value;
-    const amount = parseFloat(document.getElementById("amount")?.value);
-    const selectedUserId = document.getElementById("payed-by-select")?.value;
-
     const dto = {
-        userId: parseInt(selectedUserId),
-        categoryId: parseInt(document.getElementById("category-select")?.value),
-        transactionAmount: amount,
-        transactionDate: document.getElementById("date")?.value,
-        transactionType: document.querySelector('input[name="transaction-type"]:checked')?.value,
-        transactionDescription: desc,
-        transactionFrequency: document.getElementById("frequency")?.value
+        userId: parseInt(document.getElementById("payed-by-select").value),
+        categoryId: parseInt(document.getElementById("category-select").value),
+        transactionAmount: parseFloat(document.getElementById("amount").value),
+        transactionDate: document.getElementById("date").value,
+        transactionType: document.querySelector('input[name="transaction-type"]:checked').value,
+        transactionDescription: document.getElementById("desc").value,
+        transactionFrequency: document.getElementById("frequency").value
     };
-
-    if (!desc || isNaN(amount) || !dto.userId) {
-        alert("Please fill out all fields and select a user!");
+    if (!dto.transactionDescription || isNaN(dto.transactionAmount)) {
+        alert("Please fill out all fields!");
         return;
     }
-
     try {
         if (editingTransactionId) {
             await updateTransaction(editingTransactionId, dto);
         } else {
             await createTransaction(dto);
         }
-        document.getElementById("add-transaction-form")?.reset();
+        document.getElementById("add-transaction-form").reset();
         leaveEditMode();
         await loadAllTransactions();
-    } catch (e) { alert("Error: " + e.message); }
+    } catch (e) { alert(e.message); }
 }
 
 async function handleDeleteTransaction(tId) {
-    if (!confirm("Are you sure you want to delete this transaction?")) return;
+    if (!confirm("Are you sure?")) return;
     try {
         await deleteTransaction(tId);
         await loadAllTransactions();
@@ -182,32 +181,29 @@ function renderTransactions(transactions) {
     const container = document.getElementById("filtered-transactions-list");
     if (!container) return;
     container.innerHTML = "";
-
+    if (!transactions || transactions.length === 0) {
+        container.innerHTML = '<p>No transactions found.</p>';
+        return;
+    }
     transactions.forEach((t) => {
         const currentId = t.transactionId || t.id;
         const card = document.createElement("article");
-        
         card.className = "transaction-card"; 
-        
         const cat = allCategories.find(c => c.categoryId == t.categoryId);
-        const catName = cat ? (cat.categoryName || cat.name) : "N/A";
         const user = allUsers.find(u => u.userId == t.userId);
-        const userName = user ? (user.username || user.name) : "N/A";
-        
         const typeLabel = t.transactionType === "income" ? "Income" : "Spending";
         const typeClass = t.transactionType === "income" ? "type-income" : "type-spending";
-
         card.innerHTML = `
             <div class="card-header">
                 <h3>${t.transactionDescription || "No Description"}</h3>
                 <span class="type-badge ${typeClass}">${typeLabel}</span>
             </div>
             <p><strong>Date:</strong> ${t.transactionDate || "-"}</p>
-            <p><strong>Category:</strong> ${catName}</p>
-            <p><strong>User:</strong> ${userName}</p>
+            <p><strong>Category:</strong> ${cat ? cat.categoryName : "N/A"}</p>
+            <p><strong>User:</strong> ${user ? user.username : "N/A"}</p>
             <div class="transaction-amount">${formatAmount(t.transactionAmount)}</div>
             <div class="category-card-actions">
-                <button type="button" class="btn-action" style="background-color: #2c3e50; color: white; padding: 6px 12px;" 
+                <button type="button" class="btn-action" style="background-color: #2c3e50; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer;" 
                         data-action="edit" data-id="${currentId}">Edit</button>
                 <button type="button" class="transaction-card-button-delete" 
                         data-action="delete" data-id="${currentId}">Delete</button>
@@ -218,34 +214,31 @@ function renderTransactions(transactions) {
 }
 
 function formatAmount(amount) {
-    return (amount === null || amount === undefined || Number.isNaN(amount)) 
-        ? "-" 
-        : new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(amount);
+    return new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(amount || 0);
 }
 
 function fillCategoryDropdowns(data) {
     const addSelect = document.getElementById("category-select");
+    const filterSelect = document.getElementById("filter-category");
     if (addSelect) {
         addSelect.innerHTML = '<option value="" disabled selected>Select...</option>';
-        data.forEach(cat => {
-            const option = new Option(cat.categoryName || cat.name, cat.categoryId);
-            addSelect.appendChild(option);
-        });
+        data.forEach(cat => addSelect.appendChild(new Option(cat.categoryName || cat.name, cat.categoryId)));
+    }
+    if (filterSelect) {
+        filterSelect.innerHTML = '<option value="" selected>All</option>';
+        data.forEach(cat => filterSelect.appendChild(new Option(cat.categoryName || cat.name, cat.categoryId)));
     }
 }
 
 function fillUserDropdown(users) {
     const userSelect = document.getElementById("payed-by-select");
     if (!userSelect) return;
-    
     const myId = getDynamicUserId();
     userSelect.innerHTML = '<option value="" disabled selected>Select...</option>';
-    
     const me = users.find(u => u.userId == myId);
     if (me) {
         userSelect.appendChild(new Option(`👤 ${me.username || me.name} (Me)`, me.userId));
     }
-    
     users.forEach(u => {
         if (u.userId != myId) {
             userSelect.appendChild(new Option(u.username || u.name, u.userId));
