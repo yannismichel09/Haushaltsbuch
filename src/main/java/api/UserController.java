@@ -1,12 +1,15 @@
 package api;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import dbaccess.DBAccessUser;
@@ -17,6 +20,7 @@ import dto.UserRegisterDtoIn;
 import model.User;
 import security.SecurityManager;
 import util.ControllerTools;
+
 
 @RestController
 @RequestMapping("/users")
@@ -78,4 +82,16 @@ public class UserController {
         return ResponseEntity.ok()
                 .body(result);
     }
+
+    // Liefert alle Benutzer zurück
+    @GetMapping
+    public ResponseEntity<List<UserDtoOut>> getAllUsers(@RequestHeader("Authorization") String token) {
+        controllerTools.checkIsAccepted(token);
+       
+        List<User> users = dbAccessUser.getAllUsers();
+
+        return ResponseEntity.ok()
+                             .body(users.stream().map(UserDtoOut::new).toList());
+    }
+    
 }

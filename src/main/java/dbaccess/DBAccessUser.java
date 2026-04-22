@@ -49,6 +49,17 @@ public class DBAccessUser {
 		return user;
 	}
 
+	// Methid zum Laden aller Benutzer
+	public List<User> getAllUsers() {
+		List<User> users = entityManager.createNamedQuery("getAllUsers", User.class).getResultList();
+
+		if (users.isEmpty()) {
+			return null;
+		}
+		
+		return users;
+	}
+
 	// Methode um einen Benutzer zu finden, anhand seiner Id
 	public User getUserById(int userId) {
 		return entityManager.find(User.class, userId);

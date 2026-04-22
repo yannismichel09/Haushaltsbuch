@@ -93,3 +93,24 @@ async function deleteUser(userId) {
 	}
 }
 
+// Gibt alle Benutzer zurück 
+async function getAllUsers() {
+    try {
+        let response = await fetch(USER_BASE_PATH, { 
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': globalToken
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error("API User error: getAllUsers");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error(error);
+		return []; 
+    }
+}
