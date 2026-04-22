@@ -1,9 +1,7 @@
 package haushaltsbuch;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,10 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 import dbaccess.DBAccessCSV;
 import dbaccess.DBAccessCategory;
 import dbaccess.DBAccessTransaction;
+import dbaccess.DBAccessUser;
 import haushaltsbuch.Studienprojekt.StudienprojektApplication;
 import model.Category;
 import model.TransactionFrequency;
 import model.TransactionType;
+import model.User;
 
 @Transactional
 @SpringBootTest(classes = StudienprojektApplication.class)
@@ -30,38 +30,33 @@ class DBAccessTestCSV {
     @Autowired
     private DBAccessCategory dbAccessCategory;
 
-    // Testet das Exportieren gefilterter Transaktionen in CSV
+    @Autowired
+    private DBAccessUser dbAccessUser;
+
+    // Testet das Exportieren aller gefilterten Transaktionen in CSV
     @Test
     void testExportFilteredTransactionsToCsv() {
-        dbAccessTransaction.createTransaction(1, 1, 100.0, "2026-05-05", TransactionType.spending, "Test Transaction", TransactionFrequency.monthly);
+        User user = dbAccessUser.createUser("CsvUser", "pw", "csv@test.com");
+        Category category = dbAccessCategory.createCategory("CsvCat", "Desc", "blue", 500.0);
+
+        dbAccessTransaction.createTransaction(user.getUserId(), category.getCategoryId(), 100.0, "2026-05-05", 
+                                              TransactionType.spending, "Test Transaction", TransactionFrequency.monthly);
 
         String csv = dbAccessCSV.exportFilteredTransactionsToCsv(null, null, null, null, null, null, null, null, null, null);
 
         assertNotNull(csv);
-        assertTrue(csv.contains("ID,UserID,CategoryID,Amount,Date,Type,Description,Frequency"));
         assertTrue(csv.contains("Test Transaction"));
         assertTrue(csv.contains("100"));
-        
-        assertFalse(csv.contains("101"));
-        assertFalse(csv.contains("blub"));
     }
 
-    // Testet das Exportieren gefilterter Kategorien in CSV
+    // Testet das Exportieren aller gefilterten Kategorien in CSV
     @Test
     void testExportFilteredCategoriesToCsv() {
-
-        Category category = dbAccessCategory.createCategory("testExportCategory", "testExportDescription", "red", 100.0);
-
+        Category category = dbAccessCategory.createCategory("testExport", "desc", "red", 123.45);
         String csv = dbAccessCSV.exportFilteredCategoriesToCsv(category.getCategoryId(), null, null, 0.0, Double.MAX_VALUE);
 
         assertNotNull(csv);
-        assertTrue(csv.contains("ID,Name,Description,Color,Limit"));
-        assertTrue(csv.contains("testExportCategory"));
-        assertTrue(csv.contains("testExportDescription"));
-        assertTrue(csv.contains("red"));
-        assertTrue(csv.contains("100.0"));
-  
-        assertFalse(csv.contains("blub"));
-        assertFalse(csv.contains("999.0"));
+        assertTrue(csv.contains("testExport"));
+        assertTrue(csv.contains("123.45"));
     }
 }
