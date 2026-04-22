@@ -96,15 +96,20 @@ public class DBAccessCategory {
     public List<Category> getFilteredCategories(
         Integer categoryId,
         String keyword,
-		String categoryColor,
+		List<String> categoryColors,
         Double amountMin,
         Double amountMax) {
 
         StringBuilder query = new StringBuilder("SELECT c FROM Category c WHERE 1=1");
+		List<String> normalizedCategoryColors = categoryColors != null
+				? categoryColors.stream().filter(color -> color != null && !color.isBlank()).toList()
+				: List.of();
 
         if (categoryId != null) query.append(" AND c.categoryId = :categoryId");
         if (keyword != null) query.append(" AND (c.categoryName LIKE :keyword OR c.categoryDescription LIKE :keyword)");
-		if (categoryColor != null) query.append(" AND c.categoryColor = :categoryColor");
+		if (!normalizedCategoryColors.isEmpty()) {
+			query.append(" AND c.categoryColor IN :categoryColors");
+		}
         if (amountMin != null) query.append(" AND c.categoryLimit >= :amountMin");
         if (amountMax != null) query.append(" AND c.categoryLimit <= :amountMax");
 
@@ -112,7 +117,9 @@ public class DBAccessCategory {
 
         if (categoryId != null) q.setParameter("categoryId", categoryId);
         if (keyword != null) q.setParameter("keyword", "%" + keyword + "%");
-		if (categoryColor != null) q.setParameter("categoryColor", categoryColor);
+		if (!normalizedCategoryColors.isEmpty()) {
+			q.setParameter("categoryColors", normalizedCategoryColors);
+		}
         if (amountMin != null) q.setParameter("amountMin", amountMin);
         if (amountMax != null) q.setParameter("amountMax", amountMax);
 

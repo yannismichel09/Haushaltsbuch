@@ -44,6 +44,22 @@ function getCategoryFormValues() {
 	};
 }
 
+function getCategoryFilterValues() {
+	const keyword = document.getElementById("search-input")?.value.trim() || "";
+	const amountMinRaw = document.getElementById("filter-amount-min")?.value || "";
+	const amountMaxRaw = document.getElementById("filter-amount-max")?.value || "";
+	const selectedColors = Array.from(document.querySelectorAll("input[name='categoryColors']:checked"))
+		.map((input) => input.value);
+
+	return {
+		categoryId: null,
+		keyword: keyword || null,
+		categoryColors: selectedColors.length > 0 ? selectedColors : null,
+		amountMin: amountMinRaw === "" ? null : parseFloat(amountMinRaw),
+		amountMax: amountMaxRaw === "" ? null : parseFloat(amountMaxRaw),
+	};
+}
+
 // Rendert die uebergebenen Kategorien als Karten in den Ergebnisbereich.
 function renderCategories(categories) {
 	const container = document.getElementById("filtered-categories-list");
@@ -187,6 +203,10 @@ document.addEventListener("DOMContentLoaded", () => {
 		renderCategories(applyCategoryFilters(allCategories));
 	};
 
+	const exportCurrentCategories = async () => {
+		await exportFilteredCategoriesToCsv(getCategoryFilterValues());
+	};
+
 	// Prüft, ob der Kategoriename bereits existiert (ohne Berücksichtigung der aktuell bearbeiteten Kategorie).
 	const hasDuplicateCategoryName = (categoryName, ignoredCategoryId = null) => {
 		const normalizedName = (categoryName || "").trim().toLowerCase();
@@ -318,10 +338,14 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	}
 
-	// Zeigt bis zur echten Implementierung einen Platzhalter fuer den CSV-Export an.
+	// Exportiert die aktuell sichtbaren Kategorien als CSV-Datei.
 	if (exportCsvBtn) {
-		exportCsvBtn.addEventListener("click", () => {
-			alert("CSV export is not implemented yet.");
+		exportCsvBtn.addEventListener("click", async () => {
+			try {
+				await exportCurrentCategories();
+			} catch (error) {
+				alert(error.message || "CSV export failed.");
+			}
 		});
 	}
 
