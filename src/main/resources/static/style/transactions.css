@@ -101,6 +101,7 @@ input[type="radio"] {
     border: none;
     cursor: pointer;
     font-weight: bold;
+    transition: opacity 0.2s ease;
 }
 
 #add-transaction-btn {
@@ -118,8 +119,9 @@ input[type="radio"] {
     color: white;
 }
 
-.btn-action:hover {
-    opacity: 0.9;
+.btn-action:hover, 
+.transaction-card-button-delete:hover {
+    opacity: 0.8;
 }
 
 #filtered-transactions-list {
@@ -133,22 +135,9 @@ input[type="radio"] {
     border-radius: 8px;
     padding: 14px;
     background-color: #fff;
-}
-
-.transaction-card-header {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
+    flex-direction: column;
 }
-
-.transaction-type-dot {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-}
-.transaction-type-dot.income { background-color: #43A047; }  
-.transaction-type-dot.spending { background-color: #E53935; } 
 
 .transaction-amount {
     font-weight: bold;
@@ -166,8 +155,10 @@ input[type="radio"] {
     color: #fff;
     border: none;
     border-radius: 4px;
-    padding: 6px 10px;
+    padding: 6px 12px;
     cursor: pointer;
+    font-weight: bold;
+    transition: opacity 0.2s ease;
 }
 
 .card-header {
@@ -195,4 +186,22 @@ input[type="radio"] {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
+}
+
+.transactions-empty-state {
+    margin: 0;
+    padding: 16px;
+    border: 1px dashed #c5ced8;
+    border-radius: 8px;
+    color: #677689;
+    background: #fafcfe;
+    grid-column: 1 / -1;
+    text-align: center;
+}
+
+.category-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 10px;
 }

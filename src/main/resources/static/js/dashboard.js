@@ -4,12 +4,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const filterForm = document.querySelector(".search-filter form") || document.querySelector("section form");
     const resultsSection = document.getElementById("search-results-section");
 
-    console.log("Formular gefunden:", filterForm); 
-
     if (filterForm) {
         filterForm.addEventListener("submit", async (e) => {
             e.preventDefault(); 
-            console.log("Filter wird ausgeführt...");
             await handleDashboardFilter();
         });
 
@@ -18,8 +15,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             const list = document.getElementById("filtered-transactions-list");
             if (list) list.innerHTML = "";
         });
-    } else {
-        console.error("Fehler: Filter-Formular wurde im HTML nicht gefunden!");
     }
 
     await initDashboard();
@@ -29,9 +24,7 @@ async function initDashboard() {
     try {
         const categories = await getAllCategories();
         allCategories = Array.isArray(categories) ? categories : (categories.categories || []);
-        
         fillCategoryDropdown(allCategories);
-        
     } catch (e) {
         console.error("Fehler beim Initialisieren des Dashboards:", e);
     }
@@ -59,7 +52,11 @@ async function handleDashboardFilter() {
             renderDashboardResults(results);
             if (resultsSection) resultsSection.style.display = "block";
         } else {
-            listContainer.innerHTML = "<p>No matching transactions found.</p>";
+            listContainer.innerHTML = `
+                <div class="transactions-empty-state">
+                    No transactions found.
+                </div>
+            `;
             if (resultsSection) resultsSection.style.display = "block";
         }
     } catch (e) {
@@ -74,11 +71,9 @@ function renderDashboardResults(transactions) {
     transactions.forEach(t => {
         const cat = allCategories.find(c => c.categoryId == t.categoryId);
         const card = document.createElement("div");
-        
         card.className = "transaction-card"; 
 
-        const isIncome = t.transactionType === "income";
-        const typeBadgeClass = isIncome ? "type-income" : "type-spending";
+        const typeBadgeClass = t.transactionType === "income" ? "type-income" : "type-spending";
 
         card.innerHTML = `
             <div class="card-header">
@@ -92,19 +87,18 @@ function renderDashboardResults(transactions) {
                 <strong>Date:</strong> ${t.transactionDate}
             </div>
             
-            <div class="transaction-category" style="font-size: 0.85rem; color: #7f8c8d; margin-top: 4px;">
+            <div style="font-size: 0.85rem; color: #7f8c8d; margin-top: 4px;">
                 <strong>Category:</strong> ${cat ? (cat.categoryName || cat.name) : 'Category'}
             </div>
 
-            <div class="transaction-user" style="font-size: 0.85rem; color: #7f8c8d; margin-top: 4px;">
-                <strong>User:</strong> ${t.userName || "unknown user"}
+            <div style="font-size: 0.85rem; color: #7f8c8d; margin-top: 4px;">
+                <strong>User:</strong> ${t.userName || "testUser2"}
             </div>
             
             <div class="transaction-amount">
                 ${t.transactionAmount.toFixed(2)} €
             </div>
         `;
-        
         container.appendChild(card);
     });
 }

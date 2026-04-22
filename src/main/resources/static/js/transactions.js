@@ -18,7 +18,6 @@ function getDynamicUserId() {
 document.addEventListener("DOMContentLoaded", async () => {
     const addBtn = document.getElementById("add-transaction-btn");
     const cancelBtn = document.getElementById("cancel-edit-transaction-btn");
-    const resetBtn = document.getElementById("reset-transaction-btn"); 
     const addForm = document.getElementById("add-transaction-form");
     const listContainer = document.getElementById("filtered-transactions-list");
     
@@ -84,11 +83,8 @@ async function handleFilter() {
         transactionFrequency: freqVal || null
     };
 
-    console.log("Sende DTO an Java-Backend:", filterDto);
-
     try {
         const filteredData = await getFilteredTransactions(filterDto);
-        
         renderTransactions(filteredData || []);
     } catch (e) {
         console.error("Fehler beim Filtern:", e);
@@ -101,11 +97,6 @@ function leaveEditMode() {
     const cancelBtn = document.getElementById("cancel-edit-transaction-btn");
     if (addBtn) addBtn.textContent = "Add";
     if (cancelBtn) cancelBtn.hidden = true;
-    const selects = ["payed-by-select", "category-select", "frequency"];
-    selects.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.selectedIndex = 0;
-    });
 }
 
 function startEditTransaction(transactionId) {
@@ -181,10 +172,16 @@ function renderTransactions(transactions) {
     const container = document.getElementById("filtered-transactions-list");
     if (!container) return;
     container.innerHTML = "";
+
     if (!transactions || transactions.length === 0) {
-        container.innerHTML = '<p>No transactions found.</p>';
+        container.innerHTML = `
+            <div class="transactions-empty-state">
+                No transactions found matching your filters.
+            </div>
+        `;
         return;
     }
+
     transactions.forEach((t) => {
         const currentId = t.transactionId || t.id;
         const card = document.createElement("article");
@@ -193,17 +190,18 @@ function renderTransactions(transactions) {
         const user = allUsers.find(u => u.userId == t.userId);
         const typeLabel = t.transactionType === "income" ? "Income" : "Spending";
         const typeClass = t.transactionType === "income" ? "type-income" : "type-spending";
+        
         card.innerHTML = `
             <div class="card-header">
-                <h3>${t.transactionDescription || "No Description"}</h3>
+                <h3 style="margin:0; font-size: 1.1rem;">${t.transactionDescription || "No Description"}</h3>
                 <span class="type-badge ${typeClass}">${typeLabel}</span>
             </div>
-            <p><strong>Date:</strong> ${t.transactionDate || "-"}</p>
-            <p><strong>Category:</strong> ${cat ? cat.categoryName : "N/A"}</p>
-            <p><strong>User:</strong> ${user ? user.username : "N/A"}</p>
+            <p style="margin: 8px 0 4px 0;"><strong>Date:</strong> ${t.transactionDate || "-"}</p>
+            <p style="margin: 4px 0;"><strong>Category:</strong> ${cat ? (cat.categoryName || cat.name) : "N/A"}</p>
+            <p style="margin: 4px 0;"><strong>User:</strong> ${user ? (user.username || user.name) : "N/A"}</p>
             <div class="transaction-amount">${formatAmount(t.transactionAmount)}</div>
             <div class="category-card-actions">
-                <button type="button" class="btn-action" style="background-color: #2c3e50; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer;" 
+                <button type="button" class="btn-action" style="background-color: #2c3e50; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;" 
                         data-action="edit" data-id="${currentId}">Edit</button>
                 <button type="button" class="transaction-card-button-delete" 
                         data-action="delete" data-id="${currentId}">Delete</button>
