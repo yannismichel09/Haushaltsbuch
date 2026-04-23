@@ -3,6 +3,7 @@ let allCategories = [];
 document.addEventListener("DOMContentLoaded", async () => {
     const filterForm = document.querySelector(".search-filter form") || document.querySelector("section form");
     const resultsSection = document.getElementById("search-results-section");
+    const exportBtn = document.getElementById("dashboard-export-csv-btn");
 
     if (filterForm) {
         filterForm.addEventListener("submit", async (e) => {
@@ -17,8 +18,32 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
+    if (exportBtn) {
+        exportBtn.addEventListener("click", async () => {
+            try {
+                const filters = getDashboardFilterValues();
+                await exportFilteredTransactionsToCsv(filters);
+            } catch (e) {
+                alert("CSV-Export fehlgeschlagen: " + e.message);
+            }
+        });
+    }
+
     await initDashboard();
 });
+
+function getDashboardFilterValues() {
+    return {
+        keyword: document.getElementById("search-input").value.trim() || null,
+        transactionType: document.getElementById("filter-type").value || null,
+        categoryId: document.getElementById("filter-category").value ? parseInt(document.getElementById("filter-category").value) : null,
+        transactionFrequency: document.getElementById("filter-frequency").value || null,
+        transactionDateFrom: document.getElementById("filter-date-from").value || null,
+        transactionDateTo: document.getElementById("filter-date-to").value || null,
+        amountMin: document.getElementById("filter-amount-from").value !== "" ? parseFloat(document.getElementById("filter-amount-from").value) : null,
+        amountMax: document.getElementById("filter-amount-to").value !== "" ? parseFloat(document.getElementById("filter-amount-to").value) : null
+    };
+}
 
 async function initDashboard() {
     try {
@@ -33,17 +58,7 @@ async function initDashboard() {
 async function handleDashboardFilter() {
     const resultsSection = document.getElementById("search-results-section");
     const listContainer = document.getElementById("filtered-transactions-list");
-
-    const filterDto = {
-        keyword: document.getElementById("search-input").value.trim() || null,
-        transactionType: document.getElementById("filter-type").value || null,
-        categoryId: document.getElementById("filter-category").value ? parseInt(document.getElementById("filter-category").value) : null,
-        transactionFrequency: document.getElementById("filter-frequency").value || null,
-        transactionDateFrom: document.getElementById("filter-date-from").value || null,
-        transactionDateTo: document.getElementById("filter-date-to").value || null,
-        amountMin: document.getElementById("filter-amount-from").value !== "" ? parseFloat(document.getElementById("filter-amount-from").value) : null,
-        amountMax: document.getElementById("filter-amount-to").value !== "" ? parseFloat(document.getElementById("filter-amount-to").value) : null
-    };
+    const filterDto = getDashboardFilterValues();
 
     try {
         const results = await getFilteredDashboardTransactions(filterDto);
