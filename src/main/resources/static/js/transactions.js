@@ -16,6 +16,20 @@ function getDynamicUserId() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+    const exportBtn = document.getElementById("transaction-export-csv-btn");
+    
+    if (exportBtn) {
+        exportBtn.addEventListener("click", async () => {
+            console.log("CSV Button geklickt!"); 
+            try {
+                const filters = getTransactionFilterValues();
+                await exportFilteredTransactionsToCsv(filters);
+            } catch (e) {
+                alert("CSV-Export fehlgeschlagen: " + e.message);
+            }
+        });
+    }
+
     const addBtn = document.getElementById("add-transaction-btn");
     const cancelBtn = document.getElementById("cancel-edit-transaction-btn");
     const addForm = document.getElementById("add-transaction-form");
@@ -26,10 +40,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         filterForm.addEventListener("submit", async (e) => {
             e.preventDefault();
             await handleFilter();
-        });
-
-        filterForm.addEventListener("reset", () => {
-            setTimeout(loadAllTransactions, 10);
         });
     }
 
@@ -60,29 +70,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     await initializePage();
 });
 
-async function handleFilter() {
-    const searchVal = document.getElementById("search-input").value.trim();
-    const typeVal = document.getElementById("filter-type").value;
-    const catVal = document.getElementById("filter-category").value;
-    const freqVal = document.getElementById("filter-frequency").value;
-    const dateFromVal = document.getElementById("filter-date-from").value;
-    const dateToVal = document.getElementById("filter-date-to").value;
-    const amountMinVal = document.getElementById("filter-amount-from").value;
-    const amountMaxVal = document.getElementById("filter-amount-to").value;
-
-    const filterDto = {
+function getTransactionFilterValues() {
+    return {
         transactionId: null,
         userId: null,       
-        categoryId: catVal ? parseInt(catVal) : null,
-        amountMin: amountMinVal !== "" ? parseFloat(amountMinVal) : null,
-        amountMax: amountMaxVal !== "" ? parseFloat(amountMaxVal) : null,
-        transactionDateFrom: dateFromVal || null,
-        transactionDateTo: dateToVal || null,
-        transactionType: typeVal || null, 
-        keyword: searchVal || null,       
-        transactionFrequency: freqVal || null
+        categoryId: document.getElementById("filter-category").value ? parseInt(document.getElementById("filter-category").value) : null,
+        amountMin: document.getElementById("filter-amount-from").value !== "" ? parseFloat(document.getElementById("filter-amount-from").value) : null,
+        amountMax: document.getElementById("filter-amount-to").value !== "" ? parseFloat(document.getElementById("filter-amount-to").value) : null,
+        transactionDateFrom: document.getElementById("filter-date-from").value || null,
+        transactionDateTo: document.getElementById("filter-date-to").value || null,
+        transactionType: document.getElementById("filter-type").value || null, 
+        keyword: document.getElementById("search-input").value.trim() || null,       
+        transactionFrequency: document.getElementById("filter-frequency").value || null
     };
+}
 
+async function handleFilter() {
+    const filterDto = getTransactionFilterValues();
     try {
         const filteredData = await getFilteredTransactions(filterDto);
         renderTransactions(filteredData || []);
