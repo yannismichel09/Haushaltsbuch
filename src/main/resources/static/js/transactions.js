@@ -203,6 +203,7 @@ function renderTransactions(transactions) {
             <p style="margin: 8px 0 4px 0;"><strong>Date:</strong> ${t.transactionDate || "-"}</p>
             <p style="margin: 4px 0;"><strong>Category:</strong> ${cat ? (cat.categoryName || cat.name) : "N/A"}</p>
             <p style="margin: 4px 0;"><strong>User:</strong> ${user ? (user.username || user.name) : "N/A"}</p>
+            <p style="margin: 4px 0;"><strong>Frequency:</strong> ${t.transactionFrequency || "once"}</p>
             <div class="transaction-amount">${formatAmount(t.transactionAmount)}</div>
             <div class="category-card-actions">
                 <button type="button" class="btn-action" style="background-color: #2c3e50; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;" 
