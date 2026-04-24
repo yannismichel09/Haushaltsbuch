@@ -30,27 +30,34 @@ public class SettingsController {
         this.controllerTools = controllerTools;
     }
 
-    // Aktuelle Benutzereinstellungen abrufen
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserDtoOut> getUserSettings(@RequestHeader("Authorization") String token,
-            @PathVariable int userId) {
+    private void authorizeRequest(String token, int userId) {
         controllerTools.checkIsAccepted(token);
         controllerTools.checkIsAuthorized(token, userId);
-        
+    }
+
+    private ResponseEntity<UserDtoOut> currentUserResponse(int userId) {
         User user = dbAccessUser.getUserById(userId);
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
-        
+
         return ResponseEntity.ok().body(new UserDtoOut(user));
+    }
+
+    // Aktuelle Benutzereinstellungen abrufen
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDtoOut> getUserSettings(@RequestHeader("Authorization") String token,
+            @PathVariable int userId) {
+        authorizeRequest(token, userId);
+
+        return currentUserResponse(userId);
     }
 
     // E-Mail aktualisieren
     @PutMapping("/{userId}/email")
     public ResponseEntity<UserDtoOut> updateEmail(@RequestHeader("Authorization") String token,
             @PathVariable int userId, @RequestBody UserUpdateEmailDtoIn emailDtoIn) {
-        controllerTools.checkIsAccepted(token);
-        controllerTools.checkIsAuthorized(token, userId);
+        authorizeRequest(token, userId);
 
         if (emailDtoIn.email() == null || emailDtoIn.email().trim().isBlank()) {
             return ResponseEntity.badRequest().build();
@@ -61,16 +68,14 @@ public class SettingsController {
             return ResponseEntity.notFound().build();
         }
         
-        User user = dbAccessUser.getUserById(userId);
-        return ResponseEntity.ok().body(new UserDtoOut(user));
+        return currentUserResponse(userId);
     }
 
     // Passwort aktualisieren
     @PutMapping("/{userId}/password")
     public ResponseEntity<Void> updatePassword(@RequestHeader("Authorization") String token,
             @PathVariable int userId, @RequestBody UserUpdatePasswordDtoIn passwordDtoIn) {
-        controllerTools.checkIsAccepted(token);
-        controllerTools.checkIsAuthorized(token, userId);
+        authorizeRequest(token, userId);
         
         boolean updated = dbAccessUser.updatePassword(userId, passwordDtoIn.password());
         if (!updated) {
@@ -84,40 +89,35 @@ public class SettingsController {
     @PutMapping("/{userId}/username")
     public ResponseEntity<UserDtoOut> updateUsername(@RequestHeader("Authorization") String token,
             @PathVariable int userId, @RequestBody UserUpdateUsernameDtoIn usernameDtoIn) {
-        controllerTools.checkIsAccepted(token);
-        controllerTools.checkIsAuthorized(token, userId);
+        authorizeRequest(token, userId);
         
         boolean updated = dbAccessUser.updateUsername(userId, usernameDtoIn.username());
         if (!updated) {
             return ResponseEntity.notFound().build();
         }
         
-        User user = dbAccessUser.getUserById(userId);
-        return ResponseEntity.ok().body(new UserDtoOut(user));
+        return currentUserResponse(userId);
     }
 
     // Profilbild aktualisieren
     @PutMapping("/{userId}/profile-picture")
     public ResponseEntity<UserDtoOut> updateProfilePicture(@RequestHeader("Authorization") String token,
             @PathVariable int userId, @RequestBody UserUpdateProfilePictureDtoIn profilePictureDtoIn) {
-        controllerTools.checkIsAccepted(token);
-        controllerTools.checkIsAuthorized(token, userId);
+        authorizeRequest(token, userId);
         
         boolean updated = dbAccessUser.updateProfilePicture(userId, profilePictureDtoIn.profilePicture());
         if (!updated) {
             return ResponseEntity.notFound().build();
         }
         
-        User user = dbAccessUser.getUserById(userId);
-        return ResponseEntity.ok().body(new UserDtoOut(user));
+        return currentUserResponse(userId);
     }
 
     // E-Mail und Passwort in einem gemeinsamen Save aktualisieren
     @PutMapping("/{userId}/security")
     public ResponseEntity<UserDtoOut> updateSecurity(@RequestHeader("Authorization") String token,
             @PathVariable int userId, @RequestBody UserUpdateSecurityDtoIn securityDtoIn) {
-        controllerTools.checkIsAccepted(token);
-        controllerTools.checkIsAuthorized(token, userId);
+        authorizeRequest(token, userId);
 
         User currentUser = dbAccessUser.getUserById(userId);
         if (currentUser == null) {
@@ -156,7 +156,6 @@ public class SettingsController {
             dbAccessUser.updateEmail(userId, requestedEmail);
         }
 
-        User user = dbAccessUser.getUserById(userId);
-        return ResponseEntity.ok().body(new UserDtoOut(user));
+        return currentUserResponse(userId);
     }
 }
