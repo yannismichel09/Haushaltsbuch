@@ -14,6 +14,7 @@ import dto.UserDtoOut;
 import dto.UserUpdateEmailDtoIn;
 import dto.UserUpdatePasswordDtoIn;
 import dto.UserUpdateProfilePictureDtoIn;
+import dto.UserUpdateSecurityDtoIn;
 import dto.UserUpdateUsernameDtoIn;
 import model.User;
 import util.ControllerTools;
@@ -50,8 +51,12 @@ public class SettingsController {
             @PathVariable int userId, @RequestBody UserUpdateEmailDtoIn emailDtoIn) {
         controllerTools.checkIsAccepted(token);
         controllerTools.checkIsAuthorized(token, userId);
+
+        if (emailDtoIn.email() == null || emailDtoIn.email().trim().isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
         
-        boolean updated = dbAccessUser.updateEmail(userId, emailDtoIn.email());
+        boolean updated = dbAccessUser.updateEmail(userId, emailDtoIn.email().trim());
         if (!updated) {
             return ResponseEntity.notFound().build();
         }
@@ -103,6 +108,54 @@ public class SettingsController {
             return ResponseEntity.notFound().build();
         }
         
+        User user = dbAccessUser.getUserById(userId);
+        return ResponseEntity.ok().body(new UserDtoOut(user));
+    }
+
+    // E-Mail und Passwort in einem gemeinsamen Save aktualisieren
+    @PutMapping("/{userId}/security")
+    public ResponseEntity<UserDtoOut> updateSecurity(@RequestHeader("Authorization") String token,
+            @PathVariable int userId, @RequestBody UserUpdateSecurityDtoIn securityDtoIn) {
+        controllerTools.checkIsAccepted(token);
+        controllerTools.checkIsAuthorized(token, userId);
+
+        User currentUser = dbAccessUser.getUserById(userId);
+        if (currentUser == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        String requestedEmail = securityDtoIn.email() == null ? "" : securityDtoIn.email().trim();
+        String oldPassword = securityDtoIn.oldPassword() == null ? "" : securityDtoIn.oldPassword();
+        String newPassword = securityDtoIn.newPassword() == null ? "" : securityDtoIn.newPassword();
+        String confirmPassword = securityDtoIn.confirmPassword() == null ? "" : securityDtoIn.confirmPassword();
+
+        if (requestedEmail.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        boolean shouldUpdateEmail = !requestedEmail.isBlank() && !requestedEmail.equals(currentUser.getUserEmail());
+        boolean passwordInputProvided = !oldPassword.isBlank() || !newPassword.isBlank() || !confirmPassword.isBlank();
+
+        if (passwordInputProvided) {
+            if (oldPassword.isBlank() || newPassword.isBlank() || confirmPassword.isBlank()) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            if (!newPassword.equals(confirmPassword)) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            if (!dbAccessUser.isPasswordCorrect(userId, oldPassword)) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            dbAccessUser.updatePassword(userId, newPassword);
+        }
+
+        if (shouldUpdateEmail) {
+            dbAccessUser.updateEmail(userId, requestedEmail);
+        }
+
         User user = dbAccessUser.getUserById(userId);
         return ResponseEntity.ok().body(new UserDtoOut(user));
     }

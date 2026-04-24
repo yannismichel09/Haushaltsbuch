@@ -1,3 +1,26 @@
+function buildHeaderProfilePictureSrc(profilePicture) {
+  if (!profilePicture) {
+    return "icons/Gray-Profile-Picture.jpeg";
+  }
+
+  if (typeof profilePicture === "string") {
+    return "data:image/png;base64," + profilePicture;
+  }
+
+  if (Array.isArray(profilePicture)) {
+    const bytes = new Uint8Array(profilePicture);
+    let binary = "";
+
+    for (let index = 0; index < bytes.length; index++) {
+      binary += String.fromCharCode(bytes[index]);
+    }
+
+    return "data:image/png;base64," + btoa(binary);
+  }
+
+  return "icons/Gray-Profile-Picture.jpeg";
+}
+
 function updateHeaderUI() {
   const usernameElement = document.getElementById('username');
   const profileImgElement = document.getElementById('profilePicture');
@@ -8,11 +31,8 @@ function updateHeaderUI() {
       }
 
       if (profileImgElement) {
-          if (currentUser.userProfilePicture) {
-              profileImgElement.src = "data:image/png;base64," + currentUser.userProfilePicture;
-          } else {
-              profileImgElement.src = "icons/Gray-Profile-Picture.jpeg";
-          }
+      const profilePicture = currentUser.profilePicture || currentUser.userProfilePicture;
+      profileImgElement.src = buildHeaderProfilePictureSrc(profilePicture);
       }
   }
 }

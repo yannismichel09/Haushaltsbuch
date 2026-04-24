@@ -60,10 +60,14 @@ body {
 #profilePicture {
     width: 65px;    
     height: 65px;    
+    min-width: 65px;
+    min-height: 65px;
+    display: block;
     border-radius: 50%;
     border: 3px solid white;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     object-fit: cover;
+    object-position: center;
     background-color: #ecf0f1; 
 }
 

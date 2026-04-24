@@ -114,6 +114,19 @@ public class DBAccessUser {
 		return true;
 	}
 
+	// Methode zur Prüfung, ob ein Passwort zum Benutzer passt
+	public boolean isPasswordCorrect(int userId, String password) {
+		User user = entityManager.find(User.class, userId);
+		if (user == null || password == null) {
+			return false;
+		}
+
+		byte[] salt = user.getUserPasswordSalt();
+		byte[] hash = PasswordTools.generatePasswordHash(password, salt);
+
+		return Arrays.equals(hash, user.getUserPasswordHash());
+	}
+
 	// Methode zum Ändern des Benutzernamens eines Benutzers
 	public boolean updateUsername(int userId, String username) {
 		User user = entityManager.find(User.class, userId);

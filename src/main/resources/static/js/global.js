@@ -1,6 +1,6 @@
 let globalToken = localStorage.getItem("globalToken") || null;
 let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
-let currentUserId = window.currentUser ? window.currentUser.userId : null;
+let currentUserId = currentUser ? currentUser.userId : null;
 
 const CATEGORY_BASE_PATH  = "/categories";
 const CSV_BASE_PATH = "/csv";
