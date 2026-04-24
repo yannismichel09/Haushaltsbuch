@@ -1,11 +1,11 @@
 package haushaltsbuch;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -101,10 +101,12 @@ public class DBAccessTestWarning {
         Category overLimitCategory = dbAccessCategory.createCategory("testBudgetOver", "over", "red", 100.0);
         Category belowLimitCategory = dbAccessCategory.createCategory("testBudgetBelow", "below", "blue", 100.0);
 
+        String today = LocalDate.now().toString(); 
+
         dbAccessTransaction.createTransaction(user.getUserId(), overLimitCategory.getCategoryId(), 85.0,
-                "2026-04-07", TransactionType.spending, "over limit spending", TransactionFrequency.once);
+                today, TransactionType.spending, "over limit spending", TransactionFrequency.once);
         dbAccessTransaction.createTransaction(user.getUserId(), belowLimitCategory.getCategoryId(), 40.0,
-                "2026-04-07", TransactionType.spending, "below limit spending", TransactionFrequency.once);
+                today, TransactionType.spending, "below limit spending", TransactionFrequency.once);
 
         List<Category> result = dbAccess.checkBudgetLimit(0.8);
 
@@ -112,14 +114,16 @@ public class DBAccessTestWarning {
         assertEquals(overLimitCategory.getCategoryId(), result.get(0).getCategoryId());
     }
 
-    // Testet dass checkBudgetLimit bei genauem Erreichen des Schwellwerts keine Kategorie zurückgibt
+    // Testet, dass checkBudgetLimitAtThreshold nur Kategorien zurückgibt, die den Schwellwert überschreiten mit einem Schwellwert von 80%
     @Test
     void testCheckBudgetLimitAtThreshold() {
         User user = dbAccessUser.createUser("testUserBudgetThreshold", "testPassword123", "testbudgetthreshold@test.com");
         Category thresholdCategory = dbAccessCategory.createCategory("testBudgetThreshold", "threshold", "gray", 100.0);
 
+        String today = LocalDate.now().toString();
+
         dbAccessTransaction.createTransaction(user.getUserId(), thresholdCategory.getCategoryId(), 80.0,
-                "2026-04-07", TransactionType.spending, "exact threshold spending", TransactionFrequency.once);
+                today, TransactionType.spending, "exact threshold spending", TransactionFrequency.once);
 
         List<Category> result = dbAccess.checkBudgetLimit(0.8);
 
