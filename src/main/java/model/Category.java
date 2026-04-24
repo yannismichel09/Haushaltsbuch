@@ -20,7 +20,9 @@ import jakarta.persistence.Table;
 @NamedQuery(name="checkBudgetLimit", query = "SELECT c FROM Category c WHERE :percent * COALESCE(c.categoryLimit, 0) < " +
                                                 "(SELECT COALESCE(SUM(t.transactionAmount), 0) FROM Transaction t WHERE " + 
                                                 "t.category.categoryId = c.categoryId AND " +
-                                                "t.transactionType = :spendingType )")
+                                                "t.transactionType = :spendingType AND " +
+                                                "t.transactionDate >= :startDate AND " +
+                                                "t.transactionDate <= :endDate)")
 })
 public class Category {
 
