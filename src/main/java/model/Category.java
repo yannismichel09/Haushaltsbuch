@@ -17,9 +17,10 @@ import jakarta.persistence.Table;
 @Table(name = "categories")
 @NamedQueries({
 @NamedQuery(name="getAllCategories", query="SELECT category FROM Category category"),
-@NamedQuery(name="checkBudgetLimit", query = "SELECT c FROM Category c WHERE :percent * c.categoryLimit < " +
-                                                "(SELECT COALESCE(SUM(t.transactionAmount), 0) FROM Transaction t WHERE " + "t.category.categoryId = c.categoryId AND " +
-                                                                                                               "t.transactionType = :spendingType )")
+@NamedQuery(name="checkBudgetLimit", query = "SELECT c FROM Category c WHERE :percent * COALESCE(c.categoryLimit, 0) < " +
+                                                "(SELECT COALESCE(SUM(t.transactionAmount), 0) FROM Transaction t WHERE " + 
+                                                "t.category.categoryId = c.categoryId AND " +
+                                                "t.transactionType = :spendingType )")
 })
 public class Category {
 
