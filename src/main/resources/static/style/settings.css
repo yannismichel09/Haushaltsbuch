@@ -82,6 +82,8 @@ input[type="password"] {
     color: #2c3e50;
     background: #fff;
     margin-bottom: 14px;
+        box-sizing: border-box;
+        max-width: 100%;
 }
 
 input:focus {
