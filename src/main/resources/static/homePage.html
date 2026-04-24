@@ -8,7 +8,15 @@
 </head>
 <body>
   <div id="header">
-      <div id="logo">Budget Book</div>
+      <div id="logo">
+        Budget Book
+        <div id="warning-container" class="hidden">
+          <span id="warning-icon">!</span>
+          <div id="warning-dropdown" class="warning-content">
+              <ul id="warning-list"></ul>
+          </div>
+        </div>
+      </div>
       <div id="headerText">
           <h2>Welcome to your digital Budget Book!</h2>
           <h2>Control your money. Understand your spending. Plan smarter.</h2>
@@ -45,6 +53,8 @@
   </div>
   
   <script src="js/global.js"></script>
+  <script src="js/apiWarnings.js"></script>
+  <script src="js/homePageWarnings.js"></script>
   <script src="js/tabs.js"></script>
   <script src="js/apiUser.js"></script>
   <script src="js/homePageIframes.js"></script>
