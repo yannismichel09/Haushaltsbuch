@@ -41,6 +41,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             e.preventDefault();
             await handleFilter();
         });
+
+        filterForm.addEventListener("reset", () => {
+            setTimeout(async () => {
+                console.log("Filter zurückgesetzt, lade alle Transaktionen...");
+                await loadAllTransactions(); 
+            }, 10);
+        });
     }
 
     if (addBtn) addBtn.addEventListener("click", handleAddTransaction);
