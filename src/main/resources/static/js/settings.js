@@ -5,6 +5,10 @@ let originalEmail = "";
 let originalProfilePictureSrc = DEFAULT_PROFILE_PICTURE_PATH;
 let pendingProfilePictureBase64 = null;
 
+function elementById(id) {
+    return document.getElementById(id);
+}
+
 function buildProfilePictureSrc(profilePicture) {
     if (!profilePicture) {
         return DEFAULT_PROFILE_PICTURE_PATH;
@@ -27,14 +31,19 @@ function buildProfilePictureSrc(profilePicture) {
 }
 
 function clearPasswordInputs() {
-    document.getElementById("oldPasswordInput").value = "";
-    document.getElementById("passwordInput").value = "";
-    document.getElementById("passwordConfirmInput").value = "";
+    elementById("oldPasswordInput").value = "";
+    elementById("passwordInput").value = "";
+    elementById("passwordConfirmInput").value = "";
 }
 
 function resetSecurityInputs() {
-    document.getElementById("emailInput").value = originalEmail;
+    elementById("emailInput").value = originalEmail;
     clearPasswordInputs();
+}
+
+function applyAndSyncUser(user) {
+    applySettingsToForm(user);
+    syncSessionUser(user);
 }
 
 function syncSessionUser(updatedUser) {
@@ -63,9 +72,9 @@ function applySettingsToForm(user) {
     originalUsername = user.username || "";
     originalEmail = user.email || "";
 
-    const profilePictureElement = document.getElementById("profilePicture");
-    const usernameInput = document.getElementById("usernameInput");
-    const emailInput = document.getElementById("emailInput");
+    const profilePictureElement = elementById("profilePicture");
+    const usernameInput = elementById("usernameInput");
+    const emailInput = elementById("emailInput");
 
     originalProfilePictureSrc = buildProfilePictureSrc(user.profilePicture);
     pendingProfilePictureBase64 = null;
@@ -82,13 +91,12 @@ async function loadSettings() {
         return;
     }
 
-    applySettingsToForm(user);
-    syncSessionUser(user);
+    applyAndSyncUser(user);
 }
 
 async function saveAccountHandler() {
-    const usernameInput = document.getElementById("usernameInput");
-    const profilePictureElement = document.getElementById("profilePicture");
+    const usernameInput = elementById("usernameInput");
+    const profilePictureElement = elementById("profilePicture");
     const username = usernameInput.value.trim();
 
     if (!username) {
@@ -122,8 +130,7 @@ async function saveAccountHandler() {
             alert("Profile picture could not be saved.");
 
             if (latestUser) {
-                applySettingsToForm(latestUser);
-                syncSessionUser(latestUser);
+                applyAndSyncUser(latestUser);
             } else {
                 profilePictureElement.src = originalProfilePictureSrc;
             }
@@ -133,13 +140,12 @@ async function saveAccountHandler() {
         latestUser = updatedWithPicture;
     }
 
-    applySettingsToForm(latestUser);
-    syncSessionUser(latestUser);
+    applyAndSyncUser(latestUser);
     alert("Account details were saved.");
 }
 
 function triggerProfilePictureSelection() {
-    const input = document.getElementById("profile-picture-input");
+    const input = elementById("profile-picture-input");
     input.value = "";
     input.click();
 }
@@ -177,7 +183,7 @@ async function queueProfilePictureHandler(event) {
         const base64Picture = await fileToBase64(file);
         pendingProfilePictureBase64 = base64Picture;
 
-        const profilePictureElement = document.getElementById("profilePicture");
+        const profilePictureElement = elementById("profilePicture");
         profilePictureElement.src = "data:image/png;base64," + base64Picture;
         alert("Profile picture selected. It will be saved only when you click Save.");
     } catch (error) {
@@ -187,10 +193,10 @@ async function queueProfilePictureHandler(event) {
 }
 
 async function saveSecurityHandler() {
-    const emailInput = document.getElementById("emailInput");
-    const oldPasswordInput = document.getElementById("oldPasswordInput");
-    const passwordInput = document.getElementById("passwordInput");
-    const passwordConfirmInput = document.getElementById("passwordConfirmInput");
+    const emailInput = elementById("emailInput");
+    const oldPasswordInput = elementById("oldPasswordInput");
+    const passwordInput = elementById("passwordInput");
+    const passwordConfirmInput = elementById("passwordConfirmInput");
 
     const email = emailInput.value.trim();
     const oldPassword = oldPasswordInput.value;
@@ -235,8 +241,7 @@ async function saveSecurityHandler() {
         return;
     }
 
-    applySettingsToForm(updatedUser);
-    syncSessionUser(updatedUser);
+    applyAndSyncUser(updatedUser);
     clearPasswordInputs();
     alert("Security details were saved.");
 }
@@ -246,18 +251,18 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    document.getElementById("cancel-username-btn").addEventListener("click", () => {
-        document.getElementById("usernameInput").value = originalUsername;
-        document.getElementById("profilePicture").src = originalProfilePictureSrc;
+    elementById("cancel-username-btn").addEventListener("click", () => {
+        elementById("usernameInput").value = originalUsername;
+        elementById("profilePicture").src = originalProfilePictureSrc;
         pendingProfilePictureBase64 = null;
     });
 
-    document.getElementById("save-username-btn").addEventListener("click", saveAccountHandler);
-    document.getElementById("change-profile-picture-btn").addEventListener("click", triggerProfilePictureSelection);
-    document.getElementById("profile-picture-input").addEventListener("change", queueProfilePictureHandler);
+    elementById("save-username-btn").addEventListener("click", saveAccountHandler);
+    elementById("change-profile-picture-btn").addEventListener("click", triggerProfilePictureSelection);
+    elementById("profile-picture-input").addEventListener("change", queueProfilePictureHandler);
 
-    document.getElementById("reset-password-btn").addEventListener("click", resetSecurityInputs);
-    document.getElementById("save-security-btn").addEventListener("click", saveSecurityHandler);
+    elementById("reset-password-btn").addEventListener("click", resetSecurityInputs);
+    elementById("save-security-btn").addEventListener("click", saveSecurityHandler);
 
     loadSettings();
 });
