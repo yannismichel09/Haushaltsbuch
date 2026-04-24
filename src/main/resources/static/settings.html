@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Settings</title>
     <link rel="stylesheet" href="style/tabs.css">
+    <link rel="stylesheet" href="style/settings.css">
 </head>
 <body>
     <div class="tab">
@@ -20,18 +21,14 @@
         <!-- Profilbild Bereich -->
         <div class="account-section">
             <h3>Profile Picture</h3>
-            <table>
-                <tr>
-                    <td>
-                        <img id="profilePicture" alt="Profile Picture" />
-                    </td>
-                    <td>
-                        <p>Change Profile Picture</p>
-                        <button id="change-profile-picture-btn" class="btn-action">Change Image</button>
-                        <input type="file" id="profile-picture-input" accept="image/*" style="display:none;">
-                    </td>
-                </tr>
-            </table>
+            <div class="profile-picture-row">
+                <img id="profilePicture" alt="Profile Picture" />
+                <div class="profile-picture-actions">
+                    <p>Change Profile Picture</p>
+                    <button id="change-profile-picture-btn" class="btn-action">Change Image</button>
+                    <input type="file" id="profile-picture-input" accept="image/*" style="display:none;">
+                </div>
+            </div>
         </div>
 
         <!-- Benutzername Bereich -->
@@ -39,7 +36,7 @@
             <h3>Username</h3>
             <label for="usernameInput">Username:</label>
             <input type="text" id="usernameInput" placeholder="Please enter your username">
-            <div>
+            <div class="button-row">
                 <button type="button" id="cancel-username-btn" class="btn-action">Cancel</button>
                 <button type="button" id="save-username-btn" class="btn-action">Save</button>
             </div>
@@ -55,9 +52,7 @@
         <div class="account-section">
             <h3>Change E-Mail</h3>
             <label for="emailInput">E-Mail Address</label>
-            <div>
-                <input type="email" id="emailInput" placeholder="Please enter your e-mail address">
-            </div>
+            <input type="email" id="emailInput" placeholder="Please enter your e-mail address">
         </div>
 
         <hr>
@@ -66,19 +61,15 @@
         <div class="account-section">
             <h3>Change Password</h3>
             <label for="oldPasswordInput">Old Password</label>
-            <br>
             <input type="password" id="oldPasswordInput" placeholder="Please enter your old password">
-            <br>
             <label for="passwordInput">New Password</label>
-            <br>
             <input type="password" id="passwordInput" placeholder="Please enter your new password">
-            <br>
             <label for="passwordConfirmInput">Repeat Password</label>
-            <br>
             <input type="password" id="passwordConfirmInput" placeholder="Please repeat your new password">
-            <br><br>
+            <div class="button-row">
             <button type="button" id="reset-password-btn" class="btn-action">Reset</button>
             <button type="button" id="save-security-btn" class="btn-action">Save</button>
+            </div>
         </div>
     </div>
 
