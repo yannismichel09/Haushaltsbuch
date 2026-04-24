@@ -109,6 +109,10 @@ function renderDashboardResults(transactions) {
             <div style="font-size: 0.85rem; color: #7f8c8d; margin-top: 4px;">
                 <strong>User:</strong> ${t.userName || "testUser2"}
             </div>
+
+            <div style="font-size: 0.85rem; color: #7f8c8d; margin-top: 4px;">
+                <strong>Frequency:</strong> ${t.transactionFrequency || "once"}
+            </div>
             
             <div class="transaction-amount">
                 ${t.transactionAmount.toFixed(2)} €
