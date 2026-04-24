@@ -74,6 +74,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
+    const categorySelect = document.getElementById("category-select");
+    if (categorySelect) {
+        categorySelect.addEventListener("focus", async () => {
+            console.log("Dropdown fokussiert - lade Kategorien neu...");
+            await refreshCategoriesList();
+        });
+    }
+
     await initializePage();
 });
 
@@ -254,4 +262,16 @@ function fillUserDropdown(users) {
             userSelect.appendChild(new Option(u.username || u.name, u.userId));
         }
     });
+}
+
+async function refreshCategoriesList() {
+    try {
+        console.log("Kategorien werden aktualisiert...");
+        const categories = await getAllCategories();
+        allCategories = Array.isArray(categories) ? categories : (categories.categories || []);
+        fillCategoryDropdowns(allCategories);
+        console.log("Kategorien erfolgreich aktualisiert.");
+    } catch (e) {
+        console.error("Fehler beim Aktualisieren der Kategorien:", e);
+    }
 }
