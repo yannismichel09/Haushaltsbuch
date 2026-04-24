@@ -104,6 +104,31 @@ async function updateProfilePicture(profilePictureDtoIn) {
         if(!response.ok) {
             throw new Error("API Settings error: updateProfilePicture");
         }
+
+        return await response.json();
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+// Aktualisiert E-Mail und optional Passwort in einem gemeinsamen Save
+async function updateSecurity(securityDtoIn) {
+    try {
+        let response = await fetch(SETTINGS_BASE_PATH + "/" + currentUserId + "/security", {
+            method: "PUT",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": globalToken,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(securityDtoIn)
+        });
+
+        if(!response.ok) {
+            throw new Error("API Settings error: updateSecurity");
+        }
+
+        return await response.json();
     } catch (error) {
         console.log(error);
     }
