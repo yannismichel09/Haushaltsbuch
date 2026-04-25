@@ -9,6 +9,16 @@ function getCategoryName(cat) {
     return cat.categoryName || cat.name;
 }
 
+function isCurrentMonthTransaction(transactionDate) {
+    if (!transactionDate) return false;
+
+    const date = new Date(transactionDate);
+    if (Number.isNaN(date.getTime())) return false;
+
+    const now = new Date();
+    return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     const filterForm = document.querySelector(".search-filter form") || document.querySelector("section form");
     const resultsSection = document.getElementById("search-results-section");
@@ -61,26 +71,33 @@ async function initDashboard() {
         allCategories = Array.isArray(categories) ? categories : (categories.categories || []);
         fillCategoryDropdown(allCategories);
 
-        // Load summary data
-        await loadSummaryData();
-
         // Load transactions once and reuse for chart + budget views
         const transactions = await getAllDashboardTransactions() || [];
+        const currentMonthTransactions = transactions.filter(t => isCurrentMonthTransaction(t.transactionDate));
 
-        // Load and render monthly trend chart
+        // Load summary data for current month
+        await loadSummaryData(currentMonthTransactions);
+
+        // Load and render monthly trend for the whole current year
         await loadMonthlyTrendChart(transactions);
 
-        // Load and render budget vs actual
-        await loadBudgetVsActual(transactions);
+        // Load and render budget vs actual for current month
+        await loadBudgetVsActual(currentMonthTransactions);
     } catch (e) {
         console.error("Fehler beim Initialisieren des Dashboards:", e);
     }
 }
 
-async function loadSummaryData() {
+async function loadSummaryData(transactions) {
     try {
-        const income = await getDashboardSumIncome() || 0;
-        const spending = await getDashboardSumSpendings() || 0;
+        const income = transactions
+            .filter(t => t.transactionType === "income")
+            .reduce((sum, t) => sum + (t.transactionAmount || 0), 0);
+
+        const spending = transactions
+            .filter(t => t.transactionType === "spending")
+            .reduce((sum, t) => sum + (t.transactionAmount || 0), 0);
+
         const balance = income - spending;
 
         document.getElementById("income-sum").textContent = formatCurrency(income);
@@ -93,27 +110,25 @@ async function loadSummaryData() {
 
 async function loadMonthlyTrendChart(transactions) {
     try {
-        // Group transactions by month
-        const monthlyData = {};
+        const now = new Date();
+        const currentYear = now.getFullYear();
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const monthlyData = Array.from({ length: 12 }, () => ({ income: 0, spending: 0 }));
 
-        // Initialize months
-        for (let i = 0; i < 12; i++) {
-            monthlyData[i] = { income: 0, spending: 0 };
-        }
-
-        // Aggregate transactions by month
+        // Aggregate current-year transactions by month
         transactions.forEach(t => {
             if (t.transactionDate) {
                 try {
                     const date = new Date(t.transactionDate);
-                    const month = date.getMonth();
+                    if (Number.isNaN(date.getTime()) || date.getFullYear() !== currentYear) return;
+
+                    const monthIndex = date.getMonth();
                     const amount = t.transactionAmount || 0;
 
                     if (t.transactionType === "income") {
-                        monthlyData[month].income += amount;
+                        monthlyData[monthIndex].income += amount;
                     } else {
-                        monthlyData[month].spending += amount;
+                        monthlyData[monthIndex].spending += amount;
                     }
                 } catch (e) {
                     console.warn("Fehler beim Parsen des Datums:", t.transactionDate);
@@ -122,15 +137,9 @@ async function loadMonthlyTrendChart(transactions) {
         });
 
         // Prepare chart data
-        const incomeData = [];
-        const spendingData = [];
-        const labels = [];
-
-        for (let i = 0; i < 12; i++) {
-            labels.push(months[i]);
-            incomeData.push(monthlyData[i].income);
-            spendingData.push(monthlyData[i].spending);
-        }
+        const labels = months;
+        const incomeData = monthlyData.map(month => month.income);
+        const spendingData = monthlyData.map(month => month.spending);
 
         // Create or update chart
         const chartCanvas = document.getElementById("monthly-trend-chart");
