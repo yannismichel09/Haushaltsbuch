@@ -154,14 +154,34 @@ async function loadAllTransactions() {
 }
 
 async function handleAddTransaction() {
+    const userId = Number(document.getElementById("payed-by-select").value);
+    const categoryId = Number(document.getElementById("category-select").value);
+    const amount = parseFloat(document.getElementById("amount").value);
+    const frequency = document.getElementById("frequency").value || null;
+
+    if (!Number.isInteger(userId) || userId <= 0) {
+        alert("Please select a valid user.");
+        return;
+    }
+
+    if (!Number.isInteger(categoryId) || categoryId <= 0) {
+        alert("Please select a valid category.");
+        return;
+    }
+
+    if (!frequency) {
+        alert("Please select a frequency.");
+        return;
+    }
+
     const dto = {
-        userId: parseInt(document.getElementById("payed-by-select").value),
-        categoryId: parseInt(document.getElementById("category-select").value),
-        transactionAmount: parseFloat(document.getElementById("amount").value),
+        userId,
+        categoryId,
+        transactionAmount: amount,
         transactionDate: document.getElementById("date").value,
         transactionType: document.querySelector('input[name="transaction-type"]:checked').value,
         transactionDescription: document.getElementById("desc").value,
-        transactionFrequency: document.getElementById("frequency").value
+        transactionFrequency: frequency
     };
     if (!dto.transactionDescription || isNaN(dto.transactionAmount)) {
         alert("Please fill out all fields!");

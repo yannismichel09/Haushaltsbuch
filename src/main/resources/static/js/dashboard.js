@@ -255,12 +255,12 @@ async function loadBudgetVsActual(transactions) {
 
         container.innerHTML = `
             <div style="margin-bottom: 24px;">
-                <h3 style="margin: 0 0 12px; color: #2c3e50;">Kategorien mit Limit</h3>
-                ${withLimitHtml || '<p style="color: #7f8c8d; margin: 0;">Keine Kategorien mit Limit vorhanden.</p>'}
+                <h3 style="margin: 0 0 12px; color: #2c3e50;">Categories with Limit</h3>
+                ${withLimitHtml || '<p style="color: #7f8c8d; margin: 0;">No categories with limit available.</p>'}
             </div>
             <div>
-                <h3 style="margin: 0 0 12px; color: #2c3e50;">Kategorien ohne Limit</h3>
-                ${withoutLimitHtml || '<p style="color: #7f8c8d; margin: 0;">Keine Kategorien ohne Limit vorhanden.</p>'}
+                <h3 style="margin: 0 0 12px; color: #2c3e50;">Categories without Limit</h3>
+                ${withoutLimitHtml || '<p style="color: #7f8c8d; margin: 0;">No categories without limit available.</p>'}
             </div>
         `;
     } catch (e) {
