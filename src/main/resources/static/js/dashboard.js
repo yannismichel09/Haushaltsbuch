@@ -1,4 +1,5 @@
 let allCategories = [];
+let monthlyTrendChart = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
     const filterForm = document.querySelector(".search-filter form") || document.querySelector("section form");
@@ -47,11 +48,190 @@ function getDashboardFilterValues() {
 
 async function initDashboard() {
     try {
+        // Load categories
         const categories = await getAllCategories();
         allCategories = Array.isArray(categories) ? categories : (categories.categories || []);
         fillCategoryDropdown(allCategories);
+
+        // Load summary data
+        await loadSummaryData();
+
+        // Load and render monthly trend chart
+        await loadMonthlyTrendChart();
+
+        // Load and render budget vs actual
+        await loadBudgetVsActual();
     } catch (e) {
         console.error("Fehler beim Initialisieren des Dashboards:", e);
+    }
+}
+
+async function loadSummaryData() {
+    try {
+        const income = await getDashboardSumIncome() || 0;
+        const spending = await getDashboardSumSpendings() || 0;
+        const balance = income - spending;
+
+        document.getElementById("income-sum").textContent = income.toFixed(2).replace(".", ",") + " €";
+        document.getElementById("spending-sum").textContent = spending.toFixed(2).replace(".", ",") + " €";
+        document.getElementById("balance-sum").textContent = balance.toFixed(2).replace(".", ",") + " €";
+    } catch (e) {
+        console.error("Fehler beim Laden der Summary-Daten:", e);
+    }
+}
+
+async function loadMonthlyTrendChart() {
+    try {
+        const transactions = await getAllDashboardTransactions() || [];
+
+        // Group transactions by month
+        const monthlyData = {};
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+        // Initialize months
+        for (let i = 0; i < 12; i++) {
+            monthlyData[i] = { income: 0, spending: 0 };
+        }
+
+        // Aggregate transactions by month
+        transactions.forEach(t => {
+            if (t.transactionDate) {
+                try {
+                    const date = new Date(t.transactionDate);
+                    const month = date.getMonth();
+                    const amount = t.transactionAmount || 0;
+
+                    if (t.transactionType === "income") {
+                        monthlyData[month].income += amount;
+                    } else {
+                        monthlyData[month].spending += amount;
+                    }
+                } catch (e) {
+                    console.warn("Fehler beim Parsen des Datums:", t.transactionDate);
+                }
+            }
+        });
+
+        // Prepare chart data
+        const incomeData = [];
+        const spendingData = [];
+        const labels = [];
+
+        for (let i = 0; i < 12; i++) {
+            labels.push(months[i]);
+            incomeData.push(monthlyData[i].income);
+            spendingData.push(monthlyData[i].spending);
+        }
+
+        // Create or update chart
+        const chartCanvas = document.getElementById("monthly-trend-chart");
+        if (chartCanvas) {
+            // Destroy existing chart if it exists
+            if (monthlyTrendChart) {
+                monthlyTrendChart.destroy();
+            }
+
+            monthlyTrendChart = new Chart(chartCanvas, {
+                type: "line",
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "Income",
+                            data: incomeData,
+                            borderColor: "#27ae60",
+                            backgroundColor: "rgba(39, 174, 96, 0.1)",
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: "Spending",
+                            data: spendingData,
+                            borderColor: "#e74c3c",
+                            backgroundColor: "rgba(231, 76, 60, 0.1)",
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: "top"
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: "Months"
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: "Amount (€)"
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    } catch (e) {
+        console.error("Fehler beim Laden des Monthly Trend Charts:", e);
+    }
+}
+
+async function loadBudgetVsActual() {
+    try {
+        const container = document.getElementById("budget-vs-actual-container");
+        if (!container) return;
+
+        const transactions = await getAllDashboardTransactions() || [];
+
+        // Group by category
+        const categoryBudget = {};
+        allCategories.forEach(cat => {
+            categoryBudget[cat.categoryId] = {
+                name: cat.categoryName || cat.name,
+                actual: 0,
+                budget: cat.categoryLimit || 500 // Use categoryLimit from model, default 500 if not set
+            };
+        });
+
+        // Sum spending by category
+        transactions.forEach(t => {
+            if (t.transactionType === "spending" && categoryBudget[t.categoryId]) {
+                categoryBudget[t.categoryId].actual += t.transactionAmount || 0;
+            }
+        });
+
+        // Generate HTML
+        let html = "";
+        Object.values(categoryBudget).forEach(cat => {
+            const percentage = (cat.actual / cat.budget) * 100;
+            const displayPercentage = Math.min(100, percentage);
+
+            html += `
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span style="font-weight: bold;">${cat.name}</span>
+                        <span>${cat.actual.toFixed(2).replace(".", ",")} € / ${cat.budget.toFixed(2).replace(".", ",")} €</span>
+                    </div>
+                    <div>
+                        <progress value="${displayPercentage}" max="100" style="width: 100%; height: 20px;">${displayPercentage}%</progress>
+                    </div>
+                    ${percentage > 100 ? `<p style="color: #e74c3c; font-size: 0.85rem; margin: 5px 0 0 0;">⚠ Budget exceeded by ${(percentage - 100).toFixed(0)}%</p>` : ""}
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+    } catch (e) {
+        console.error("Fehler beim Laden des Budget vs Actual:", e);
     }
 }
 

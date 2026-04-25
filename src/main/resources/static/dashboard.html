@@ -8,19 +8,19 @@
 </head>
 <body>
 	<main>
-		<section>
-			<div>
+		<section id="summary-section">
+			<div id="summary-cards">
 				<div>
 					<h3>Income</h3>
-					<p>0,00 €</p>
+					<p id="income-sum">0,00 €</p>
 				</div>
 				<div>
 					<h3>Spending</h3>
-					<p>0,00 €</p>
+					<p id="spending-sum">0,00 €</p>
 				</div>
 				<div>
 					<h3>Net Balance</h3>
-					<p>0,00 €</p>
+					<p id="balance-sum">0,00 €</p>
 				</div>
 			</div>
 		</section>
@@ -112,30 +112,8 @@
 
 		<section>
 			<h2>Budget vs Actual</h2>
-			<div>
-				<div>
-					<span>Category 1</span>
-					<span>430 € / 750 €</span>
-				</div>
-				<div>
-					<progress value="430" max="750">430 / 750</progress>
-				</div>
-
-				<div>
-					<span>Category 2</span>
-					<span>620 € / 900 €</span>
-				</div>
-				<div>
-					<progress value="620" max="900">620 / 900</progress>
-				</div>
-
-				<div>
-					<span>Category 3</span>
-					<span>280 € / 500 €</span>
-				</div>
-				<div>
-					<progress value="280" max="500">280 / 500</progress>
-				</div>
+			<div id="budget-vs-actual-container">
+				<p style="color: #999; text-align: center; padding: 20px;">Loading categories...</p>
 			</div>
 		</section>
 
@@ -148,51 +126,5 @@
 	<script src="js/apiCategories.js"></script>
 	<script src="js/apiDashboard.js"></script>
 	<script src="js/dashboard.js"></script>
-	<script>
-		const chartCanvas = document.getElementById("monthly-trend-chart");
-
-		if (chartCanvas) {
-			new Chart(chartCanvas, {
-				type: "line",
-				data: {
-					labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-					datasets: [
-						{
-							label: "Income",
-							data: [1200, 1400, 1300, 1500, 1600, 1550, 1700, 1650, 1750, 1800, 1900, 2000]
-						},
-						{
-							label: "Spending",
-							data: [800, 900, 850, 950, 1000, 980, 1020, 990, 1100, 1080, 1150, 1200]
-						}
-					]
-				},
-				options: {
-					responsive: true,
-					plugins: {
-						legend: {
-							display: true,
-							position: "top"
-						}
-					},
-					scales: {
-						x: {
-							title: {
-								display: true,
-								text: "Months"
-							}
-						},
-						y: {
-							beginAtZero: true,
-							title: {
-								display: true,
-								text: "Amount"
-							}
-						}
-					}
-				}
-			});
-		}
-	</script>
 </body>
 </html>
