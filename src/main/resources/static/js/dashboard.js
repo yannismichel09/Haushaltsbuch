@@ -202,10 +202,14 @@ async function loadBudgetVsActual(transactions) {
         // Group by category
         const categoryBudget = {};
         allCategories.forEach(cat => {
+            const rawLimit = Number(cat.categoryLimit);
+            const hasLimit = Number.isFinite(rawLimit) && rawLimit > 0;
+
             categoryBudget[cat.categoryId] = {
                 name: getCategoryName(cat),
                 actual: 0,
-                budget: cat.categoryLimit || 500 // Use categoryLimit from model, default 500 if not set
+                budget: hasLimit ? rawLimit : null,
+                hasLimit: hasLimit
             };
         });
 
@@ -216,13 +220,15 @@ async function loadBudgetVsActual(transactions) {
             }
         });
 
-        // Generate HTML
-        let html = "";
-        Object.values(categoryBudget).forEach(cat => {
+        const categories = Object.values(categoryBudget);
+        const withLimit = categories.filter(cat => cat.hasLimit);
+        const withoutLimit = categories.filter(cat => !cat.hasLimit);
+
+        const withLimitHtml = withLimit.map(cat => {
             const percentage = (cat.actual / cat.budget) * 100;
             const displayPercentage = Math.min(100, percentage);
 
-            html += `
+            return `
                 <div style="margin-bottom: 20px;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                         <span style="font-weight: bold;">${cat.name}</span>
@@ -234,9 +240,29 @@ async function loadBudgetVsActual(transactions) {
                     ${percentage > 100 ? `<p style="color: #e74c3c; font-size: 0.85rem; margin: 5px 0 0 0;">⚠ Budget exceeded by ${(percentage - 100).toFixed(0)}%</p>` : ""}
                 </div>
             `;
-        });
+        }).join("");
 
-        container.innerHTML = html;
+        const withoutLimitHtml = withoutLimit.map(cat => {
+            return `
+                <div style="margin-bottom: 12px; padding: 10px 12px; border: 1px solid #e0e0e0; border-radius: 6px; background-color: #fafafa;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: bold;">${cat.name}</span>
+                        <span>${formatCurrency(cat.actual)}</span>
+                    </div>
+                </div>
+            `;
+        }).join("");
+
+        container.innerHTML = `
+            <div style="margin-bottom: 24px;">
+                <h3 style="margin: 0 0 12px; color: #2c3e50;">Kategorien mit Limit</h3>
+                ${withLimitHtml || '<p style="color: #7f8c8d; margin: 0;">Keine Kategorien mit Limit vorhanden.</p>'}
+            </div>
+            <div>
+                <h3 style="margin: 0 0 12px; color: #2c3e50;">Kategorien ohne Limit</h3>
+                ${withoutLimitHtml || '<p style="color: #7f8c8d; margin: 0;">Keine Kategorien ohne Limit vorhanden.</p>'}
+            </div>
+        `;
     } catch (e) {
         console.error("Fehler beim Laden des Budget vs Actual:", e);
     }
