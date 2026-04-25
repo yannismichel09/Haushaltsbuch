@@ -9,9 +9,7 @@ async function getAllDashboardTransactions() {
 			}
 		});
 
-		if (!response.ok) {
-			throw new Error("API Dashboard error: getAllDashboardTransactions");
-		}
+		handleApiErrorResponse(response, "getAllDashboardTransactions");
 
 		return await response.json();
 	} catch (error) {
@@ -32,9 +30,7 @@ async function getFilteredDashboardTransactions(transactionFilterDtoIn) {
 			body: JSON.stringify(transactionFilterDtoIn)
 		});
 
-		if (!response.ok) {
-			throw new Error("API Dashboard error: getFilteredDashboardTransactions");
-		}
+		handleApiErrorResponse(response, "getFilteredDashboardTransactions");
 
 		return await response.json();
 	} catch (error) {
@@ -53,9 +49,7 @@ async function getDashboardSumSpendings() {
 			}
 		});
 
-		if (!response.ok) {
-			throw new Error("API Dashboard error: getDashboardSumSpendings");
-		}
+		handleApiErrorResponse(response, "getDashboardSumSpendings");
 
 		return await response.json();
 	} catch (error) {
@@ -74,9 +68,7 @@ async function getDashboardSumIncome() {
 			}
 		});
 
-		if (!response.ok) {
-			throw new Error("API Dashboard error: getDashboardSumIncome");
-		}
+		handleApiErrorResponse(response, "getDashboardSumIncome");
 
 		return await response.json();
 	} catch (error) {
@@ -95,9 +87,7 @@ async function getDashboardCategorySumSpendings(categoryId) {
 			}
 		});
 
-		if (!response.ok) {
-			throw new Error("API Dashboard error: getDashboardCategorySumSpendings");
-		}
+		handleApiErrorResponse(response, "getDashboardCategorySumSpendings");
 
 		return await response.json();
 	} catch (error) {
@@ -116,9 +106,7 @@ async function getDashboardCategorySumIncome(categoryId) {
 			}
 		});
 
-		if (!response.ok) {
-			throw new Error("API Dashboard error: getDashboardCategorySumIncome");
-		}
+		handleApiErrorResponse(response, "getDashboardCategorySumIncome");
 
 		return await response.json();
 	} catch (error) {

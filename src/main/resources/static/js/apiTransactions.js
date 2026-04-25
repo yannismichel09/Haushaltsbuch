@@ -11,9 +11,7 @@ async function createTransaction(transactionDtoIn) {
             body: JSON.stringify(transactionDtoIn)
         });
 
-        if (!response.ok) {
-            throw new Error("API Transaction Error: createTransaction");
-        }
+        handleApiErrorResponse(response, "createTransaction");
 
         return await response.json();
     } catch (error) {
@@ -32,9 +30,7 @@ async function getTransactions() {
             }
         });
 
-        if (!response.ok) {
-            throw new Error("API Transaction Error: getTransactions");
-        }
+        handleApiErrorResponse(response, "getTransactions");
 
         return await response.json();
     } catch (error) {
@@ -53,9 +49,7 @@ async function getTransaction(transactionId) {
             }
         });
 
-        if (!response.ok) {
-            throw new Error("API Transaction Error: getTransaction");
-        }
+        handleApiErrorResponse(response, "getTransaction");
 
         return await response.json();
     } catch (error) {
@@ -76,9 +70,7 @@ async function getFilteredTransactions(transactionFilterDtoIn) {
             body: JSON.stringify(transactionFilterDtoIn)
         });
 
-        if (!response.ok) {
-            throw new Error("API Transaction Error: getFilteredTransactions");
-        }
+        handleApiErrorResponse(response, "getFilteredTransactions");
 
         return await response.json();
     } catch (error) {
@@ -97,9 +89,7 @@ async function deleteTransaction(transactionId) {
             }
         });
 
-        if (!response.ok) {
-            throw new Error("API Transaction Error: deleteTransaction");
-        }
+        handleApiErrorResponse(response, "deleteTransaction");
 
         return await response.json();
     } catch (error) {
@@ -120,9 +110,7 @@ async function updateTransaction(transactionId, transactionUpdateDtoIn) {
             body: JSON.stringify(transactionUpdateDtoIn)
         });
 
-        if (!response.ok) {
-            throw new Error("API Transaction Error: updateTransaction");
-        }
+        handleApiErrorResponse(response, "updateTransaction");
 
         return await response.json();
     } catch (error) {

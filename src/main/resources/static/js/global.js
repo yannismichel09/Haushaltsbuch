@@ -23,3 +23,17 @@ function logout() {
     localStorage.clear();
     window.location.href = "welcome.html";
 }
+
+function handleApiErrorResponse(response, context) {
+    if (response.ok) {
+        return;
+    }
+
+    if (response.status === 401 || response.status === 403) {
+        alert("Your session has expired. Please log in again.");
+        logout();
+        throw new Error("API Auth error: " + context + " (" + response.status + ")");
+    }
+
+    throw new Error("API Error: " + context + " (" + response.status + ")");
+}
