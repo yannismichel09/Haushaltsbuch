@@ -1,6 +1,14 @@
 let allCategories = [];
 let monthlyTrendChart = null;
 
+function formatCurrency(amount) {
+    return amount.toFixed(2).replace(".", ",") + " €";
+}
+
+function getCategoryName(cat) {
+    return cat.categoryName || cat.name;
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     const filterForm = document.querySelector(".search-filter form") || document.querySelector("section form");
     const resultsSection = document.getElementById("search-results-section");
@@ -56,11 +64,14 @@ async function initDashboard() {
         // Load summary data
         await loadSummaryData();
 
+        // Load transactions once and reuse for chart + budget views
+        const transactions = await getAllDashboardTransactions() || [];
+
         // Load and render monthly trend chart
-        await loadMonthlyTrendChart();
+        await loadMonthlyTrendChart(transactions);
 
         // Load and render budget vs actual
-        await loadBudgetVsActual();
+        await loadBudgetVsActual(transactions);
     } catch (e) {
         console.error("Fehler beim Initialisieren des Dashboards:", e);
     }
@@ -72,18 +83,16 @@ async function loadSummaryData() {
         const spending = await getDashboardSumSpendings() || 0;
         const balance = income - spending;
 
-        document.getElementById("income-sum").textContent = income.toFixed(2).replace(".", ",") + " €";
-        document.getElementById("spending-sum").textContent = spending.toFixed(2).replace(".", ",") + " €";
-        document.getElementById("balance-sum").textContent = balance.toFixed(2).replace(".", ",") + " €";
+        document.getElementById("income-sum").textContent = formatCurrency(income);
+        document.getElementById("spending-sum").textContent = formatCurrency(spending);
+        document.getElementById("balance-sum").textContent = formatCurrency(balance);
     } catch (e) {
         console.error("Fehler beim Laden der Summary-Daten:", e);
     }
 }
 
-async function loadMonthlyTrendChart() {
+async function loadMonthlyTrendChart(transactions) {
     try {
-        const transactions = await getAllDashboardTransactions() || [];
-
         // Group transactions by month
         const monthlyData = {};
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -185,18 +194,16 @@ async function loadMonthlyTrendChart() {
     }
 }
 
-async function loadBudgetVsActual() {
+async function loadBudgetVsActual(transactions) {
     try {
         const container = document.getElementById("budget-vs-actual-container");
         if (!container) return;
-
-        const transactions = await getAllDashboardTransactions() || [];
 
         // Group by category
         const categoryBudget = {};
         allCategories.forEach(cat => {
             categoryBudget[cat.categoryId] = {
-                name: cat.categoryName || cat.name,
+                name: getCategoryName(cat),
                 actual: 0,
                 budget: cat.categoryLimit || 500 // Use categoryLimit from model, default 500 if not set
             };
@@ -219,7 +226,7 @@ async function loadBudgetVsActual() {
                 <div style="margin-bottom: 20px;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                         <span style="font-weight: bold;">${cat.name}</span>
-                        <span>${cat.actual.toFixed(2).replace(".", ",")} € / ${cat.budget.toFixed(2).replace(".", ",")} €</span>
+                        <span>${formatCurrency(cat.actual)} / ${formatCurrency(cat.budget)}</span>
                     </div>
                     <div>
                         <progress value="${displayPercentage}" max="100" style="width: 100%; height: 20px;">${displayPercentage}%</progress>
@@ -283,7 +290,7 @@ function renderDashboardResults(transactions) {
             </div>
             
             <div style="font-size: 0.85rem; color: #7f8c8d; margin-top: 4px;">
-                <strong>Category:</strong> ${cat ? (cat.categoryName || cat.name) : 'Category'}
+                <strong>Category:</strong> ${cat ? getCategoryName(cat) : 'Category'}
             </div>
 
             <div style="font-size: 0.85rem; color: #7f8c8d; margin-top: 4px;">
@@ -295,7 +302,7 @@ function renderDashboardResults(transactions) {
             </div>
             
             <div class="transaction-amount">
-                ${t.transactionAmount.toFixed(2)} €
+                ${formatCurrency(t.transactionAmount)}
             </div>
         `;
         container.appendChild(card);
@@ -307,6 +314,6 @@ function fillCategoryDropdown(categories) {
     if (!select) return;
     select.innerHTML = '<option value="" selected>All</option>';
     categories.forEach(c => {
-        select.appendChild(new Option(c.categoryName || c.name, c.categoryId));
+        select.appendChild(new Option(getCategoryName(c), c.categoryId));
     });
 }
