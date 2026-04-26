@@ -46,6 +46,15 @@ function applyAndSyncUser(user) {
     syncSessionUser(user);
 }
 
+function logoutFromCurrentContext() {
+    if (window.parent && window.parent !== window && typeof window.parent.logout === "function") {
+        window.parent.logout();
+        return;
+    }
+
+    logout();
+}
+
 function syncSessionUser(updatedUser) {
     if (!updatedUser) {
         return;
@@ -116,7 +125,7 @@ async function saveAccountHandler() {
     let latestUser = null;
 
     if (usernameChanged) {
-        latestUser = await updateUsername({ username: username });
+        latestUser = await updateUsername({ username });
         if (!latestUser) {
             alert("Username could not be saved.");
             usernameInput.value = originalUsername;
@@ -229,10 +238,10 @@ async function saveSecurityHandler() {
     }
 
     const updatedUser = await updateSecurity({
-        email: email,
-        oldPassword: oldPassword,
-        newPassword: newPassword,
-        confirmPassword: confirmPassword
+        email,
+        oldPassword,
+        newPassword,
+        confirmPassword
     });
 
     if (!updatedUser) {
@@ -242,6 +251,21 @@ async function saveSecurityHandler() {
 
     applyAndSyncUser(updatedUser);
     clearPasswordInputs();
+}
+
+async function deleteAccountHandler() {
+    const confirmation = window.confirm("Do you really want to delete your account? This action cannot be undone.");
+    if (!confirmation) {
+        return;
+    }
+
+    const wasDeleted = await deleteUser(currentUserId);
+    if (!wasDeleted) {
+        alert("Account could not be deleted.");
+        return;
+    }
+
+    logoutFromCurrentContext();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -261,6 +285,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     elementById("reset-password-btn").addEventListener("click", resetSecurityInputs);
     elementById("save-security-btn").addEventListener("click", saveSecurityHandler);
+    elementById("delete-account-btn").addEventListener("click", deleteAccountHandler);
 
     loadSettings();
 });

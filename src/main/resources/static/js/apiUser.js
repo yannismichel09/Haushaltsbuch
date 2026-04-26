@@ -88,8 +88,6 @@ async function deleteUser(userId) {
 
 	} catch (error) {
 		console.log(error);
-	} finally {
-		logout();
 	}
 }
 
