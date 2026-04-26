@@ -110,7 +110,12 @@ public class DBAccessCategory {
 		if (!normalizedCategoryColors.isEmpty()) {
 			query.append(" AND c.categoryColor IN :categoryColors");
 		}
-        if (amountMin != null) query.append(" AND c.categoryLimit >= :amountMin");
+		if (amountMin != null && amountMax == null) {
+			query.append(" AND (c.categoryLimit >= :amountMin OR c.categoryLimit IS NULL)");
+		}
+		if (amountMin != null && amountMax != null) {
+			query.append(" AND c.categoryLimit >= :amountMin");
+		}
         if (amountMax != null) query.append(" AND c.categoryLimit <= :amountMax");
 
         TypedQuery<Category> q = entityManager.createQuery(query.toString(), Category.class);
