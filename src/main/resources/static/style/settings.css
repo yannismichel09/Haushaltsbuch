@@ -121,6 +121,12 @@ input:focus {
     color: #64748b;
 }
 
+#delete-account-btn {
+    margin-left: auto;
+    background: #dc2626;
+    color: #ffffff;
+}
+
 .btn-action:hover {
     opacity: 0.9;
     transform: translateY(-1px);
