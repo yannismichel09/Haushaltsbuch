@@ -427,7 +427,6 @@ document.addEventListener("DOMContentLoaded", () => {
 			if (result) {
 				resetCategoryForm();
 				await loadAndRenderAllCategories();
-				alert(wasEditing ? "Category was updated successfully." : "Category was created successfully.");
 			}
 		} catch (error) {
 			alert(getCategorySaveErrorMessage(error, editingCategoryId !== null));
