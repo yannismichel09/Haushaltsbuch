@@ -147,11 +147,13 @@ function applyCategoryFilters(categories) {
 		const name = (category.categoryName || "").toLowerCase();
 		const description = (category.categoryDescription || "").toLowerCase();
 		const limit = category.categoryLimit;
+		const hasLimit = limit !== null && limit !== undefined;
+		const showUnlimitedBecauseNoMax = amountMax === null && !hasLimit;
 
 		const keywordOk = keyword === "" || name.includes(keyword) || description.includes(keyword);
 		const colorOk = selectedColors.length === 0 || selectedColors.includes(category.categoryColor);
-		const minOk = amountMin === null || (limit !== null && limit !== undefined && limit >= amountMin);
-		const maxOk = amountMax === null || (limit !== null && limit !== undefined && limit <= amountMax);
+		const minOk = amountMin === null || showUnlimitedBecauseNoMax || (hasLimit && limit >= amountMin);
+		const maxOk = amountMax === null || (hasLimit && limit <= amountMax);
 
 		return keywordOk && colorOk && minOk && maxOk;
 	});
