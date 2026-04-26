@@ -141,7 +141,6 @@ async function saveAccountHandler() {
     }
 
     applyAndSyncUser(latestUser);
-    alert("Account details were saved.");
 }
 
 function triggerProfilePictureSelection() {
@@ -243,7 +242,6 @@ async function saveSecurityHandler() {
 
     applyAndSyncUser(updatedUser);
     clearPasswordInputs();
-    alert("Security details were saved.");
 }
 
 document.addEventListener("DOMContentLoaded", () => {
