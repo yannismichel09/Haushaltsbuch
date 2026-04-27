@@ -438,6 +438,6 @@ document.addEventListener("DOMContentLoaded", () => {
 	// Laedt zum Start alle Kategorien und zeigt bei Fehlern einen leeren Zustand an.
 	loadAndRenderAllCategories().catch(() => {
 		renderCategories([]);
-		alert("Categories could not be loaded.");
+		// alert("Categories could not be loaded.");
 	});
 });
