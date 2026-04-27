@@ -14,7 +14,9 @@ async function initWarnings() {
         const budgetLimits = await checkBudgetLimit();
         if (budgetLimits && budgetLimits.length > 0) {
             budgetLimits.forEach(cat => {
-                allWarnings.push(`Budget for <strong>${cat.categoryName || cat.name}</strong> is over 90% exhausted!`);
+                if(cat.categoryLimit != null){
+                    allWarnings.push(`Budget for <strong>${cat.categoryName || cat.name}</strong> is over 90% exhausted!`);
+                }
             });
         }
 
