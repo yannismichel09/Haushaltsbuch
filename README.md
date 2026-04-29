@@ -99,5 +99,5 @@ Achte auf das Ausrufezeichen-Icon im Header. Es zeigt dir in Echtzeit an, wenn K
 
 ## 📄 Lizenz & Kontakt  
 Dieses Projekt wurde zu Lernzwecken und als Projektarbeit (Studienprojekt) zur Webentwicklung erstellt.  
-Autor 1: [Yannis Michel/yannismichel09]  
-Autor 2: [Said Resch/Papierjaeger]
+**Autor 1:** Yannis Michel/yannismichel09  
+**Autor 2:** Said Resch/Papierjaeger
