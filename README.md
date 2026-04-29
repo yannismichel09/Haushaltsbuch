@@ -24,20 +24,24 @@ Dieses Architekturdiagramm stellt den schematischen Aufbau der Webanwendung dar,
 
 ## 📁 Projektstruktur
 ```text
-/
-├── js/
-│   ├── apiUser.js          # Authentifizierungs-Logik
-│   ├── apiWarnings.js      # API-Anbindung für Warnungen
-│   ├── global.js           # Globale Funktionen
-│   ├── homePageIframes.js  # Steuerung der Iframes
-│   ├── homePageWarnings.js # Warnungs-Logik
-│   └── tabs.js             # Tab-Navigation
-├── style/
-│   ├── homePage.css        # Styles für die Hauptseite
-│   └── tabs.css            # Styles für die Navigation
-├── welcome.html            # Login & Registrierung
-├── homePage.html           # Hauptapplikation
-└── dashboard.html/etc.     # Unterseiten der App
+src/main/
+├── java/                    # Backend Logik (Spring Boot Controller, Services, etc.)
+        ├── api/             # REST-Controller für API-Endpunkte
+        ├── dbaccess/        # Zugriffsschicht für Datenbank-Operationen (Repositories)
+        ├── dbbackground/    # Hintergrundprozesse zur Datenwartung
+        ├── dto/             # Daten-Transfer-Objekte für den Datenaustausch
+        ├── haushaltsbuch/   # Kern-Geschäftslogik und Business-Services             
+        ├── model/           # Datenbank-Entitäten und Datenmodelle
+        ├── scheduled/       # Geplante Aufgaben und Cron-Jobs
+        ├── security/        # Authentifizierungs- und Autorisierungs-Konfiguration
+        ├── util/            # Hilfsklassen und allgemeine Werkzeuge
+└── resources/
+    └── static/              # Frontend (Assets & HTML)
+        ├── js/              # JavaScript-Dateien
+        ├── style/           # CSS Styles
+        ├── icons/           # Bilddateien & Icons
+        ├── categories.html  # HTML-Dateien
+        ├── ...
 ```
 ## 🚀 Installation & Setup
 Um das Projekt lokal zu nutzen, sind nur wenige Schritte erforderlich:
@@ -96,4 +100,4 @@ Achte auf das Ausrufezeichen-Icon im Header. Es zeigt dir in Echtzeit an, wenn K
 ## 📄 Lizenz & Kontakt  
 Dieses Projekt wurde zu Lernzwecken und als Projektarbeit (Studienprojekt) zur Webentwicklung erstellt.  
 Autor 1: [Yannis Michel/yannismichel09]  
-Autor 2: [Said Resch/GitHub-Username]
+Autor 2: [Said Resch/Papierjaeger]
