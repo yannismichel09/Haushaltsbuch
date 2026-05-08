@@ -103,8 +103,6 @@ Klicke auf dein Profilbild -> Logout, um die Session zu beenden.
 8. **Warnungen**  
 Achte auf das Ausrufezeichen-Icon im Header. Es zeigt dir in Echtzeit an, wenn Kategorien (fast) dein definiertes Limit erreicht haben oder der Saldo negativ ist.
 <img width="481" height="216" alt="Bildschirmfoto 2026-04-29 um 12 24 23" src="https://github.com/user-attachments/assets/85dfcb65-7290-4c74-9f46-06092a1c6726" />
-</br>
-
 
 ## 📄 Lizenz & Kontakt  
 Dieses Projekt wurde zu Lernzwecken und als Projektarbeit (Studienprojekt) zur Webentwicklung erstellt.  
